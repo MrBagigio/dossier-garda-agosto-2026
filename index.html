@@ -311,6 +311,12 @@ button{font:inherit}
     .filters .flbl{width:100%}
   }
 
+  /* chi ha chiesto meno animazioni non deve subire dissolvenze al cambio tema */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{transition-duration:.001ms!important;animation-duration:.001ms!important}
+    html{scroll-behavior:auto!important}
+  }
+
   /* ---------- stampa ---------- */
   @media print{
     .switcher,nav.toc,.filters,.fresh .acts,.skip,.mapside .note{display:none!important}

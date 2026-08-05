@@ -12,7 +12,7 @@
  * La cache porta la data della revisione nel nome: pubblicare una versione
  * nuova butta via la precedente invece di stratificarla.
  */
-const CACHE = 'garda-2026-v3';
+const CACHE = 'garda-2026-v4';
 const ESSENZIALI = [
   './',
   './index.html',
@@ -56,6 +56,11 @@ self.addEventListener('fetch', (e) => {
 
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;   /* Booking, Maps e Airbnb non si toccano */
+
+  /* Il collaudo non entra in cache. E' uno strumento di diagnosi, non serve
+     offline, e servirne una copia vecchia significa collaudare il codice di
+     ieri credendo di collaudare quello di oggi: e' gia' successo. */
+  if (url.pathname.indexOf('collaudo') >= 0) return;
 
   const eDocumento = req.mode === 'navigate' ||
         (req.headers.get('accept') || '').includes('text/html');

@@ -274,6 +274,28 @@ button{font:inherit}
   .switcher .hint{font-size:12.5px;color:var(--ink-faint);margin-left:auto}
   @media (max-width:720px){.switcher .hint{display:none}}
 
+
+  /* ---- dintorni ---- */
+  .basebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    margin:18px 0 6px;padding:12px 14px;border:1px solid var(--rule);
+    border-radius:10px;background:var(--paper-2)}
+  .basebar label{font-family:var(--mono);font-size:11px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  .basebar select{max-width:min(420px,74vw);padding:7px 10px;border-radius:8px;
+    border:1px solid var(--rule);background:var(--paper);color:var(--ink);
+    font-family:inherit;font-size:14.5px}
+  .basenote{font-size:12.5px;color:var(--ink-faint)}
+  @media (max-width:560px){.basenote{width:100%%;margin-top:2px}}
+  .fchip.cat.on,.fchip.rg.on{background:var(--ink);border-color:var(--ink);
+    color:var(--paper);font-weight:600}
+  td.dist{white-space:nowrap;font-variant-numeric:tabular-nums}
+  td.dist .walk{color:var(--accent);font-weight:600}
+  .poitype{color:var(--ink-faint);font-size:13px}
+  #dintorni .count{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-faint);margin:14px 0 6px}
+  #notturnale{margin-top:16px}
+  #notturnale.hide{display:none}
+
   /* selected-window column emphasis in multi-date tables */
   td.selcol{background:var(--accent-wash);font-weight:600}
   th.selcol{color:var(--accent);border-bottom-color:var(--accent)}
@@ -594,6 +616,7 @@ button{font:inherit}
     <a href="#rosa">La rosa</a>
     <a href="#confronto">Confronto</a>
     <a href="#mappa">Mappa</a>
+    <a href="#dintorni">Cosa c&rsquo;è intorno</a>
     <a href="#raggio">Giorno e sera</a>
     <a href="#matrice">Tutte le strutture</a>
     <a href="#canali">Dove costa meno</a>
@@ -869,9 +892,62 @@ button{font:inherit}
     </div>
   </section>
 
+
+  <!-- =================== DINTORNI =================== -->
+  <section id="dintorni">
+    <h2><span class="num">05</span>Cosa c&rsquo;è intorno</h2>
+    <p class="sub">Dimmi dove dormi e questa parte si riordina intorno a quel punto: <b>130 posti veri</b> — dove si mangia, i gelati, le spiagge, le passeggiate, cosa vedere, le barche — messi in fila per quanto ci metti ad arrivarci. Voto, numero di recensioni e fascia di prezzo sono quelli di Google, rilevati il 5 agosto 2026.</p>
+
+    <div class="basebar">
+      <label for="baseSel">Dormo a</label>
+      <select id="baseSel"></select>
+      <span class="basenote" id="baseNote"></span>
+    </div>
+
+    <div class="filters" role="group" aria-label="Che cosa cerco">
+      <span class="flbl">Cerco</span>
+      <div class="chips" id="catChips">
+          <button type="button" class="fchip cat on" data-c="M" aria-pressed="true">da mangiare</button>
+          <button type="button" class="fchip cat" data-c="B" aria-pressed="false">bar e gelato</button>
+          <button type="button" class="fchip cat" data-c="S" aria-pressed="false">spiagge</button>
+          <button type="button" class="fchip cat" data-c="P" aria-pressed="false">passeggiate</button>
+          <button type="button" class="fchip cat" data-c="V" aria-pressed="false">da vedere</button>
+          <button type="button" class="fchip cat" data-c="X" aria-pressed="false">sport e barche</button>
+          <button type="button" class="fchip cat" data-c="W" aria-pressed="false">benessere</button>
+      </div>
+    </div>
+
+    <div class="filters" role="group" aria-label="Quanto lontano">
+      <span class="flbl">Entro</span>
+      <div class="chips" id="rangeChips">
+          <button type="button" class="fchip rg" data-r="1.5" aria-pressed="false">due passi</button>
+          <button type="button" class="fchip rg" data-r="10" aria-pressed="false">10 min d'auto</button>
+          <button type="button" class="fchip rg on" data-r="20" aria-pressed="true">20 min</button>
+          <button type="button" class="fchip rg" data-r="0" aria-pressed="false">tutto</button>
+      </div>
+      <label class="sortl" for="poiSort">Ordina</label>
+      <select id="poiSort">
+        <option value="dist">più vicini</option>
+        <option value="score">voto, pesato sulle recensioni</option>
+        <option value="price">prezzo crescente</option>
+      </select>
+    </div>
+
+    <p class="count" id="poiCount"></p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Posto</th><th>Che cos&rsquo;è</th><th class="num">Voto</th><th class="num">Prezzo</th><th class="num">Quanto dista</th><th>Vai</th></tr></thead>
+        <tbody id="poiBody"></tbody>
+      </table>
+    </div>
+    <p class="foot" id="poiFoot"></p>
+
+    <div class="note" id="notturnale"></div>
+  </section>
+
   <!-- =================== RAGGIO =================== -->
   <section id="raggio">
-    <h2><span class="num">05</span>Silenzio di giorno, qualcosa da fare la sera</h2>
+    <h2><span class="num">06</span>Silenzio di giorno, qualcosa da fare la sera</h2>
     <p class="sub">L'equilibrio che serve: dormire in un posto quieto, ma avere una cena e una passeggiata sul lago a portata senza organizzare una spedizione. Con l'auto e senza vincoli di rientro nessun comune è escluso — cambia solo quanto guidate per andare a mangiare.</p>
 
     <div class="tablewrap">
@@ -904,7 +980,7 @@ button{font:inherit}
 
   <!-- =================== MATRICE =================== -->
   <section id="matrice">
-    <h2><span class="num">06</span>Tutte le strutture, comune per comune</h2>
+    <h2><span class="num">07</span>Tutte le strutture, comune per comune</h2>
     <p class="sub">Prezzo totale per 2 notti e 2 persone, miglior canale disponibile. Dove ci sono due numeri, il primo è la tariffa minima del motore e il secondo il prezzo della scheda di ricerca — la differenza è tipicamente rimborsabile contro non rimborsabile. <span class="flag f-thin">poche rec</span> segnala un punteggio costruito su meno di 20 recensioni: statisticamente non dice nulla. <span class="flag f-walk">a piedi</span> significa che il centro del paese si raggiunge senza auto.</p>
 
     <h3>Salò — 46 strutture · il lungolago più lungo e vivo della sponda</h3>
@@ -1054,7 +1130,7 @@ button{font:inherit}
 
   <!-- =================== CANALI =================== -->
   <section id="canali">
-    <h2><span class="num">07</span>Dove costa meno la stessa camera</h2>
+    <h2><span class="num">08</span>Dove costa meno la stessa camera</h2>
     <p class="sub">La differenza non è quasi mai tra un'agenzia e l'altra: è tra le agenzie e il sito ufficiale, o tra Booking e i canali minori. Expedia, Hotels.com e Vrbo qui non distribuiscono praticamente nulla.</p>
 
     <div class="tablewrap">
@@ -1113,7 +1189,7 @@ button{font:inherit}
 
   <!-- =================== DIRETTO =================== -->
   <section id="diretto">
-    <h2><span class="num">08</span>Cosa dicono i siti ufficiali</h2>
+    <h2><span class="num">09</span>Cosa dicono i siti ufficiali</h2>
     <p class="sub">Motori di prenotazione interrogati uno per uno, non solo la quotazione che trivago espone per i suoi hotel partner.</p>
 
     <div class="tablewrap">
@@ -1179,7 +1255,7 @@ button{font:inherit}
 
   <!-- =================== SCARTATI =================== -->
   <section id="scartati">
-    <h2><span class="num">09</span>Scartati, e perché</h2>
+    <h2><span class="num">10</span>Scartati, e perché</h2>
     <p class="sub">Ogni voce qui sotto è comparsa in una ricerca come affare e non lo era.</p>
     <div class="tablewrap">
       <table>
@@ -1199,7 +1275,7 @@ button{font:inherit}
 
   <!-- =================== AIRBNB =================== -->
   <section id="airbnb">
-    <h2><span class="num">10</span>Airbnb, quello che vale</h2>
+    <h2><span class="num">11</span>Airbnb, quello che vale</h2>
     <p class="sub">Su Airbnb 4,8 è la media, non un voto alto: sotto 4,7 è un avvertimento. Nella finestra di Ferragosto la piattaforma è così vuota che riempie i risultati con date diverse dalle tue — sei dei ventiquattro annunci mostrati erano «15–17» o «14–17 agosto».</p>
     <div class="tablewrap">
       <table>
@@ -1227,7 +1303,7 @@ button{font:inherit}
 
   <!-- =================== LOGISTICA =================== -->
   <section id="logistica">
-    <h2><span class="num">11</span>Spiagge, auto, traghetti, barche</h2>
+    <h2><span class="num">12</span>Spiagge, auto, traghetti, barche</h2>
 
     <h3>Le spiagge di Toscolano — e il parcheggio è gratis</h3>
     <div class="tablewrap">
@@ -1273,7 +1349,7 @@ button{font:inherit}
 
   <!-- =================== QUANDO =================== -->
   <section id="quando">
-    <h2><span class="num">12</span>Meteo, eventi, tavola</h2>
+    <h2><span class="num">13</span>Meteo, eventi, tavola</h2>
 
     <h3>Previsioni — due modelli incrociati</h3>
     <div class="tablewrap">
@@ -1323,7 +1399,7 @@ button{font:inherit}
 
   <!-- =================== PIANO =================== -->
   <section id="piano">
-    <h2><span class="num">13</span>Cosa fare, in ordine</h2>
+    <h2><span class="num">14</span>Cosa fare, in ordine</h2>
     <p class="sub">Le scadenze di cancellazione gratuita corrono: 13 agosto Garda Friends · 15 agosto Sorriso, Eden e Maderno · 16 agosto Villaggio Maderno, Camping Toscolano ed Ennesima.</p>
 
     <ol class="steps">
@@ -1546,7 +1622,7 @@ button{font:inherit}
       var noteTxt=note?(' <span class="meta">'+note+'</span>'):'';
       var cn=NAMES[kind]||'—';
       return '<tr'+(isAlt?' class="rowmark"':'')+'>'+
-        '<td class="name"><button type="button" class="pin'+(isPicked(d[0])?' on':'')+'" data-pick="'+d[0].replace(/"/g,'&quot;')+'" aria-pressed="'+(isPicked(d[0])?'true':'false')+'" aria-label="Aggiungi al confronto">'+(isPicked(d[0])?'✓':'+')+'</button>'+d[0]+'<a class="geo" target="_blank" rel="noopener" title="Vedi su Maps" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d[0]+' '+d[1].split(' · ')[0]+' lago di Garda')+'">⌖</a></td>'+
+        '<td class="name"><button type="button" class="pin base" data-base="'+d[0].replace(/"/g,'&quot;')+'" title="Parti da qui: mostra cosa c&rsquo;\u00e8 intorno" aria-label="Parti da qui">\u25ce</button>'+'<button type="button" class="pin'+(isPicked(d[0])?' on':'')+'" data-pick="'+d[0].replace(/"/g,'&quot;')+'" aria-pressed="'+(isPicked(d[0])?'true':'false')+'" aria-label="Aggiungi al confronto">'+(isPicked(d[0])?'✓':'+')+'</button>'+d[0]+'<a class="geo" target="_blank" rel="noopener" title="Vedi su Maps" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d[0]+' '+d[1].split(' · ')[0]+' lago di Garda')+'">⌖</a></td>'+
         '<td class="meta">'+d[1]+tagChips(d[0])+'</td>'+
         '<td class="num">'+priceCell+'</td>'+
         '<td>'+(isAlt?('<b>'+cn+'</b>'):cn)+noteTxt+'</td>'+
@@ -1565,7 +1641,7 @@ button{font:inherit}
       if(FILTERS.town){ tc.textContent='paese: '+FILTERS.town+' ×'; tc.setAttribute('aria-pressed','true'); }
     }
     var cl=document.getElementById('fClear'); if(cl) cl.hidden = attivi===0;
-    Array.prototype.forEach.call(body.querySelectorAll('.pin'),function(b){
+    Array.prototype.forEach.call(body.querySelectorAll('.pin[data-pick]'),function(b){
       b.addEventListener('click',function(){
         if(togglePick(b.getAttribute('data-pick'))) render(document.documentElement.getAttribute('data-win')||'3');
       });
@@ -1741,6 +1817,381 @@ button{font:inherit}
     var out=''; for(var i=0;i<t.length;i++){ var k=t[i]; if(TAGLABEL[k]) out+='<span class="tag">'+TAGLABEL[k]+'</span>'; }
     return out?('<span class="tags">'+out+'</span>'):'';
   }
+
+  /* ====================== DINTORNI ====================== */
+  var POI=[
+    ['M','La Tana trattoria',4.5,674,'30-40',45.6360,10.5979,'Trattoria'],
+    ['M','Osteria Gatto d\'Oro',4.5,915,'30-70',45.6339,10.6013,'Osteria'],
+    ['M','La Terrazza sul Lago',4.7,66,'20-50',45.6357,10.5974,'Ristorante'],
+    ['M','La Cucineria',4.7,330,'40-50',45.6448,10.6152,'Ristorante'],
+    ['M','L\'Edopizza',4.9,22,'1-10',45.6346,10.5999,'Pizza d\'asporto'],
+    ['M','Gaudia Palati',4.8,79,'20-30',45.6356,10.6002,'Cucina italiana'],
+    ['M','MILLE971',4.8,40,'20-30',45.6354,10.6002,'Pizzeria'],
+    ['M','Trattoria La Sosta',4.5,549,'20-30',45.6561,10.6292,'Trattoria, a Cecina'],
+    ['M','Pizzeria Sant\'Ercolano',4.2,2387,'10-20',45.6360,10.6042,'Pizzeria'],
+    ['M','Casa della Pizza 2.0',4.2,88,'1-10',45.6436,10.6131,'Pizzeria'],
+    ['M','Pizzeria La Bussola',4.1,1573,'10-20',45.6359,10.5990,'Pizzeria'],
+    ['M','Pizzeria Benella',4.4,853,'10-20',45.6291,10.5863,'Pizzeria'],
+    ['M','Ristorante Gatto Giallo',4.5,1204,'20-30',45.6372,10.6005,'Ristorante'],
+    ['M','Za Mari Pasta e Pizza',4.4,362,'20-30',45.6432,10.6195,'Ristorante'],
+    ['M','Osteria Antico Brolo',4.7,628,'40-80',45.6222,10.5619,'Osteria'],
+    ['M','Ristorante Bali',4.8,414,'50-100',45.6173,10.5577,'Ristorante'],
+    ['M','Ristorante La Taverna',4.8,433,'20-30',45.6176,10.5581,'Ristorante'],
+    ['M','Il Fiore di Zucca',4.6,557,'20-40',45.6225,10.5614,'Cucina romana'],
+    ['M','Ristorante il Giglio',4.7,264,'30-70',45.6268,10.5834,'Pesce'],
+    ['M','Trattoria Marietta',4.4,1132,'20-30',45.6253,10.5592,'Trattoria'],
+    ['M','Edone Al Lago',5.0,38,'',45.6263,10.5824,'Ristorante'],
+    ['M','Pizzeria NABLUS',4.4,1274,'20-30',45.6297,10.5749,'Pizzeria'],
+    ['M','Petrellini Pastificio',5.0,91,'40-50',45.6070,10.5297,'Pasta fresca'],
+    ['M','Ristorante Civico 7',4.8,757,'30-70',45.6069,10.5299,'Ristorante'],
+    ['M','La carta dei ricordi',4.8,26,'',45.6072,10.5262,'Gastronomia'],
+    ['M','Osteria Di Mezzo',4.6,621,'40-80',45.6074,10.5277,'Osteria'],
+    ['M','Brett Gastronomia',4.7,764,'30-40',45.6072,10.5280,'Gastronomia'],
+    ['M','Floriana Ristorante',4.6,981,'30-60',45.6074,10.5282,'Ristorante'],
+    ['M','Locanda del Benaco',4.5,459,'',45.6069,10.5274,'Ristorante d\'albergo'],
+    ['M','Trattoria S. Martino le 3 oche',4.8,854,'40-70',45.6876,10.6622,'Trattoria'],
+    ['M','Casa Calderi',4.9,128,'30-70',45.6883,10.6632,'Ristorante'],
+    ['M','Ristorante La Tortuga',4.8,190,'',45.6885,10.6639,'Cucina raffinata'],
+    ['M','L\'Amo Bistrot',4.7,279,'20-60',45.6756,10.6525,'Bistrot'],
+    ['M','La Mingla',4.8,173,'30-70',45.6884,10.6643,'Ristorante'],
+    ['M','Ristorante al Belvedere',4.7,417,'20-60',45.6784,10.6442,'Ristorante'],
+    ['M','Ristorante Al Miralago',4.5,461,'20-30',45.6882,10.6643,'Ristorante'],
+    ['M','AEOLUS Restaurant',4.8,226,'30-70',45.6885,10.6637,'Ristorante'],
+    ['M','Ristorante Ideal Molino',4.3,286,'20-30',45.5791,10.5559,'Ristorante di campeggio'],
+    ['M','Da Fabio e Naty',4.9,126,'40-80',45.5969,10.5530,'Ristorante'],
+    ['M','Baia Del Vento',4.4,3260,'10-20',45.5901,10.5693,'Pizzeria sulla spiaggia'],
+    ['M','La Dispensa San Felice',4.6,716,'',45.5850,10.5475,'Steakhouse'],
+    ['M','Ristorante DUO',4.7,242,'40-80',45.5854,10.5468,'Pesce'],
+    ['M','Hanta Yo',4.8,1004,'20-30',45.5855,10.5478,'Ristopub'],
+    ['M','Cantina de la Mirleta',4.6,467,'30-50',45.5952,10.5362,'Ristorante'],
+    ['M','Hotel Ristorante Sogno',4.6,46,'30-80',45.5811,10.5592,'Ristorante d\'albergo'],
+    ['M','Agriturismo Valle degli Ulivi',4.6,51,'',45.5815,10.5306,'Agriturismo'],
+    ['M','Antica Trattoria Miravalle',4.7,1004,'30-70',45.5499,10.5045,'Trattoria'],
+    ['M','Agriturismo I Vegher',4.8,682,'',45.5791,10.5383,'Agriturismo'],
+    ['M','Agriturismo Bel di Bertussi',4.5,601,'',45.5727,10.5412,'Agriturismo'],
+    ['M','Agriturismo Fioralba',4.9,90,'',45.5587,10.5231,'Agriturismo'],
+    ['M','Agriturismo La Sercola',4.3,266,'',45.5798,10.5073,'Agriturismo'],
+    ['M','Osteria del borgo',4.6,60,'10-20',45.5523,10.5075,'Osteria'],
+    ['M','Al Rustico da Bena',4.2,39,'30-60',45.5365,10.4944,'Ristorante'],
+    ['B','Gelateria Ciocolat al lago',4.8,79,'',45.6322,10.6157,'Gelateria'],
+    ['B','Gelateria Ciocolat',4.7,1063,'',45.6419,10.6126,'Gelateria'],
+    ['B','Gelateria Calchera',4.6,404,'',45.6352,10.6001,'Gelateria'],
+    ['B','Bar Gelateria Babo',4.7,55,'',45.6451,10.6159,'Gelateria'],
+    ['B','LB Gelateria',4.8,29,'',45.6364,10.6018,'Gelateria'],
+    ['B','Gelateria Pinguino Giallo',4.5,440,'',45.6179,10.5588,'Gelateria'],
+    ['B','Gelateria Azzurra',4.2,533,'',45.6337,10.5994,'Gelateria'],
+    ['B','Bar Gelateria Don Carlos',3.9,467,'1-10',45.6339,10.5994,'Bar gelateria'],
+    ['B','Chloe Gelati Artigianale',4.7,37,'',45.6068,10.5256,'Gelateria'],
+    ['B','La Casa del Dolce',4.6,1635,'',45.6069,10.5308,'Gelateria'],
+    ['B','Gelateria Amor Di Gelato',4.8,490,'',45.6059,10.5233,'Gelateria'],
+    ['B','Gelateria Bar di Pajaziti',4.9,21,'',45.6047,10.5215,'Gelateria'],
+    ['B','Bar Gelateria Porto',4.5,220,'',45.6055,10.5221,'Gelateria'],
+    ['B','Gelateria Rock #lake',4.5,156,'',45.6058,10.5238,'Gelateria'],
+    ['B','Gelateria due pini',5.0,10,'10-20',45.6017,10.5164,'Gelateria'],
+    ['B','Gelateria Vassalli',4.3,278,'',45.6067,10.5247,'Gelateria'],
+    ['B','Cafe Centrale 2.0',4.0,804,'1-10',45.6356,10.5996,'Caffe'],
+    ['B','Alba Bar',5.0,11,'10-20',45.6423,10.6142,'Bar caffe'],
+    ['B','Eagle Lounge Bar',4.4,298,'1-10',45.6354,10.6000,'Bar'],
+    ['B','Carta Bianca',4.5,1164,'10-20',45.6330,10.5922,'Bar con cucina'],
+    ['B','Al Centro Caffe',4.9,8,'',45.6377,10.6094,'Bar di paese'],
+    ['B','Bar Rivalago',4.4,141,'10-20',45.6067,10.5248,'Bar sul lago'],
+    ['B','Naturall Garda Bistrot',4.3,693,'10-20',45.6066,10.5244,'Bistrot'],
+    ['B','Bar Italia 1920',4.3,872,'10-20',45.6068,10.5255,'Bar storico'],
+    ['B','Bellavista',3.9,963,'10-20',45.6067,10.5262,'Bar sul lago'],
+    ['B','Bloom',4.5,576,'10-20',45.6065,10.5243,'Bar'],
+    ['B','LAIM Bar',4.6,145,'10-20',45.6068,10.5257,'Bar con cucina'],
+    ['B','Dadi\'s bar',4.8,106,'10-20',45.6068,10.5272,'Bar'],
+    ['S','Spiaggia Toscolano',4.4,1479,'',45.6378,10.6194,'Spiaggia, parcheggio gratis'],
+    ['S','Spiaggia Lido Azzurro',3.7,249,'',45.6321,10.6035,'Spiaggia pubblica'],
+    ['S','Spiaggia via Dante',4.3,109,'',45.6321,10.6056,'Spiaggia pubblica'],
+    ['S','Spiaggia degli Ulivi',4.2,9,'',45.6378,10.6190,'Spiaggia'],
+    ['S','Bau beach Toscolano',4.7,68,'',45.6393,10.6055,'Spiaggia per cani'],
+    ['S','Spiaggia Lido 84',4.4,270,'',45.6252,10.5764,'Spiaggia'],
+    ['S','Spiaggia di Barbarano',4.3,341,'',45.6130,10.5504,'Spiaggia'],
+    ['S','Spiaggia Salo',4.5,173,'',45.5972,10.5202,'Spiaggia'],
+    ['S','Spiaggia Mulino',4.4,631,'',45.5969,10.5211,'Stabilimento'],
+    ['S','Spiaggia delle Rive',4.4,50,'',45.6029,10.5200,'Spiaggia'],
+    ['S','Spiaggia Baia del Vento',4.4,623,'',45.5907,10.5700,'Stabilimento'],
+    ['S','Spiaggia Porto San Felice',4.4,951,'',45.5813,10.5622,'Spiaggia'],
+    ['S','Spiaggia Gardiola',4.7,21,'',45.5760,10.5533,'Spiaggia'],
+    ['P','Valle delle cartiere',4.7,132,'',45.6504,10.6043,'Valle da percorrere a piedi'],
+    ['P','Sentiero Toscolano-Gaino',5.0,1,'',45.6477,10.6161,'Sentiero'],
+    ['P','Passeggiata di Toscolano',5.0,7,'',45.6393,10.6198,'Lungolago'],
+    ['P','Passeggiata San Josemaria',4.6,286,'',45.6344,10.6168,'Lungolago'],
+    ['P','Lungolago di Salo',4.7,112,'',45.6064,10.5245,'Lungolago'],
+    ['P','Lungolago d\'Annunzio',4.8,48,'',45.6168,10.5574,'Lungolago, Gardone'],
+    ['P','Monte Castello di Gaino',4.7,117,'',45.6689,10.6213,'Belvedere in quota'],
+    ['P','Parco Alto Garda Bresciano',4.6,10835,'',45.7378,10.6478,'Parco regionale'],
+    ['P','Eremo di San Valentino',4.7,294,'',45.6996,10.6622,'Eremo panoramico'],
+    ['P','Belvedere di Tignale',4.9,78,'',45.7124,10.7003,'Punto panoramico'],
+    ['P','Punto panoramico Tremosine',4.8,44,'',45.7706,10.7603,'Terrazza sul lago'],
+    ['P','Punto Panoramico San Fermo',4.5,63,'',45.5889,10.5747,'Terrazza sul lago'],
+    ['P','Punto panoramico Gargnano',4.8,6,'',45.6877,10.6633,'Punto panoramico'],
+    ['V','Vittoriale degli Italiani',4.7,23682,'18',45.6241,10.5651,'Casa museo di d\'Annunzio'],
+    ['V','Mausoleo di d\'Annunzio',4.7,1240,'',45.6259,10.5659,'Dentro al Vittoriale'],
+    ['V','Regia nave Puglia',4.8,139,'',45.6252,10.5665,'Dentro al Vittoriale'],
+    ['V','Giardino Botanico Heller',4.5,4774,'',45.6207,10.5618,'Giardino d\'artista'],
+    ['V','Museo della Carta',4.7,1456,'',45.6494,10.6040,'Museo, Valle delle cartiere'],
+    ['V','Isola del Garda',4.8,2215,'',45.5935,10.5885,'Visita guidata in barca'],
+    ['V','Villa Bettoni',4.6,570,'',45.6771,10.6532,'Villa settecentesca'],
+    ['V','Villa romana dei Nonii Arrii',4.3,91,'',45.6433,10.6183,'Scavi romani'],
+    ['V','Parco Bernini',4.4,100,'',45.6422,10.6123,'Parco comunale'],
+    ['V','Rimbalzello Adventure',4.4,407,'',45.6156,10.5533,'Parco sul lago'],
+    ['X','Ora Boats',4.9,302,'',45.6327,10.6024,'Noleggio barche'],
+    ['X','Scoamar',4.6,14,'',45.6345,10.5996,'Noleggio barche'],
+    ['X','Garda Splash',4.5,10,'',45.6329,10.6165,'Sport acquatici'],
+    ['X','ASD Remiera Toscolano',4.7,10,'',45.6310,10.6068,'Canottaggio'],
+    ['X','Ciscosport Bike Shop',4.7,136,'',45.6375,10.6069,'Noleggio bici'],
+    ['X','Benaco Paddling Academy',5.0,161,'',45.5807,10.5588,'SUP e kayak'],
+    ['W','La Maison Du Relax',4.6,30,'',45.6196,10.5654,'Centro benessere'],
+    ['W','Garda Sol SPA Hotel',4.0,434,'',45.6357,10.5972,'Spa d\'albergo'],
+    ['W','Grand Hotel Fasano',4.7,696,'',45.6242,10.5736,'Spa d\'albergo'],
+    ['W','Hotel Savoy Palace',4.4,354,'',45.6171,10.5571,'Spa d\'albergo'],
+    ['W','Hotel Spiaggia d\'Oro',4.5,559,'',45.6133,10.5527,'Spa d\'albergo'],
+    ['W','A-ROSA Lago di Garda',4.5,397,'',45.5949,10.5168,'Spa d\'albergo'],
+    ['W','Villa Luisa Resort',4.4,771,'',45.5926,10.5527,'Spa d\'albergo']
+  ];
+  var CASE=[
+    ['B&B Giardini di Corte','Toscolano',45.636,10.604,0],
+    ['B&B Dolce Risveglio','Puegnago',45.558,10.517,0],
+    ['Affitta camere La Fenice','Puegnago',45.558,10.517,0],
+    ['Villa Giulia Rooms & Bike','Toscolano',45.636,10.604,0],
+    ['Oro Bianco 1630','Toscolano',45.636,10.604,0],
+    ['Ennesima Osteria — Bike Hotel','Toscolano',45.636,10.604,0],
+    ['Hotel Colomber','Gardone',45.64021,10.55052,1],
+    ['Vesta','Gargnano',45.688,10.663,0],
+    ['Guest House Villa de Ros','Salo',45.6068,10.525,0],
+    ['Hotel Gallo','Tignale',45.73832,10.72188,1],
+    ['Hotel Central Giacomini','Salo',45.6068,10.525,0],
+    ['Cozy Castello','Manerba',45.548,10.556,0],
+    ['Hotel Adria & Resort','Toscolano',45.6451,10.6162,1],
+    ['Locanda San Felice','San Felice',45.58184,10.54724,0],
+    ['Hotel La Romantica','Manerba',45.56715,10.55024,1],
+    ['Casa Dealbata','San Felice',45.585,10.548,0],
+    ['B&B GARDA IN','Gardone',45.6215,10.564,0],
+    ['Casa Johanna','Gargnano',45.688,10.663,0],
+    ['B&B Renzano bedrooms','Salo',45.6068,10.525,0],
+    ['Hotel & Restaurant San Marco AB','Toscolano',45.62912,10.58705,0],
+    ['Albergo Ristorante Le Fontane','Gargnano',45.71485,10.66337,1],
+    ['Il Giardino di Sara','Salo',45.6068,10.525,0],
+    ['B&B Casa Olivia','Gardone',45.6215,10.564,0],
+    ['Hotel Eden','Toscolano',45.636,10.604,0],
+    ['Villa Mayoti B&B','Manerba',45.548,10.556,0],
+    ['BiancoGelso b&b Vegan','Gardone',45.6215,10.564,0],
+    ['2bebike','Manerba',45.56392,10.54565,1],
+    ['Colibrì','Salo',45.6068,10.525,0],
+    ['Appartamento a Cecina','Toscolano',45.65464,10.62877,1],
+    ['Casa della musica','Gardone',45.6215,10.564,0],
+    ['Il covo dei ranocchi','Salo',45.6068,10.525,0],
+    ['Villa Cappellina','Toscolano',45.65197,10.62859,1],
+    ['Garda Sol SPA Hotel','Toscolano',45.636,10.604,0],
+    ['Hotel Panoramica','Salo',45.59456,10.51074,1],
+    ['Asso Bed & Breakfast','Manerba',45.548,10.556,0],
+    ['Lake Blue Nido Elegante','Toscolano',45.636,10.604,0],
+    ['Garda Friends Apartments','Toscolano',45.636,10.604,0],
+    ['Villaggio Turistico Maderno','Toscolano',45.6322,10.61485,1],
+    ['Hotel Maderno','Toscolano',45.6346,10.60148,1],
+    ['Agriturismo Scuderia Castello','Toscolano',45.65907,10.61683,1],
+    ['Relais Villa Alba','Gardone',45.62141,10.56647,1],
+    ['Holiday House Le Coccinelle','Salo',45.6068,10.525,0],
+    ['Hotel Splendid','Toscolano',45.63337,10.60118,1],
+    ['La Casa Di Campagna Sul Garda','Puegnago',45.558,10.517,0],
+    ['Hotel Sorriso','Toscolano',45.64073,10.61118,1],
+    ['Foresteria Vistalago','Toscolano',45.636,10.604,0],
+    ['Camping Toscolano','Toscolano',45.6367,10.61427,1],
+    ['Al Mulino','Toscolano',45.636,10.604,0],
+    ['Pizzocolo Resort Fasano','Gardone',45.6215,10.564,0],
+    ['Hotel Antico Monastero','Toscolano',45.63666,10.61282,1],
+    ['All Inclusive Piccolo Paradiso','Toscolano',45.636,10.604,0],
+    ['Casa Sol','San Felice',45.585,10.548,0],
+    ['Aromi Piccolo Hotel','Salo',45.6068,10.525,0],
+    ['Cascina Monte Tivino','Salo',45.6068,10.525,0],
+    ['Riva chiara','Toscolano',45.636,10.604,0],
+    ['Hotel Locanda del Benaco','Salo',45.6068,10.525,0],
+    ['HOTEL LORENA','Toscolano',45.64271,10.61506,1],
+    ['Regina del Garda Suite','Toscolano',45.636,10.604,0],
+    ['Reflection Boutique Hotels','Toscolano',45.636,10.604,0]
+  ];
+
+  /* Le CASE con l'ultimo campo a 0 non hanno una posizione verificata:
+     vale il centro del paese, e la riga lo dichiara. */
+  var BASE=null, POICAT='M', POIRANGE=20, POISORT='dist';
+
+  function kmTra(a1,o1,a2,o2){
+    var dy=(a1-a2)*111.2, dx=(o1-o2)*111.2*Math.cos(45.62*Math.PI/180);
+    return Math.sqrt(dx*dx+dy*dy);
+  }
+  /* Stime, non percorsi calcolati: la distanza in linea d'aria per 1,35
+     (quanto la Gardesana gira) a 40 all'ora, che ad agosto e' onesto.
+     A piedi: 4,5 all'ora sul percorso reale, non sulla linea d'aria. */
+  function minAuto(km){ return Math.max(2, Math.round(km*1.35/40*60)); }
+  function minPiedi(km){ return Math.round(km*1.25/4.5*60); }
+
+  function baseCorrente(){
+    if(BASE && BASE.i>=0 && CASE[BASE.i]) return CASE[BASE.i];
+    return null;
+  }
+  function riempiBase(){
+    var sel=document.getElementById('baseSel'); if(!sel) return;
+    var perPaese={}, ordine=[];
+    CASE.forEach(function(c,i){
+      if(!perPaese[c[1]]){ perPaese[c[1]]=[]; ordine.push(c[1]); }
+      perPaese[c[1]].push([c[0],i]);
+    });
+    var NOMI={'Toscolano':'Toscolano Maderno','Gardone':'Gardone Riviera',
+      'Salo':'Salò','Gargnano':'Gargnano','San Felice':'San Felice del Benaco',
+      'Tignale':'Tignale','Puegnago':'Puegnago del Garda','Manerba':'Manerba del Garda'};
+    var h='';
+    ordine.forEach(function(p){
+      h+='<optgroup label="'+(NOMI[p]||p)+'">';
+      perPaese[p].sort(function(a,b){return a[0].localeCompare(b[0]);}).forEach(function(x){
+        h+='<option value="'+x[1]+'">'+x[0]+'</option>';
+      });
+      h+='</optgroup>';
+    });
+    sel.innerHTML=h;
+    if(BASE) sel.value=String(BASE.i);
+  }
+
+  function scorePoi(p){
+    var n=p[3]||0;
+    return (p[2]*n + 4.4*40)/(n+40);   /* stessa prudenza della rosa, scala su 5 */
+  }
+  function prezzoMedio(p){
+    var m=String(p[4]).match(/(\d+)\s*-\s*(\d+)/);
+    if(m) return (+m[1]+ +m[2])/2;
+    var u=String(p[4]).match(/^(\d+)$/);
+    return u?+u[1]:null;
+  }
+
+  function renderPoi(){
+    var body=document.getElementById('poiBody'); if(!body) return;
+    var c=baseCorrente();
+    if(!c){ BASE={i:0}; c=CASE[0]; }
+    var lat=c[2], lon=c[3];
+
+    var righe=POI.filter(function(p){ return p[0]===POICAT; }).map(function(p){
+      var km=kmTra(lat,lon,p[5],p[6]);
+      return {p:p, km:km, auto:minAuto(km), piedi:minPiedi(km)};
+    }).filter(function(r){
+      if(!POIRANGE) return true;
+      if(POIRANGE===1.5) return r.km<=1.5;
+      return r.auto<=POIRANGE;
+    });
+
+    if(POISORT==='score') righe.sort(function(a,b){ return scorePoi(b.p)-scorePoi(a.p) || a.km-b.km; });
+    else if(POISORT==='price') righe.sort(function(a,b){
+      var x=prezzoMedio(a.p), y=prezzoMedio(b.p);
+      if(x==null && y==null) return a.km-b.km;
+      if(x==null) return 1; if(y==null) return -1;
+      return x-y || a.km-b.km;
+    });
+    else righe.sort(function(a,b){ return a.km-b.km; });
+
+    var etichetta={M:'posti dove mangiare',B:'bar e gelaterie',S:'spiagge',
+      P:'passeggiate e panorami',V:'cose da vedere',X:'sport e barche',W:'centri benessere'};
+    var quanto=POIRANGE===1.5?'a piedi':(POIRANGE?('entro '+POIRANGE+' minuti d’auto'):'ovunque');
+    var cnt=document.getElementById('poiCount');
+    if(cnt) cnt.textContent=righe.length+' '+(etichetta[POICAT]||'')+' '+quanto+
+      ' da '+c[0]+(c[4]?'':' (centro paese)');
+
+    if(!righe.length){
+      body.innerHTML='<tr><td colspan="6" class="empty">Niente di questo tipo così vicino. '+
+        'Allarga il raggio qui sopra, oppure cambia categoria.</td></tr>';
+    } else {
+      body.innerHTML=righe.map(function(r){
+        var p=r.p;
+        var vicino=r.km<=1.6;
+        var tempo=vicino?('<span class="walk">'+r.piedi+'′ a piedi</span>')
+                        :(r.auto+'′ d’auto');
+        var dist=(r.km<1?Math.round(r.km*1000)+' m':r.km.toFixed(1).replace('.',',')+' km');
+        var voto=p[2]?(p[2].toFixed(1).replace('.',',')+'<span class="meta"> ('+p[3]+')</span>'):'—';
+        var prezzo=p[4]?(String(p[4]).indexOf('-')>0?p[4]+' €':p[4]+' €'):'—';
+        var url='https://www.google.com/maps/dir/?api=1&origin='+lat+','+lon+
+                '&destination='+p[5]+','+p[6]+'&travelmode='+(vicino?'walking':'driving');
+        return '<tr>'+
+          '<td class="name">'+p[1]+'</td>'+
+          '<td class="poitype">'+p[7]+'</td>'+
+          '<td class="num">'+voto+'</td>'+
+          '<td class="num">'+prezzo+'</td>'+
+          '<td class="dist">'+dist+' · '+tempo+'</td>'+
+          '<td><a href="'+url+'" target="_blank" rel="noopener">indicazioni ↗</a></td>'+
+        '</tr>';
+      }).join('');
+    }
+
+    var foot=document.getElementById('poiFoot');
+    if(foot) foot.innerHTML='Le distanze sono in linea d’aria; i minuti sono <b>stime</b> '+
+      '(strada un terzo più lunga della linea retta, 40&nbsp;km/h d’agosto, 4,5&nbsp;km/h a piedi), '+
+      'non tempi calcolati sul percorso. '+
+      (c[4]?'La posizione di <b>'+c[0]+'</b> è verificata.'
+           :'Di <b>'+c[0]+'</b> non ho la posizione esatta: parto dal centro del paese, '+
+            'quindi togli o aggiungi qualche minuto.')+
+      ' I prezzi sono la fascia a persona indicata da Google per una cena, non un preventivo.';
+  }
+
+  function notturnale(id){
+    var box=document.getElementById('notturnale'); if(!box) return;
+    var sere={'1':['14 e il 16 agosto','due sere su tre'],'3':['21 agosto','la sera in cui arrivate']};
+    var v=sere[id];
+    if(!v){ box.className='note hide'; box.innerHTML=''; return; }
+    box.className='note';
+    box.innerHTML='<p><strong>Il Vittoriale di sera, proprio nei vostri giorni.</strong> '+
+      'Il <em>Notturnale</em> 2026 apre il parco e la casa di d’Annunzio dopo il tramonto '+
+      'il 9, 14, 16 e 21 agosto: nella finestra che avete scelto cade il <b>'+v[0]+'</b> — '+v[1]+'. '+
+      'Di giorno il biglietto intero è <b>18&nbsp;€</b> (parco, tre musei e visita guidata alla casa), '+
+      '<b>15&nbsp;€</b> senza la casa, <b>12&nbsp;€</b> per il solo parco con due musei; '+
+      'per le serate il prezzo lo fa il singolo evento. Da Toscolano sono circa dieci minuti d’auto. '+
+      '<a href="https://bottega.vittoriale.it/#/prezzi-e-orari" target="_blank" rel="noopener">Biglietteria ufficiale ↗</a></p>';
+  }
+
+  function scegliBase(i, salta){
+    BASE={i:i};
+    try{ localStorage.setItem('gardaBase', String(i)); }catch(e){}
+    var sel=document.getElementById('baseSel'); if(sel) sel.value=String(i);
+    var n=document.getElementById('baseNote');
+    if(n){ var c=CASE[i];
+      n.textContent=c[4]?'posizione verificata':'posizione approssimata al centro del paese'; }
+    renderPoi();
+    if(salta){ var d=document.getElementById('dintorni'); if(d) d.scrollIntoView({block:'start'}); }
+  }
+
+  function bindDintorni(){
+    riempiBase();
+    var salvata=null;
+    try{ salvata=localStorage.getItem('gardaBase'); }catch(e){}
+    var i=(salvata!==null && CASE[+salvata])?+salvata:0;
+    var sel=document.getElementById('baseSel');
+    if(sel) sel.addEventListener('change',function(){ scegliBase(+sel.value,false); });
+    Array.prototype.forEach.call(document.querySelectorAll('#catChips .fchip'),function(b){
+      b.addEventListener('click',function(){
+        POICAT=b.getAttribute('data-c');
+        Array.prototype.forEach.call(document.querySelectorAll('#catChips .fchip'),function(o){
+          var on=(o===b); o.classList.toggle('on',on); o.setAttribute('aria-pressed',on?'true':'false');
+        });
+        renderPoi();
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#rangeChips .fchip'),function(b){
+      b.addEventListener('click',function(){
+        POIRANGE=parseFloat(b.getAttribute('data-r'));
+        Array.prototype.forEach.call(document.querySelectorAll('#rangeChips .fchip'),function(o){
+          var on=(o===b); o.classList.toggle('on',on); o.setAttribute('aria-pressed',on?'true':'false');
+        });
+        renderPoi();
+      });
+    });
+    var ps=document.getElementById('poiSort');
+    if(ps) ps.addEventListener('change',function(){ POISORT=ps.value; renderPoi(); });
+    document.addEventListener('click',function(e){
+      var b=e.target.closest?e.target.closest('button.base'):null;
+      if(!b) return;
+      var nome=b.getAttribute('data-base');
+      for(var k=0;k<CASE.length;k++){ if(CASE[k][0]===nome){ scegliBase(k,true); return; } }
+    });
+    scegliBase(i,false);
+  }
+
   function bindFilters(){
     Array.prototype.forEach.call(document.querySelectorAll('.fchip[data-f]'),function(b){
       b.addEventListener('click',function(){
@@ -1771,6 +2222,7 @@ button{font:inherit}
   function savePicks(){ try{ localStorage.setItem('gardaPicks',JSON.stringify(PICKS)); }catch(e){} }
   function isPicked(n){ return PICKS.indexOf(n)>=0; }
   function togglePick(n){
+    if(!n) return false;
     var i=PICKS.indexOf(n);
     if(i>=0) PICKS.splice(i,1);
     else{
@@ -1877,7 +2329,7 @@ button{font:inherit}
       v.classList.toggle('on', v.getAttribute('data-win')===id);
     });
     Array.prototype.forEach.call(document.querySelectorAll('.winLabel'),function(el){ el.textContent='il '+w.lab; });
-    render(id); retargetLinks(w); markColumns(id); freshness(w);
+    render(id); retargetLinks(w); markColumns(id); freshness(w); notturnale(id);
     if(HASH[id] && location.hash.replace("#","")!==HASH[id] && !location.hash.match(/^#[a-z]/)) history.replaceState(null,"","#"+HASH[id]);
     try{ localStorage.setItem('gardaWin',id); }catch(e){}
   }
@@ -1955,7 +2407,7 @@ button{font:inherit}
     });
   })();
 
-  bindFilters();
+  bindFilters(); bindDintorni();
   var saved='3';
   try{ var v=localStorage.getItem('gardaWin'); if(v&&WIN[v]) saved=v; }catch(e){}
   var fromUrl=winFromHash(); if(fromUrl) saved=fromUrl;

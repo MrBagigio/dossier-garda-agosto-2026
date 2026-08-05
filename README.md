@@ -25,6 +25,9 @@ disponibilità, verdetto, mappa e link di prenotazione. Le preferenze restano su
   e link alle indicazioni stradali che partono dalla casa scelta
 - **Esporta** la rosa filtrata in CSV
 - **Barra freschezza** — l'età dei dati calcolata sul giorno in cui apri, con i link ai canali live
+- **Si installa e si apre senza campo** — «Aggiungi a schermata Home» dal telefono; la pagina
+  resta salvata sul dispositivo, e una barra in basso avvisa quando stai leggendo la copia
+  offline invece dei dati aggiornati
 - Tema chiaro, scuro o automatico · foglio di stampa dedicato
 
 ## Cosa contiene
@@ -55,7 +58,23 @@ arrotondata e porta il segno di circa.
 Due tariffe non sono verificabili da remoto: **Camping Toscolano** e **Regina del Garda Suite**
 (gruppo Horstmann, `0365 641584`), il cui motore non accetta il numero di ospiti via URL.
 
+## Aggiornamento automatico
+
+Un'attività pianificata (`dossier-garda-prezzi`, ogni mattina) riapre Booking con il browser,
+riconfronta i prezzi delle tre finestre, aggiorna `index.html` e riassume cosa è cambiato.
+Gira **in locale, mentre l'app Claude è aperta**: se il computer è spento, recupera al primo
+avvio successivo. Booking non è leggibile senza browser — una richiesta HTTP semplice torna un
+guscio da 4 KB senza prezzi — quindi l'automatismo non può girare in cloud.
+
+L'attività ricontrolla **solo i prezzi Booking**. Airbnb, trivago e i motori ufficiali restano
+alla rilevazione manuale, e il rapporto lo dichiara ogni volta.
+
 ## Struttura
 
 Pagina singola, HTML statico, nessuna dipendenza esterna: tutto in `index.html`.
-`anteprima.png` è l'immagine mostrata quando il link viene condiviso.
+`sw.js` tiene la copia offline, `manifest.webmanifest` e le `icona-*.png` servono
+all'installazione, `anteprima.png` è l'immagine mostrata quando il link viene condiviso.
+
+Il service worker prende la pagina **dalla rete quando c'è**, con un tetto di 4 secondi, e
+ricade sulla copia salvata solo se la rete manca: è un documento di prezzi, servire una copia
+vecchia a un telefono che ha campo sarebbe un danno.

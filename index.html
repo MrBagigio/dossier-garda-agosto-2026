@@ -636,8 +636,8 @@ button{font:inherit}
 
     /* la rosa: via descrizione e delta, restano nome, prezzo, canale, voto, link */
     #rosa table{min-width:0}
-    #rosa thead th:nth-child(2),#rosa tbody td:nth-child(2),
-    #rosa thead th:nth-child(5),#rosa tbody td:nth-child(5){display:none}
+    /* niente colonne nascoste: sotto i 760 px la rosa e' a schede, quindi
+       dove, scarto vs Booking e voto ci stanno tutti e tre */
     #rosa td.name{min-width:0}
 
     .picks{grid-template-columns:1fr}
@@ -646,7 +646,6 @@ button{font:inherit}
   }
   @media (max-width:420px){
     .switcher button{font-size:11px;padding:8px 2px}
-    #rosa thead th:nth-child(6),#rosa tbody td:nth-child(6){display:none}
   }
 </style>
 

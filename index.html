@@ -293,8 +293,13 @@ button{font:inherit}
   @media (max-width:760px){
     #rosa .tablewrap, #dintorni .tablewrap{overflow:visible;border:0;background:none}
     #rosaBody, #poiBody, #rosa table, #dintorni table{display:block;width:100%}
-    #rosa thead, #dintorni thead{position:absolute;width:1px;height:1px;
-      overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    /* l'intestazione non sta in un thead ma in un tbody a parte, e la
+       caption con la tabella a blocchi si dimensiona sul proprio testo:
+       erano loro a far scorrere la pagina di lato, non le schede. */
+    #rosa thead, #dintorni thead,
+    #rosa tbody:not(#rosaBody), #dintorni tbody:not(#poiBody){display:none}
+    #rosa caption, #dintorni caption{
+      display:block;width:auto;max-width:100%;text-align:left}
     #rosaBody tr, #poiBody tr{
       display:block;margin:0 0 10px;padding:13px 14px 12px;
       border:1px solid var(--rule);border-radius:12px;background:var(--paper-2)}

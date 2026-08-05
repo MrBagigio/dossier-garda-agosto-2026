@@ -2102,9 +2102,16 @@ button{font:inherit}
       body.innerHTML=righe.map(function(r){
         var p=r.p;
         var vicino=r.km<=1.6;
-        var tempo=vicino?('<span class="walk">'+r.piedi+'′ a piedi</span>')
-                        :(r.auto+'′ d’auto');
-        var dist=(r.km<1?Math.round(r.km*1000)+' m':r.km.toFixed(1).replace('.',',')+' km');
+        /* Se la casa e' localizzata solo al centro del paese, i metri sarebbero
+           una precisione inventata: arrotondo a 100 m e lo dico con il segno di
+           circa. Un tragitto non puo' durare zero minuti. */
+        var esatta=!!c[4], circa=esatta?'':'≈ ';
+        var dist=(esatta && r.km<1)
+          ? Math.round(r.km*1000)+' m'
+          : circa+Math.max(0.1,Math.round(r.km*10)/10).toFixed(1).replace('.',',')+' km';
+        var piedi=Math.max(1,r.piedi);
+        var tempo=vicino?('<span class="walk">'+circa+piedi+'′ a piedi</span>')
+                        :(circa+r.auto+'′ d’auto');
         var voto=p[2]?(p[2].toFixed(1).replace('.',',')+'<span class="meta"> ('+p[3]+')</span>'):'—';
         var prezzo=p[4]?(String(p[4]).indexOf('-')>0?p[4]+' €':p[4]+' €'):'—';
         var url='https://www.google.com/maps/dir/?api=1&origin='+lat+','+lon+

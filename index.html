@@ -46,7 +46,7 @@ button{font:inherit}
     --line:#D2DAD6;
     --line-soft:#E2E8E4;
     --accent:#0F6F63;
-    --accent-wash:#E0EDEA;
+    --accent-wash:#E0EDEA; --land:#E7EBE7; --water:#DCEAE7;
     --gold:#8A6A1E;
     --gold-wash:#F0E9D6;
     --danger:#9E3B2A;
@@ -60,7 +60,7 @@ button{font:inherit}
     :root{
       --paper:#0E1719; --paper-2:#141F22; --ink:#E3EAE7; --ink-soft:#9BAAAD; --ink-faint:#718387;
       --line:#26343A; --line-soft:#1D292D;
-      --accent:#43A695; --accent-wash:#122B29;
+      --accent:#43A695; --accent-wash:#122B29; --land:#131E20; --water:#0F2A2A;
       --gold:#C4A051; --gold-wash:#2A2416;
       --danger:#D9705C; --danger-wash:#2E1A17;
       --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
@@ -69,7 +69,7 @@ button{font:inherit}
   :root[data-theme="dark"]{
     --paper:#0E1719; --paper-2:#141F22; --ink:#E3EAE7; --ink-soft:#9BAAAD; --ink-faint:#718387;
     --line:#26343A; --line-soft:#1D292D;
-    --accent:#43A695; --accent-wash:#122B29;
+    --accent:#43A695; --accent-wash:#122B29; --land:#131E20; --water:#0F2A2A;
     --gold:#C4A051; --gold-wash:#2A2416;
     --danger:#D9705C; --danger-wash:#2E1A17;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
@@ -77,7 +77,7 @@ button{font:inherit}
   :root[data-theme="light"]{
     --paper:#EEF1EE; --paper-2:#F7F9F7; --ink:#152227; --ink-soft:#516268; --ink-faint:#7C8C90;
     --line:#D2DAD6; --line-soft:#E2E8E4;
-    --accent:#0F6F63; --accent-wash:#E0EDEA;
+    --accent:#0F6F63; --accent-wash:#E0EDEA; --land:#E7EBE7; --water:#DCEAE7;
     --gold:#8A6A1E; --gold-wash:#F0E9D6;
     --danger:#9E3B2A; --danger-wash:#F2E2DE;
     --shadow:0 1px 2px rgba(21,34,39,.06), 0 8px 24px -12px rgba(21,34,39,.18);
@@ -362,6 +362,7 @@ button{font:inherit}
   .fchip:hover{border-color:var(--accent);color:var(--ink)}
   .fchip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper-2);font-weight:600}
   .fchip.hi[aria-pressed="true"]{background:var(--gold);border-color:var(--gold)}
+  .fchip.town{background:var(--accent);border-color:var(--accent);color:var(--paper-2);font-weight:600}
   .filters select{
     font-family:var(--body);font-size:12.5px;background:var(--paper-2);color:var(--ink);
     border:1px solid var(--line);border-radius:2px;padding:6px 8px;
@@ -414,24 +415,51 @@ button{font:inherit}
   .mapwrap{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:26px;align-items:start}
   .mapbox{position:sticky;top:120px}
   .lakemap{width:100%;height:auto;display:block}
-  .lakemap .lake{fill:var(--accent-wash);stroke:var(--accent);stroke-width:1.1;stroke-linejoin:round}
-  .lakemap .ferry{stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:3 3}
-  .lakemap .poi circle{fill:var(--ink-faint)}
-  .lakemap .poi text{fill:var(--ink-faint);font-family:var(--body);font-size:8.2px}
-  .lakemap .towns circle{fill:var(--accent)}
-  .lakemap .towns .base circle{fill:var(--gold)}
-  .lakemap .tn{fill:var(--ink);font-family:var(--body);font-size:10px;font-weight:600}
-  .lakemap .td{fill:var(--ink-soft);font-family:var(--mono);font-size:8px}
+  .lakemap .land{fill:var(--land)}
+  .lakemap .lake{fill:var(--water);stroke:var(--accent);stroke-width:1.1;stroke-linejoin:round}
+  .lakemap .road{fill:none;stroke:var(--ink-faint);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
+  .lakemap .ferry{stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:3.5 3.5}
+  .lakemap .ferrylab{fill:var(--ink-soft);font-family:var(--mono);font-size:6.6px;
+    paint-order:stroke;stroke:var(--water);stroke-width:2.4px;stroke-linejoin:round}
+  .lakemap .poi circle{fill:var(--ink-faint);opacity:.8}
+  .lakemap .poi text{fill:var(--ink-faint);font-family:var(--body);font-size:8px;
+    paint-order:stroke;stroke:var(--land);stroke-width:2.6px;stroke-linejoin:round}
+
+  .lakemap .towns .halo{fill:none;stroke:var(--accent);stroke-width:0;opacity:.28}
+  .lakemap .towns .dot{fill:var(--accent);stroke:var(--paper);stroke-width:1.1}
+  .lakemap .towns .base .dot{fill:var(--gold)}
+  .lakemap .towns .base .halo{stroke:var(--gold)}
+  .lakemap .tn{fill:var(--ink);font-family:var(--body);font-size:10px;font-weight:600;
+    paint-order:stroke;stroke:var(--land);stroke-width:3px;stroke-linejoin:round}
+  .lakemap .td{fill:var(--ink-soft);font-family:var(--mono);font-size:8px;
+    paint-order:stroke;stroke:var(--land);stroke-width:3px;stroke-linejoin:round}
   .lakemap .tv{fill:var(--accent);font-weight:600}
   .lakemap .base .tn{fill:var(--gold)}
+  .lakemap g[role="button"]{cursor:pointer}
+  .lakemap g[role="button"]:hover .halo,.lakemap g[role="button"]:focus-visible .halo{stroke-width:7}
+  .lakemap g[role="button"]:hover .tn{fill:var(--accent)}
+  .lakemap g[role="button"]:focus{outline:none}
+  .lakemap g[role="button"]:focus-visible .dot{stroke:var(--accent);stroke-width:2}
+  .lakemap g.on .halo{stroke-width:8;opacity:.45}
+  .lakemap g.on .tn{fill:var(--accent)}
+  .lakemap g.off{opacity:.32}
+  .lakemap g.vuoto .dot{fill:none;stroke:var(--ink-faint);stroke-width:1.2}
+  .lakemap g.vuoto .tv{fill:var(--ink-faint)}
+
+  .lakemap .legend .lgt{fill:var(--ink-soft);font-family:var(--mono);font-size:7.4px;letter-spacing:.06em;text-transform:uppercase}
+  .lakemap .legend .lg{fill:none;stroke:var(--accent);stroke-width:1.2}
+  .lakemap .legend .lgn{fill:var(--ink-faint);font-family:var(--mono);font-size:7px}
+
   .maplegend{font-size:12.5px;color:var(--ink-soft);margin:14px 0 0;max-width:none}
   .mapside h3{margin-top:0}
   a.geo{text-decoration:none;color:var(--ink-faint);font-size:11px;margin-left:5px}
   a.geo:hover{color:var(--accent)}
+  #mapBody tr.on{background:var(--accent-wash)}
+  #mapBody tr.on td:first-child{font-weight:700}
   @media (max-width:760px){
     .mapwrap{grid-template-columns:1fr;gap:18px}
     .mapbox{position:static}
-    .lakemap{max-width:400px;margin:0 auto}
+    .lakemap{max-width:420px;margin:0 auto}
   }
 
   /* ---------- barra freschezza / aggiorna ---------- */
@@ -746,6 +774,7 @@ button{font:inherit}
         <button type="button" class="fchip" data-f="b" aria-pressed="false">colazione</button>
         <button type="button" class="fchip" data-f="a" aria-pressed="false">posto auto</button>
         <button type="button" class="fchip hi" data-f="hi" aria-pressed="false">voto alto e collaudato</button>
+        <button type="button" class="fchip town" id="townChip" hidden></button>
       </div>
       <label class="sortl" for="rosaSort">Ordina</label>
       <select id="rosaSort">
@@ -781,56 +810,55 @@ button{font:inherit}
   <!-- =================== MAPPA =================== -->
   <section id="mappa">
     <h2><span class="num">04</span>Dove sono, sul serio</h2>
-    <p class="sub">Tutto in questo dossier gira intorno a una domanda — quanto guido. Qui sotto la sponda bresciana in scala reale: i minuti sono tempi d'auto verso la <b>spiaggia di Toscolano</b>, dove il parcheggio è gratuito. I numeri accanto a ogni paese cambiano con la finestra che hai scelto.</p>
+    <p class="sub">Tutto in questo dossier gira intorno a una domanda: quanto guido. Qui la sponda bresciana in scala reale — i minuti sono tempi d'auto verso la <b>spiaggia di Toscolano</b>, dove il parcheggio è gratuito. La grandezza di ogni pallino è il numero di alloggi liberi sulla finestra scelta. <b>Tocca un paese per filtrare la rosa</b>.</p>
 
     <div class="mapwrap">
       <div class="mapbox">
-        <svg viewBox="-64 -6 400 572" role="img" aria-labelledby="mapTitle" class="lakemap">
-          <title id="mapTitle">Mappa schematica del Lago di Garda con i comuni della ricerca</title>
+        <svg viewBox="-66 -8 402 576" role="img" aria-labelledby="mapTitle mapDesc" class="lakemap">
+          <title id="mapTitle">Lago di Garda: i comuni della ricerca</title>
+          <desc id="mapDesc">Mappa in scala della sponda bresciana. Ogni paese riporta i minuti d'auto dalla spiaggia di Toscolano Maderno, il numero di alloggi disponibili e il prezzo più basso.</desc>
+
+          <rect class="land" x="-66" y="-8" width="402" height="576" rx="3"/>
           <path class="lake" d="M 290.2,37.7 L 315.1,56.6 L 312.0,93.2 L 292.5,137.6 L 265.2,170.9 L 246.5,214.2 L 220.7,255.3 L 192.7,297.5 L 170.0,344.1 L 188.8,374.1 L 197.3,399.6 L 204.4,427.4 L 206.7,460.6 L 188.8,499.5 L 171.6,530.6 L 132.6,541.7 L 106.1,525.0 L 101.4,499.5 L 106.9,478.4 L 98.3,466.2 L 74.9,490.6 L 50.7,508.4 L 27.3,499.5 L 13.3,469.5 L 22.6,441.8 L 54.6,421.8 L 84.2,404.0 L 75.7,379.6 L 50.7,364.1 L 29.6,371.9 L 32.8,347.4 L 64.0,335.2 L 92.0,323.0 L 118.6,304.1 L 138.1,275.3 L 157.6,244.2 L 188.8,205.4 L 226.2,161.0 L 262.1,111.0 L 285.5,66.6 Z"/>
+
+          <path class="road" d="M 73.3,412.9 L 61.6,368.5 L 40.6,348.5 L 75.7,330.8 L 110,318.6 L 150.5,257.5 L 194.2,214.2"/>
           <line class="ferry" x1="110" y1="318.6" x2="167.7" y2="344.1"/>
-          <g class="poi">
-            <circle cx="167.7" cy="344.1" r="2.6"/><text x="173" y="347">Torri del Benaco</text>
-            <circle cx="265.2" cy="170.9" r="2.6"/><text x="270" y="174">Malcesine</text>
-            <circle cx="290.2" cy="37.7" r="2.6"/><text x="283" y="34" text-anchor="end">Riva</text>
-            <circle cx="106.1" cy="472.9" r="2.6"/><text x="111" y="476">Sirmione</text>
-            <circle cx="50.7" cy="500.6" r="2.6"/><text x="45" y="504" text-anchor="end">Desenzano</text>
+          <text class="ferrylab" x="139" y="326" text-anchor="middle">traghetto 30′</text>
+
+          <g class="poi" aria-hidden="true">
+            <circle cx="167.7" cy="344.1" r="2.2"/><text x="173" y="347">Torri del Benaco</text>
+            <circle cx="265.2" cy="170.9" r="2.2"/><text x="270" y="174">Malcesine</text>
+            <circle cx="290.2" cy="37.7" r="2.2"/><text x="284" y="34" text-anchor="end">Riva</text>
+            <circle cx="106.1" cy="472.9" r="2.2"/><text x="111" y="476">Sirmione</text>
+            <circle cx="50.7" cy="500.6" r="2.2"/><text x="45" y="504" text-anchor="end">Desenzano</text>
           </g>
+
           <g class="towns">
-            <g data-town="Tignale" transform="translate(194.2,214.2)">
-              <circle r="4.4"/><text x="9" y="1.5" class="tn">Tignale</text><text x="9" y="12.5" class="td">20 min · <tspan class="tv">—</tspan></text>
-            </g>
-            <g data-town="Gargnano" transform="translate(150.5,257.5)">
-              <circle r="4.4"/><text x="9" y="1.5" class="tn">Gargnano</text><text x="9" y="12.5" class="td">13 min · <tspan class="tv">—</tspan></text>
-            </g>
-            <g data-town="Toscolano" class="base" transform="translate(110,318.6)">
-              <circle r="6"/><text x="11" y="1.5" class="tn">Toscolano Maderno</text><text x="11" y="12.5" class="td">spiaggia · <tspan class="tv">—</tspan></text>
-            </g>
-            <g data-town="Gardone" transform="translate(75.7,330.8)">
-              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Gardone Riviera</text><text x="-9" y="12.5" class="td" text-anchor="end">8 min · <tspan class="tv">—</tspan></text>
-            </g>
-            <g data-town="Salò" transform="translate(40.6,348.5)">
-              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Salò</text><text x="-9" y="12.5" class="td" text-anchor="end">13 min · <tspan class="tv">—</tspan></text>
-            </g>
-            <g data-town="San Felice" transform="translate(61.6,368.5)">
-              <circle r="4.4"/><text x="9" y="1.5" class="tn">San Felice</text><text x="9" y="12.5" class="td">18 min · <tspan class="tv">—</tspan></text>
-            </g>
-            <g data-town="Puegnago" transform="translate(34.3,408.5)">
-              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Puegnago</text><text x="-9" y="12.5" class="td" text-anchor="end">22 min · <tspan class="tv">—</tspan></text>
-            </g>
-            <g data-town="Manerba" transform="translate(73.3,412.9)">
-              <circle r="4.4"/><text x="9" y="1.5" class="tn">Manerba</text><text x="9" y="12.5" class="td">25 min · <tspan class="tv">—</tspan></text>
-            </g>
+            <g data-town="Tignale"   data-side="R" data-dy="0"  transform="translate(194.2,214.2)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="11" y="1.5">Tignale</text><text class="td" x="11" y="12.5">20 min · <tspan class="tv">—</tspan></text></g>
+            <g data-town="Gargnano"  data-side="R" data-dy="0"  transform="translate(150.5,257.5)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="11" y="1.5">Gargnano</text><text class="td" x="11" y="12.5">13 min · <tspan class="tv">—</tspan></text></g>
+            <g data-town="Toscolano" data-side="R" data-dy="0"  class="base" transform="translate(110,318.6)"><circle class="halo"/><circle class="dot"/><text class="tn" x="13" y="1.5">Toscolano Maderno</text><text class="td" x="13" y="12.5">spiaggia · <tspan class="tv">—</tspan></text></g>
+            <g data-town="Gardone"   data-side="L" data-dy="-6" transform="translate(75.7,330.8)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="-11" y="-4.5" text-anchor="end">Gardone Riviera</text><text class="td" x="-11" y="6.5" text-anchor="end">8 min · <tspan class="tv">—</tspan></text></g>
+            <g data-town="Salò"      data-side="L" data-dy="8"  transform="translate(40.6,348.5)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="-11" y="9.5" text-anchor="end">Salò</text><text class="td" x="-11" y="20.5" text-anchor="end">13 min · <tspan class="tv">—</tspan></text></g>
+            <g data-town="San Felice" data-side="R" data-dy="0" transform="translate(61.6,368.5)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="11" y="1.5">San Felice</text><text class="td" x="11" y="12.5">18 min · <tspan class="tv">—</tspan></text></g>
+            <g data-town="Puegnago"  data-side="L" data-dy="0"  transform="translate(34.3,408.5)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="-11" y="1.5" text-anchor="end">Puegnago</text><text class="td" x="-11" y="12.5" text-anchor="end">22 min · <tspan class="tv">—</tspan></text></g>
+            <g data-town="Manerba"   data-side="R" data-dy="0"  transform="translate(73.3,412.9)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="11" y="1.5">Manerba</text><text class="td" x="11" y="12.5">25 min · <tspan class="tv">—</tspan></text></g>
+          </g>
+
+          <g class="legend" transform="translate(-58,505)">
+            <text class="lgt" x="0" y="0">alloggi liberi</text>
+            <circle class="dot lg" cx="7"  cy="18" r="3.9"/><text class="lgn" x="7"  y="34" text-anchor="middle">1</text>
+            <circle class="dot lg" cx="30" cy="18" r="7.1"/><text class="lgn" x="30" y="34" text-anchor="middle">10</text>
+            <circle class="dot lg" cx="58" cy="18" r="9.5"/><text class="lgn" x="58" y="34" text-anchor="middle">25</text>
           </g>
         </svg>
-        <p class="maplegend">Il tratteggio è il <b>traghetto Maderno&nbsp;⇄&nbsp;Torri del Benaco</b>, l'unico del lago che imbarca le auto: 30 minuti, ogni 30–40, 6,50&nbsp;€ a piedi e 10,70&nbsp;€ con l'auto.</p>
+        <p class="maplegend">Il tratteggio è il <b>traghetto Maderno&nbsp;⇄&nbsp;Torri del Benaco</b>, l'unico del lago che imbarca le auto: 30 minuti, ogni 30–40, 6,50&nbsp;€ a piedi e 10,70&nbsp;€ con l'auto. La linea continua è la <b>Gardesana</b>, la strada che unisce i paesi della sponda.</p>
       </div>
 
       <div class="mapside">
         <h3>Per paese, sulla finestra scelta</h3>
         <div class="tablewrap">
           <table>
-            <th scope="col"ead><tr><th scope="col">Paese</th><th scope="col" class="num">Alloggi</th><th scope="col" class="num">Da</th><th scope="col" class="num">→ spiaggia</th><th scope="col">Maps</th></tr></thead>
+            <thead><tr><th scope="col">Paese</th><th scope="col" class="num">Alloggi</th><th scope="col" class="num">Da</th><th scope="col" class="num">→ spiaggia</th><th scope="col">Maps</th></tr></thead>
             <tbody id="mapBody"></tbody>
           </table>
         </div>
@@ -1465,15 +1493,16 @@ button{font:inherit}
   var TAGLABEL={w:'piscina o spa',l:'sul lago',p:'centro a piedi',k:'cucina',b:'colazione',a:'posto auto'};
   function tagsOf(n){ return TAGS[n]||''; }
 
-  var FILTERS={w:0,l:0,p:0,k:0,b:0,a:0,hi:0};
+  var FILTERS={w:0,l:0,p:0,k:0,b:0,a:0,hi:0,town:0};
   var SORT='price';
 
   function passes(d){
     var t=tagsOf(d[0]);
     for(var k in FILTERS){
-      if(k==='hi'||!FILTERS[k]) continue;
+      if(k==='hi'||k==='town'||!FILTERS[k]) continue;
       if(t.indexOf(k)<0) return false;
     }
+    if(FILTERS.town && townOf(d[1])!==FILTERS.town) return false;
     if(FILTERS.hi){
       var v=parseFloat(String(d[2]).replace(',','.'));
       if(String(d[2]).indexOf('/5')>=0){ if(!(v>=4.85)) return false; }
@@ -1527,6 +1556,11 @@ button{font:inherit}
       body.innerHTML='<tr><td colspan="7" class="empty">Nessuna struttura ha tutte le caratteristiche richieste il '+w.lab+'. Togli un filtro, oppure prova una finestra di date diversa.</td></tr>';
     }
     var attivi=Object.keys(FILTERS).filter(function(k){return FILTERS[k];}).length;
+    var tc=document.getElementById('townChip');
+    if(tc){
+      tc.hidden = !FILTERS.town;
+      if(FILTERS.town){ tc.textContent='paese: '+FILTERS.town+' ×'; tc.setAttribute('aria-pressed','true'); }
+    }
     var cl=document.getElementById('fClear'); if(cl) cl.hidden = attivi===0;
     Array.prototype.forEach.call(body.querySelectorAll('.pin'),function(b){
       b.addEventListener('click',function(){
@@ -1596,15 +1630,30 @@ button{font:inherit}
       if(!agg[t]) agg[t]={n:0,min:Infinity};
       agg[t].n++; if(e[0]<agg[t].min) agg[t].min=e[0];
     });
+    var maxN=1;
+    for(var kk in agg) if(agg[kk].n>maxN) maxN=agg[kk].n;
     Array.prototype.forEach.call(document.querySelectorAll('.lakemap g[data-town]'),function(g){
-      var a=agg[g.getAttribute('data-town')], tv=g.querySelector('.tv');
+      var name=g.getAttribute('data-town'), a=agg[name], tv=g.querySelector('.tv');
+      var dot=g.querySelector('.dot'), halo=g.querySelector('.halo');
+      var n=a?a.n:0;
+      var r = n ? Math.min(11, 3 + Math.sqrt(n)*1.35) : 3;
+      if(dot) dot.setAttribute('r', r.toFixed(2));
+      if(halo) halo.setAttribute('r', (r+2.5).toFixed(2));
       if(tv) tv.textContent = a ? (a.n+' da '+a.min+'€') : 'esaurito';
+      g.classList.toggle('vuoto', !n);
+      g.classList.toggle('on', FILTERS.town===name);
+      g.classList.toggle('off', !!FILTERS.town && FILTERS.town!==name);
+      if(g.getAttribute('role')==='button'){
+        g.setAttribute('aria-pressed', FILTERS.town===name ? 'true':'false');
+        g.setAttribute('aria-label', name+': '+(n? n+' alloggi da '+a.min+' euro' : 'nessun alloggio')+'. Tocca per filtrare.');
+      }
     });
     var tb=document.getElementById('mapBody'); if(!tb) return;
     tb.innerHTML=TOWNS.map(function(t){
       var a=agg[t[0]];
       var q=encodeURIComponent(t[1]+' lago di Garda');
-      return '<tr'+(t[2]===0?' class="rowmark"':'')+'>'+
+      var cls=(FILTERS.town===t[0]?' class="on"':(t[2]===0?' class="rowmark"':''));
+      return '<tr'+cls+' data-town="'+t[0]+'">'+
         '<td class="name">'+t[1]+'</td>'+
         '<td class="num">'+(a?a.n:'<span class="p p-x">0</span>')+'</td>'+
         '<td class="num">'+(a?'<span class="p p-ok">'+a.min+'</span>':'—')+'</td>'+
@@ -1612,7 +1661,28 @@ button{font:inherit}
         '<td><a href="https://www.google.com/maps/search/?api=1&query='+q+'" target="_blank" rel="noopener">apri →</a></td>'+
       '</tr>';
     }).join('');
+    Array.prototype.forEach.call(tb.querySelectorAll('tr[data-town]'),function(tr){
+      tr.style.cursor='pointer';
+      tr.addEventListener('click',function(e){
+        if(e.target.tagName==='A') return;
+        pickTown(tr.getAttribute('data-town'));
+      });
+    });
   }
+  function pickTown(name){
+    FILTERS.town = (FILTERS.town===name) ? 0 : name;
+    render(document.documentElement.getAttribute('data-win')||'3');
+    var r=document.getElementById('rosa'); if(r && FILTERS.town) r.scrollIntoView({block:'start'});
+  }
+  (function(){
+    Array.prototype.forEach.call(document.querySelectorAll('.lakemap g[role="button"]'),function(g){
+      var n=g.getAttribute('data-town');
+      g.addEventListener('click',function(){ pickTown(n); });
+      g.addEventListener('keydown',function(e){
+        if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pickTown(n); }
+      });
+    });
+  })();
   var HASH={'1':'14-16','2':'17-19','3':'21-23'};
   function winFromHash(){
     var h=(location.hash||'').replace('#','');
@@ -1667,6 +1737,8 @@ button{font:inherit}
         render(document.documentElement.getAttribute('data-win')||'3');
       });
     });
+    var tc2=document.getElementById('townChip');
+    if(tc2) tc2.addEventListener('click',function(){ FILTERS.town=0; render(document.documentElement.getAttribute('data-win')||'3'); });
     var sel=document.getElementById('rosaSort');
     if(sel) sel.addEventListener('change',function(){ SORT=sel.value; render(document.documentElement.getAttribute('data-win')||'3'); });
     var cl=document.getElementById('fClear');

@@ -1493,6 +1493,7 @@ button{font:inherit}
   var TAGLABEL={w:'piscina o spa',l:'sul lago',p:'centro a piedi',k:'cucina',b:'colazione',a:'posto auto'};
   function tagsOf(n){ return TAGS[n]||''; }
 
+  var DOTAZIONI=['w','l','p','k','b','a'];
   var FILTERS={w:0,l:0,p:0,k:0,b:0,a:0,hi:0,town:0};
   var SORT='price';
 
@@ -1500,6 +1501,7 @@ button{font:inherit}
     var t=tagsOf(d[0]);
     for(var k in FILTERS){
       if(k==='hi'||k==='town'||!FILTERS[k]) continue;
+      if(DOTAZIONI.indexOf(k)<0) continue;   /* chiave ignota: ignorala, non azzerare la rosa */
       if(t.indexOf(k)<0) return false;
     }
     if(FILTERS.town && townOf(d[1])!==FILTERS.town) return false;
@@ -1740,9 +1742,10 @@ button{font:inherit}
     return out?('<span class="tags">'+out+'</span>'):'';
   }
   function bindFilters(){
-    Array.prototype.forEach.call(document.querySelectorAll('.fchip'),function(b){
+    Array.prototype.forEach.call(document.querySelectorAll('.fchip[data-f]'),function(b){
       b.addEventListener('click',function(){
         var k=b.getAttribute('data-f');
+        if(!(k in FILTERS)) return;
         FILTERS[k]=FILTERS[k]?0:1;
         b.setAttribute('aria-pressed',FILTERS[k]?'true':'false');
         render(document.documentElement.getAttribute('data-win')||'3');

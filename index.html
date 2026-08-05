@@ -4,13 +4,29 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Garda 2026 - Dossier alloggi</title>
-<meta name="description" content="Dossier interattivo alloggi Lago di Garda, agosto 2026: mappa, prezzi, disponibilita e link di prenotazione per tre finestre di date.">
+<meta name="description" content="Circa 90 strutture sul Lago di Garda per 2 persone, su tre finestre di agosto 2026: prezzi incrociati su sette canali, mappa, filtri e link diretti di prenotazione.">
+<link rel="canonical" href="https://mrbagigio.github.io/dossier-garda-agosto-2026/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dossier Garda 2026">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="Dove dormire sul Garda, quanto costa e quando e ancora libero">
+<meta property="og:description" content="~90 strutture su 8 comuni, tre finestre di agosto 2026. Scegli la data e si aggiornano prezzi, disponibilita e link di prenotazione.">
+<meta property="og:url" content="https://mrbagigio.github.io/dossier-garda-agosto-2026/">
+<meta property="og:image" content="https://mrbagigio.github.io/dossier-garda-agosto-2026/anteprima.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Dossier alloggi Lago di Garda, agosto 2026">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dove dormire sul Garda, quanto costa e quando e ancora libero">
+<meta name="twitter:description" content="~90 strutture su 8 comuni, tre finestre di agosto 2026.">
+<meta name="twitter:image" content="https://mrbagigio.github.io/dossier-garda-agosto-2026/anteprima.png">
 <meta name="theme-color" content="#EEF1EE" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1719" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Garda 2026">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%96%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="anteprima.png">
 <style>
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -272,6 +288,20 @@ button{font:inherit}
 
 
 
+
+  .switcher .tools{display:flex;gap:6px;margin-left:auto}
+  .switcher .tool{
+    font-family:var(--mono);font-size:11px;letter-spacing:.04em;
+    background:none;border:1px solid var(--line);color:var(--ink-soft);
+    padding:7px 11px;border-radius:2px;cursor:pointer;white-space:nowrap;
+  }
+  .switcher .tool:hover{border-color:var(--accent);color:var(--accent)}
+  @media (max-width:760px){
+    .switcher .tools{width:100%;margin-left:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .switcher .tool{min-height:38px;text-align:center}
+  }
+  @media print{ .switcher .tools{display:none!important} }
+
   /* ---------- confronto ---------- */
   .pin{
     display:inline-flex;align-items:center;justify-content:center;
@@ -508,7 +538,10 @@ button{font:inherit}
       <button type="button" data-win="2" aria-pressed="false">17–19 ago <span class="wd">lun–mer</span></button>
       <button type="button" data-win="3" aria-pressed="true">21–23 ago <span class="wd">ven–dom</span></button>
     </div>
-    <span class="hint">Prezzi, disponibilità, verdetto e link di prenotazione si aggiornano.</span>
+    <div class="tools">
+      <button type="button" id="themeBtn" class="tool" aria-label="Cambia tema">tema: auto</button>
+      <button type="button" id="csvBtn" class="tool" aria-label="Scarica la rosa filtrata">esporta</button>
+    </div>
   </div>
 
 
@@ -1774,6 +1807,68 @@ button{font:inherit}
       render(document.documentElement.getAttribute('data-win')||'3');
     });
   })();
+
+  /* ---------- tema manuale ---------- */
+  var THEMES=['auto','chiaro','scuro'], THKEY={auto:null,chiaro:'light',scuro:'dark'};
+  var theme='auto';
+  try{ var tv=localStorage.getItem('gardaTheme'); if(THEMES.indexOf(tv)>=0) theme=tv; }catch(e){}
+  function applyTheme(){
+    var v=THKEY[theme];
+    if(v) document.documentElement.setAttribute('data-theme',v);
+    else document.documentElement.removeAttribute('data-theme');
+    var b=document.getElementById('themeBtn');
+    if(b){ b.textContent='tema: '+theme; b.setAttribute('aria-label','Tema '+theme+', tocca per cambiare'); }
+    try{ localStorage.setItem('gardaTheme',theme); }catch(e){}
+  }
+  (function(){
+    var b=document.getElementById('themeBtn');
+    if(b) b.addEventListener('click',function(){ theme=THEMES[(THEMES.indexOf(theme)+1)%THEMES.length]; applyTheme(); });
+    applyTheme();
+  })();
+
+  /* ---------- esporta la rosa filtrata ---------- */
+  function buildCSV(id){
+    var w=WIN[id];
+    var all=D.filter(function(d){return d[5][id];}).filter(passes);
+    var sc=function(d){ var v=parseFloat(String(d[2]).replace(',','.')); if(isNaN(v))return 0;
+      if(String(d[2]).indexOf('/5')>=0) v*=2; var n=parseInt(String(d[3]).replace('.',''),10); if(isNaN(n))n=0;
+      return (v*n+8.6*20)/(n+20); };
+    if(SORT==='score') all.sort(function(a,b){return sc(b)-sc(a);});
+    else if(SORT==='town') all.sort(function(a,b){return (townOf(a[1])||'zz').localeCompare(townOf(b[1])||'zz');});
+    else all.sort(function(a,b){return a[5][id][0]-b[5][id][0];});
+    var q=function(x){ x=String(x==null?'':x); return '"'+x.replace(/"/g,'""')+'"'; };
+    var out=[['Struttura','Dove','Prezzo 2 notti 2 persone','Canale','Risparmio vs Booking','Voto','Recensioni','Dotazioni','Link'].map(q).join(';')];
+    all.forEach(function(d){
+      var e=d[5][id], k=e[1].split(':')[0];
+      var tg=tagsOf(d[0]).split('').map(function(c){return TAGLABEL[c];}).filter(Boolean).join(', ');
+      out.push([d[0],d[1],e[0],NAMES[k],(e[2]==null?'':e[2]),d[2],(d[3]||''),tg,link(e[1],w)].map(q).join(';'));
+    });
+    var CRLF=String.fromCharCode(13,10), BOM=String.fromCharCode(65279);
+    return BOM+out.join(CRLF)+CRLF;
+  }
+  function scaricaFile(nome,testo){
+    var blob=new Blob([testo],{type:'text/csv;charset=utf-8'});
+    var u=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=u; a.download=nome; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(u); a.remove(); },800);
+  }
+  (function(){
+    var b=document.getElementById('csvBtn'); if(!b) return;
+    b.addEventListener('click',function(){
+      var id=document.documentElement.getAttribute('data-win')||'3';
+      var testo=buildCSV(id), nome='garda-'+HASH[id]+'-agosto-2026.csv';
+      var ok=function(){ var t=b.textContent; b.textContent='fatto'; setTimeout(function(){b.textContent=t;},1800); };
+      if(window.claude && window.claude.downloads){
+        window.claude.downloads.save({filename:nome,data:testo}).then(ok,function(err){
+          var c=err&&err.code;
+          if(c==='extension_not_enabled') return window.claude.downloads.save({filename:nome.replace(/\.csv$/,'.txt'),data:testo}).then(ok,function(){});
+          if(c==='declined'||c==='rate_limited') return;
+          scaricaFile(nome,testo); ok();
+        });
+      } else { scaricaFile(nome,testo); ok(); }
+    });
+  })();
+
   bindFilters();
   var saved='3';
   try{ var v=localStorage.getItem('gardaWin'); if(v&&WIN[v]) saved=v; }catch(e){}

@@ -1899,7 +1899,7 @@ button{font:inherit}
     var r=document.getElementById('rosa'); if(r && FILTERS.town) r.scrollIntoView({block:'start'});
   }
   (function(){
-    Array.prototype.forEach.call(document.querySelectorAll('.lakemap g[role="button"]'),function(g){
+    Array.prototype.forEach.call(document.querySelectorAll('.lakemap g[data-town][role="button"]'),function(g){
       var n=g.getAttribute('data-town');
       g.addEventListener('click',function(){ pickTown(n); });
       g.addEventListener('keydown',function(e){
@@ -2378,7 +2378,7 @@ button{font:inherit}
     var i=(salvata!==null && CASE[+salvata])?+salvata:0;
     var sel=document.getElementById('baseSel');
     if(sel) sel.addEventListener('change',function(){ scegliBase(+sel.value,false); });
-    Array.prototype.forEach.call(document.querySelectorAll('#catChips .fchip'),function(b){
+    Array.prototype.forEach.call(document.querySelectorAll('#catChips .fchip[data-c]'),function(b){
       b.addEventListener('click',function(){
         POICAT=b.getAttribute('data-c'); POITUTTI=false;
         Array.prototype.forEach.call(document.querySelectorAll('#catChips .fchip'),function(o){
@@ -2387,7 +2387,7 @@ button{font:inherit}
         renderPoi();
       });
     });
-    Array.prototype.forEach.call(document.querySelectorAll('#rangeChips .fchip'),function(b){
+    Array.prototype.forEach.call(document.querySelectorAll('#rangeChips .fchip[data-r]'),function(b){
       b.addEventListener('click',function(){
         POIRANGE=parseFloat(b.getAttribute('data-r')); POITUTTI=false;
         Array.prototype.forEach.call(document.querySelectorAll('#rangeChips .fchip'),function(o){
@@ -2538,7 +2538,9 @@ button{font:inherit}
     if(!WIN[id]) return;   /* mai accettare una finestra che non esiste */
     var w=WIN[id];
     document.documentElement.setAttribute('data-win',id);
-    Array.prototype.forEach.call(document.querySelectorAll('.switcher button'),function(b){
+    /* aria-pressed solo sui tre bottoni-data: "tema" ed "esporta" non sono
+       interruttori, e uno screen reader li annunciava come non premuti */
+    Array.prototype.forEach.call(document.querySelectorAll('.switcher button[data-win]'),function(b){
       b.setAttribute('aria-pressed', b.getAttribute('data-win')===id?'true':'false');
     });
     Array.prototype.forEach.call(document.querySelectorAll('.vset'),function(v){

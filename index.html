@@ -435,8 +435,9 @@ button{font:inherit}
 
   /* ---------- mappa ---------- */
   .mapwrap{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:26px;align-items:start}
-  .mapbox{position:sticky;top:120px}
-  .lakemap{width:100%;height:auto;display:block}
+  .mapbox{position:sticky;top:120px;min-width:0}
+  .mapside{min-width:0}
+  .lakemap{width:100%;max-width:100%;height:auto;display:block}
   .lakemap .land{fill:var(--land)}
   .lakemap .lake{fill:var(--water);stroke:var(--accent);stroke-width:1.1;stroke-linejoin:round}
   .lakemap .road{fill:none;stroke:var(--ink-faint);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
@@ -479,7 +480,8 @@ button{font:inherit}
   #mapBody tr.on{background:var(--accent-wash)}
   #mapBody tr.on td:first-child{font-weight:700}
   @media (max-width:760px){
-    .mapwrap{grid-template-columns:1fr;gap:18px}
+    .mapwrap{grid-template-columns:minmax(0,1fr);gap:18px}
+    .mapbox{position:static}
     .mapbox{position:static}
     .lakemap{max-width:420px;margin:0 auto}
   }

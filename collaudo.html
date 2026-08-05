@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collaudo — Dossier Garda 2026</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --paper:#EEF1EE; --paper-2:#F7F9F7; --ink:#152227; --ink-soft:#516268;
+    --ink-faint:#7C8C90; --rule:#D2DAD6; --ok:#43A695; --ko:#B4483C;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--paper:#0E1719;--paper-2:#141F22;--ink:#E3EAE7;--ink-soft:#9FB0B2;
+      --ink-faint:#7C8C90;--rule:#25353A;--ok:#5CC3B0;--ko:#E0705F}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:28px 20px 60px;background:var(--paper);color:var(--ink);
+    font:16px/1.55 ui-serif,Georgia,serif;max-width:820px;margin-inline:auto}
+  h1{font-size:1.7rem;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--ink-soft);margin:0 0 22px;font-size:15px}
+  .barra{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+  button{font:inherit;font-size:14px;padding:10px 16px;min-height:44px;
+    border:1px solid var(--rule);border-radius:9px;background:var(--paper-2);
+    color:var(--ink);cursor:pointer}
+  button:hover{border-color:var(--ok);color:var(--ok)}
+  button[disabled]{opacity:.5;cursor:default}
+  .esito{margin:18px 0;padding:16px 18px;border-radius:12px;border:1px solid var(--rule);
+    background:var(--paper-2)}
+  .esito.verde{border-left:4px solid var(--ok)}
+  .esito.rosso{border-left:4px solid var(--ko)}
+  .titolo{font-weight:600;font-size:17px;margin:0 0 4px}
+  .titolo.verde{color:var(--ok)} .titolo.rosso{color:var(--ko)}
+  .numeri{font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);
+    letter-spacing:.04em;text-transform:uppercase}
+  ol{margin:12px 0 0;padding-left:20px;font-family:var(--mono);font-size:12.5px;
+    line-height:1.7;color:var(--ko)}
+  .nota{font-size:13.5px;color:var(--ink-soft);margin-top:22px;
+    border-top:1px solid var(--rule);padding-top:14px}
+  a{color:var(--ok)}
+  iframe{position:absolute;left:-10000px;top:0;width:1280px;height:900px;border:0}
+  .stato{font-family:var(--mono);font-size:12.5px;color:var(--ink-faint)}
+</style>
+</head>
+<body>
+
+<h1>Collaudo del dossier</h1>
+<p class="sub">Pilota l&rsquo;interfaccia vera dentro una cornice nascosta e controlla, dopo ogni
+cambio di stato, che <b>quello che si vede</b> corrisponda a quello che la pagina promette. Non
+legge il codice: guarda il risultato. Le preferenze salvate sul tuo dispositivo vengono messe da
+parte prima e rimesse a posto dopo.</p>
+
+<div class="barra">
+  <button id="vai">Esegui il collaudo completo</button>
+  <button id="rapido">Giro breve</button>
+  <span class="stato" id="stato"></span>
+</div>
+
+<div id="risultati"></div>
+
+<p class="nota">Tre difetti sono usciti proprio da qui: un clic su &laquo;tema&raquo; che azzerava
+la rosa fino al ricaricamento, una casa contata a Sal&ograve; ma che sta a Calvagese &mdash; con le
+distanze sbagliate di quasi dieci chilometri &mdash; e ventidue tabelle su venticinque senza
+<code>&lt;thead&gt;</code>. &nbsp;<a href="./">Torna al dossier</a></p>
+
+<iframe id="prova" title="Copia del dossier sotto collaudo"></iframe>
+
+<script src="collaudo.js"></script>
+<script>
+(function(){
+  var chiaviNostre=['gardaWin','gardaPicks','gardaBase','gardaTheme'];
+  var stato=document.getElementById('stato');
+  var risultati=document.getElementById('risultati');
+  var cornice=document.getElementById('prova');
+
+  function salvaPreferenze(){
+    var m={};
+    chiaviNostre.forEach(function(k){ try{ m[k]=localStorage.getItem(k); }catch(e){} });
+    return m;
+  }
+  function rimettiPreferenze(m){
+    chiaviNostre.forEach(function(k){
+      try{ if(m[k]===null) localStorage.removeItem(k); else localStorage.setItem(k,m[k]); }catch(e){}
+    });
+  }
+
+  function carica(larghezza){
+    return new Promise(function(risolvi){
+      cornice.style.width=larghezza+'px';
+      cornice.onload=function(){ setTimeout(function(){ risolvi(cornice.contentWindow); }, 350); };
+      cornice.src='./index.html?collaudo='+Date.now()+'#21-23';
+    });
+  }
+
+  function riquadro(titolo, esito){
+    var ko=esito.problemi.length;
+    var d=document.createElement('div');
+    d.className='esito '+(ko?'rosso':'verde');
+    var lista='';
+    if(ko){
+      lista='<ol>'+esito.problemi.slice(0,40).map(function(p){
+        return '<li>'+p.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</li>';
+      }).join('')+'</ol>';
+      if(ko>40) lista+='<p class="numeri">e altri '+(ko-40)+'</p>';
+    }
+    d.innerHTML='<p class="titolo '+(ko?'rosso':'verde')+'">'+titolo+' &mdash; '+
+      (ko?(ko+' problem'+(ko===1?'a':'i')):'nessun problema')+'</p>'+
+      '<p class="numeri">'+esito.stati+' stati provati in '+esito.secondi+' s</p>'+lista;
+    risultati.appendChild(d);
+    return ko;
+  }
+
+  function esegui(rapido){
+    document.getElementById('vai').disabled=true;
+    document.getElementById('rapido').disabled=true;
+    risultati.innerHTML='';
+    var preferenze=salvaPreferenze();
+    var totale=0, stati=0;
+
+    stato.textContent='schermo grande…';
+    carica(1280).then(function(w){
+      var e=Collaudo(w,{rapido:rapido, etichetta:'grande: '});
+      totale+=riquadro('Schermo grande (1280 px)', e); stati+=e.stati;
+      stato.textContent='telefono…';
+      return carica(375);
+    }).then(function(w){
+      var e=Collaudo(w,{rapido:rapido, etichetta:'telefono: '});
+      totale+=riquadro('Telefono (375 px)', e); stati+=e.stati;
+
+      rimettiPreferenze(preferenze);
+      var fine=document.createElement('div');
+      fine.className='esito '+(totale?'rosso':'verde');
+      fine.innerHTML='<p class="titolo '+(totale?'rosso':'verde')+'">'+
+        (totale? 'Ci sono '+totale+' problemi da guardare' : 'Tutto a posto')+'</p>'+
+        '<p class="numeri">'+stati+' stati in totale &middot; preferenze ripristinate</p>';
+      risultati.appendChild(fine);
+      stato.textContent='';
+      document.getElementById('vai').disabled=false;
+      document.getElementById('rapido').disabled=false;
+      /* riga secca per chi legge da un programma */
+      window.RISULTATO={stati:stati, problemi:totale, esito:totale?'ROSSO':'VERDE'};
+      document.title=(totale?'ROSSO ':'VERDE ')+'— Collaudo Dossier Garda';
+    }).catch(function(err){
+      rimettiPreferenze(preferenze);
+      stato.textContent='';
+      risultati.innerHTML='<div class="esito rosso"><p class="titolo rosso">Il collaudo si &egrave; interrotto</p>'+
+        '<p class="numeri">'+String(err&&err.message||err)+'</p></div>';
+      window.RISULTATO={stati:0, problemi:-1, esito:'INTERROTTO'};
+      document.title='INTERROTTO — Collaudo Dossier Garda';
+      document.getElementById('vai').disabled=false;
+      document.getElementById('rapido').disabled=false;
+    });
+  }
+
+  document.getElementById('vai').addEventListener('click',function(){ esegui(false); });
+  document.getElementById('rapido').addEventListener('click',function(){ esegui(true); });
+  if(location.search.indexOf('auto')>=0) esegui(location.search.indexOf('rapido')>=0);
+})();
+</script>
+</body>
+</html>

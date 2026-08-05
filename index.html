@@ -658,7 +658,7 @@ button{font:inherit}
       <label class="sortl" for="rosaSort">Ordina</label>
       <select id="rosaSort">
         <option value="price">prezzo crescente</option>
-        <option value="score">voto decrescente</option>
+        <option value="score">voto, pesato sulle recensioni</option>
         <option value="town">paese</option>
       </select>
       <button type="button" class="fclear" id="fClear" hidden>azzera filtri</button>
@@ -1391,7 +1391,15 @@ button{font:inherit}
     var w=WIN[id];
     var all=D.filter(function(d){return d[5][id];});
     var rows=all.filter(passes);
-    var sc=function(d){ var v=parseFloat(String(d[2]).replace(',','.')); return String(d[2]).indexOf('/5')>=0? v*2 : v; };
+    /* voto pesato sulle recensioni: un 10 su una recensione non deve battere
+       un 9,6 su 188. Media bayesiana con prior 8,6 e peso 20. */
+    var sc=function(d){
+      var v=parseFloat(String(d[2]).replace(',','.'));
+      if(isNaN(v)) return 0;
+      if(String(d[2]).indexOf('/5')>=0) v=v*2;
+      var n=parseInt(String(d[3]).replace('.',''),10); if(isNaN(n)) n=0;
+      return (v*n + 8.6*20)/(n+20);
+    };
     if(SORT==='score') rows.sort(function(a,b){ return sc(b)-sc(a) || a[5][id][0]-b[5][id][0]; });
     else if(SORT==='town') rows.sort(function(a,b){ return (townOf(a[1])||'zz').localeCompare(townOf(b[1])||'zz') || a[5][id][0]-b[5][id][0]; });
     else rows.sort(function(a,b){ return a[5][id][0]-b[5][id][0]; });

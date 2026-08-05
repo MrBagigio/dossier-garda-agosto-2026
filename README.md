@@ -58,10 +58,29 @@ arrotondata e porta il segno di circa.
 Due tariffe non sono verificabili da remoto: **Camping Toscolano** e **Regina del Garda Suite**
 (gruppo Horstmann, `0365 641584`), il cui motore non accetta il numero di ospiti via URL.
 
+## Collaudo
+
+**[collaudo.html](https://mrbagigio.github.io/dossier-garda-agosto-2026/collaudo.html)** apre il
+dossier in una cornice nascosta e controlla, dopo ogni cambio di stato, che *quello che si vede*
+corrisponda a ciò che la pagina promette: con il filtro «piscina o spa» attivo ogni riga mostrata
+deve davvero portare quella dotazione, non basta che il conteggio torni.
+
+Gira due volte, a 1280 e a 375 px, su **~18.000 stati**: tutte le 128 combinazioni di filtri per
+tre finestre e tre ordinamenti, moltiplicate per gli otto comuni; tutte le basi dei dintorni per
+sette categorie, quattro raggi e tre ordinamenti; più le sequenze (confronto, archivio, tema,
+hash, esportazione) e la struttura dell'HTML. Le preferenze salvate sul dispositivo vengono messe
+da parte e rimesse a posto.
+
+Tre difetti veri sono usciti da qui: un clic su «tema» che azzerava la rosa fino al ricaricamento,
+una casa contata a Salò ma che sta a Calvagese — con le distanze sbagliate di quasi dieci
+chilometri — e ventidue tabelle su venticinque senza `<thead>`.
+
 ## Aggiornamento automatico
 
 Un'attività pianificata (`dossier-garda-prezzi`, ogni mattina) riapre Booking con il browser,
-riconfronta i prezzi delle tre finestre, aggiorna `index.html` e riassume cosa è cambiato.
+riconfronta i prezzi delle tre finestre, aggiorna `index.html`, **esegue il collaudo** e
+riassume cosa è cambiato. Se il collaudo è rosso lo scrive nel rapporto invece di pubblicare e
+tacere.
 Gira **in locale, mentre l'app Claude è aperta**: se il computer è spento, recupera al primo
 avvio successivo. Booking non è leggibile senza browser — una richiesta HTTP semplice torna un
 guscio da 4 KB senza prezzi — quindi l'automatismo non può girare in cloud.
@@ -72,6 +91,8 @@ alla rilevazione manuale, e il rapporto lo dichiara ogni volta.
 ## Struttura
 
 Pagina singola, HTML statico, nessuna dipendenza esterna: tutto in `index.html`.
+`collaudo.html` e `collaudo.js` sono il banco di prova — deliberatamente **fuori** dalla cache
+del service worker, perché servirne una copia vecchia significherebbe collaudare il codice di ieri.
 `sw.js` tiene la copia offline, `manifest.webmanifest` e le `icona-*.png` servono
 all'installazione, `anteprima.png` è l'immagine mostrata quando il link viene condiviso.
 

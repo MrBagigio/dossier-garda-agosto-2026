@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Garda 2026 — Dossier alloggi</title>
+<title>Garda 2026 - Dossier alloggi</title>
 <meta name="description" content="Dossier interattivo alloggi Lago di Garda, agosto 2026: prezzi, disponibilita e link di prenotazione per tre finestre di date.">
 <meta name="theme-color" content="#EEF1EE" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1719" media="(prefers-color-scheme: dark)">
@@ -268,6 +268,37 @@ button{font:inherit}
   .vset{display:none}
   .vset.on{display:block}
 
+
+  /* ---------- barra freschezza / aggiorna ---------- */
+  .fresh{
+    border:1px solid var(--line);border-left:3px solid var(--accent);
+    background:var(--paper-2);padding:14px 16px;margin:26px 0 0;
+    display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;
+  }
+  .fresh.warn{border-left-color:var(--gold)}
+  .fresh.stale{border-left-color:var(--danger)}
+  .fresh .age{font-family:var(--mono);font-size:12.5px;color:var(--ink);flex:1 1 260px;min-width:0}
+  .fresh .age b{font-weight:700}
+  .fresh .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:7px;vertical-align:1px}
+  .fresh.warn .dot{background:var(--gold)}
+  .fresh.stale .dot{background:var(--danger)}
+  .fresh .acts{display:flex;flex-wrap:wrap;gap:7px}
+  .fresh a.chk,.fresh button.chk{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.03em;
+    border:1px solid var(--line);background:var(--paper);color:var(--ink-soft);
+    padding:7px 11px;border-radius:2px;text-decoration:none;cursor:pointer;white-space:nowrap;
+  }
+  .fresh a.chk:hover,.fresh button.chk:hover{border-color:var(--accent);color:var(--accent)}
+  .fresh button.chk.primary{background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:600}
+  .fresh button.chk.primary:hover{color:var(--paper);border-color:var(--ink);opacity:.88}
+  .fresh .done{color:var(--accent);font-weight:600}
+  @media (max-width:760px){
+    .fresh{padding:12px;gap:10px}
+    .fresh .acts{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .fresh a.chk,.fresh button.chk{text-align:center;padding:9px 6px;min-height:40px;display:flex;align-items:center;justify-content:center}
+    .fresh button.chk.primary{grid-column:1 / -1}
+  }
+
   footer{border-top:1px solid var(--line);padding-top:22px;margin-top:70px;font-size:12.5px;color:var(--ink-faint)}
   footer p{max-width:none}
   .srcs{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-family:var(--mono);font-size:11px}
@@ -321,9 +352,9 @@ button{font:inherit}
 <div class="wrap">
 
   <header class="masthead">
-    <p class="eyebrow">Dossier alloggi · Lago di Garda, sponda bresciana · verifiche live 4 agosto 2026</p>
+    <p class="eyebrow">Dossier alloggi · Lago di Garda, sponda bresciana · verifiche live 4 agosto 2026 · riverificato il 5</p>
     <h1>Dove dormire, quanto costa e quando è ancora libero</h1>
-    <p class="standfirst">Novantadue strutture su otto comuni, incrociate su Booking, Airbnb, Trivago, Agoda, Vrbo e sui motori di prenotazione ufficiali. Tre finestre di date, un obiettivo solo: staccare.</p>
+    <p class="standfirst">Circa novanta strutture su otto comuni, incrociate su Booking, Airbnb, Trivago, Agoda, Vrbo e sui motori di prenotazione ufficiali. Tre finestre di date, un obiettivo solo: staccare.</p>
     <div class="criteria">
       <span class="crit"><strong>2</strong> persone</span>
       <span class="crit"><strong>2</strong> notti</span>
@@ -342,6 +373,17 @@ button{font:inherit}
       <button type="button" data-win="3" aria-pressed="true">21–23 ago <span class="wd">ven–dom</span></button>
     </div>
     <span class="hint">Prezzi, disponibilità, verdetto e link di prenotazione si aggiornano.</span>
+  </div>
+
+
+  <div class="fresh" id="fresh">
+    <div class="age" id="freshAge"><span class="dot"></span>—</div>
+    <div class="acts">
+      <a class="chk" id="chkBk" href="#" target="_blank" rel="noopener">Booking live →</a>
+      <a class="chk" id="chkTv" href="#" target="_blank" rel="noopener">trivago live →</a>
+      <a class="chk" id="chkAb" href="#" target="_blank" rel="noopener">Airbnb live →</a>
+      <button type="button" class="chk primary" id="chkCopy">Chiedi a Claude di riaggiornare tutto</button>
+    </div>
   </div>
 
   <nav class="toc" aria-label="Indice">
@@ -500,7 +542,7 @@ button{font:inherit}
 
     <div class="note gold">
       <p><strong>Quale data, ora che l'obiettivo è riposarsi: il 17–19 passa davanti.</strong> È infrasettimanale, e ad agosto sul Garda questo cambia tutto — spiagge, traghetti e funivia senza le code del weekend. In più ci sono <b>29 °C invece di 37</b>, i prezzi sono i più bassi delle tre finestre, e martedì 18 è <b>l'unico giorno pieno in cui l'Isola del Garda è visitabile</b>. Il prezzo da pagare: pioggia prevista lunedì 17, giorno di arrivo, e due dei migliori ristoranti di Toscolano chiusi (Il Cortiletto il lunedì, la Tana il martedì).</p>
-      <p>Il <b>21–23</b> resta l'alternativa solida: più scelta (43 strutture contro 38), tutti i ristoranti aperti, meteo non ancora prevedibile. Il <b>14–16 è da scartare</b>: 37,5 °C, tutto pieno, tutto più caro.</p>
+      <p>Il <b>21–23</b> resta l'alternativa solida: più scelta (42 strutture contro 36), tutti i ristoranti aperti, meteo non ancora prevedibile. Il <b>14–16 è da scartare</b>: 37,5 °C, tutto pieno, tutto più caro.</p>
     </div>
 
     <div class="note">
@@ -617,7 +659,7 @@ button{font:inherit}
       </table>
     </div>
 
-    <h3>Toscolano Maderno — 43 strutture (21–23) · 38 (17–19) · 29 (14–16)</h3>
+    <h3>Toscolano Maderno — 42 strutture (21–23) · 36 (17–19) · 29 (14–16) <span class="meta">riverificato il 5 agosto</span></h3>
     <div class="tablewrap">
       <table>
         <thead><tr><th>Struttura</th><th class="num">Dal centro</th><th class="num">14–16</th><th class="num">17–19</th><th class="num">21–23</th><th class="num">Voto</th><th class="num">Rec.</th></tr></thead>
@@ -1071,9 +1113,9 @@ button{font:inherit}
    ['B&B Dolce Risveglio','Puegnago · B&B in collina, il posto più silenzioso','9,7','75',0,{2:[222,'bk:dolce-risveglio-puegnago',null],3:[222,'bk:dolce-risveglio-puegnago',null]}],
    ['Affitta camere La Fenice','Puegnago · camera quadrupla','9,0','42',0,{1:[180,'bk:country-house-la-fenice',null],2:[200,'bk:country-house-la-fenice',null],3:[180,'bk:country-house-la-fenice',null]}],
    ['Villa Giulia Rooms & Bike','Toscolano · 3 camere in tutto','9,4','',0,{2:[212,'tv',-127]}],
-   ['La corte dell Elmo','Salò · B&B','9,0','',0,{2:[218,'bk:la-corte-dell-39-elmo',null]}],
+   ["La corte dell'Elmo",'Salò · B&B','9,0','',0,{2:[218,'bk:la-corte-dell-39-elmo',null]}],
    ['Oro Bianco 1630','Toscolano · stanza in foresteria, Cecina','10','1',1,{1:[232,'bk:oro-bianco-1630-lake-garda',null],2:[220,'bk:oro-bianco-1630-lake-garda',null],3:[232,'bk:oro-bianco-1630-lake-garda',null]}],
-   ['Ennesima Osteria — Bike Hotel','Toscolano · 300 m dal centro','8,6','704',0,{1:[288,'bk:ennesima-osteria-con-alloggio',-6,'tariffa Agoda'],2:[223,'tv',-23]}],
+   ['Ennesima Osteria — Bike Hotel','Toscolano · 300 m dal centro','8,6','704',0,{1:[288,'bk:ennesima-osteria-con-alloggio',-6,'tariffa Agoda'],2:[224,'bk:ennesima-osteria-con-alloggio',null]}],
    ['Hotel Colomber','Gardone · hotel','8,3','118',0,{2:[226,'bk:colomber',null],3:[226,'bk:colomber',null]}],
    ['Vesta','Gargnano · camera matrimoniale, colazione inclusa','8,6','59',0,{3:[226,'bk:vesta-gargnano',null]}],
    ['Guest House Villa de Ros','Salò · camera vista lago, 350 m dal centro','9,3','150',0,{3:[232,'bk:villa-de-ros',null]}],
@@ -1084,7 +1126,7 @@ button{font:inherit}
    ['Locanda San Felice','San Felice · 50 m dal centro storico','8,4','36',0,{3:[244,'bk:locanda-san-felice',null]}],
    ['Hotel La Romantica','Manerba · hotel','8,2','425',0,{3:[244,'bk:la-romantica-manerba-del-garda',null]}],
    ['Casa Dealbata','San Felice · 150 m dal centro','9,1','11',1,{2:[245,'bk:casa-dealbata',null],3:[245,'bk:casa-dealbata',null]}],
-   ['B&B GARDA IN','Gardone · B&B','9,5','',0,{2:[256,'bk:garda-in',null]}],
+   ['B&B GARDA IN','Gardone · B&B','9,5','',0,{2:[256,'bk:b-amp-b-garda-in',null]}],
    ['Casa Johanna','Gargnano · appartamento intero 50 m²','9,7','35',0,{3:[258,'bk:casa-johanna-gargnano',null]}],
    ['B&B Renzano bedrooms','Salò · B&B','9,0','27',0,{1:[298,'bk:b-amp-b-renzano',null],3:[258,'bk:b-amp-b-renzano',null]}],
    ['Hotel & Restaurant San Marco AB','Toscolano · edificio storico, vista lago','6,2','160',0,{1:[261,'bk:amp-restaurant-san-marco-ab',null],2:[241,'bk:amp-restaurant-san-marco-ab',null],3:[261,'bk:amp-restaurant-san-marco-ab',null]}],
@@ -1093,7 +1135,7 @@ button{font:inherit}
    ['B&B Casa Olivia','Gardone · 500 m dal centro','9,7','10',1,{2:[266,'bk:b-amp-b-casa-olivia',null],3:[266,'bk:b-amp-b-casa-olivia',null]}],
    ['Hotel Eden','Toscolano · hotel 3★, camera 18 m²','7,7','1.092',0,{1:[338,'sb',-40],2:[238,'sb',-30],3:[268,'sb',-33]}],
    ['Villa Mayoti B&B','Manerba · 2 km dalla spiaggia','8,9','38',0,{2:[271,'bk:villa-mayoti-b-amp-b',null],3:[271,'bk:villa-mayoti-b-amp-b',null]}],
-   ['B&B Solstizio d estate','San Felice · B&B','9,5','87',0,{3:[276,'bk:b-amp-b-solstizio-d-39-estate',null]}],
+   ["B&B Solstizio d'estate",'San Felice · B&B','9,5','87',0,{3:[276,'bk:b-amp-b-solstizio-d-39-estate',null]}],
    ['BiancoGelso b&b Vegan','Gardone · camera con bagno, colazione inclusa','9,6','188',0,{1:[280,'bk:biancogelso-b-amp-b-vegan-friendly',null],2:[253,'bk:biancogelso-b-amp-b-vegan-friendly',null],3:[276,'bk:biancogelso-b-amp-b-vegan-friendly',null]}],
    ['2bebike','Manerba · 500 m dalla spiaggia','9,8','5',1,{1:[366,'bk:2bebike',null],2:[306,'bk:2bebike',null],3:[276,'bk:2bebike',null]}],
    ['Colibrì','Salò · monolocale intero 22 m², colazione inclusa','9,1','36',0,{3:[278,'bk:colibri-salo',null]}],
@@ -1102,7 +1144,7 @@ button{font:inherit}
    ['Il covo dei ranocchi','9,5 km da Salò · casa vacanze','9,8','15',0,{3:[282,'vr',null]}],
    ['Villa Cappellina','Toscolano · 4★, 30 m dal lago, spiaggia e pontile privati, piscina panoramica','8,2','598',0,{2:[506,'ec',-21],3:[282,'tv',-29]}],
    ['Garda Sol SPA Hotel','Toscolano · sauna, bagno turco, idromassaggio, piscina, solarium','8,3','541',0,{1:[426,'sr:gardasol-toscolanomaderno',-114],2:[299,'tv',-88],3:[288,'sr:gardasol-toscolanomaderno',-52]}],
-   ['Ca due Olivi','Toscolano · appartamento','9,3','64',0,{3:[294,'bk:ca-39-due-olivi-toscolano-maderno',null]}],
+   ["Ca' due Olivi",'Toscolano · appartamento','9,3','64',0,{3:[294,'bk:ca-39-due-olivi-toscolano-maderno',null]}],
    ['Hotel Panoramica','Salò · hotel','8,7','377',0,{1:[390,'bk:panoramica-salo',null],2:[290,'bk:panoramica-salo',null],3:[323,'bk:panoramica-salo',null]}],
    ['Asso Bed & Breakfast','Manerba · fronte spiaggia, bagno privato esterno','9,1','167',0,{2:[336,'bk:asso-manerba-del-garda',null],3:[296,'bk:asso-manerba-del-garda',null]}],
    ['Lake Blue Nido Elegante','Toscolano · appartamento in centro','9,3','3',1,{3:[297,'bk:lake-blue-elegant-nest-in-the-center-near-lake',null]}],
@@ -1122,10 +1164,10 @@ button{font:inherit}
    ['Hotel Antico Monastero','Toscolano · 4★ in monastero del XIV sec., due piscine','8,0','1.226',0,{2:[356,'tv',-6],3:[330,'be:19154',-32]}],
    ['All Inclusive Piccolo Paradiso','Toscolano · 4★, piscina sul tetto e in giardino','7,9','2.736',0,{1:[343,'be:19155',-99],3:[334,'be:19155',-117]}],
    ['Casa Sol','San Felice · 200 m dal centro','9,4','6',1,{2:[334,'bk:casa-sol-san-felice-del-benaco',null],3:[339,'bk:casa-sol-san-felice-del-benaco',null]}],
-   ['Aromi Piccolo Hotel','Salò · hotel','9,1','',0,{2:[336,'bk:aromi-piccolo-hotel',null],3:[351,'bk:aromi-piccolo-hotel',null]}],
+   ['Aromi Piccolo Hotel','Salò · hotel','9,1','',0,{2:[336,'bk:aromi-piccolo',null],3:[351,'bk:aromi-piccolo',null]}],
    ['Cascina Monte Tivino','Salò · cascina, 2,4 km dal centro','9,6','35',0,{3:[351,'bk:cascina-monte-tivino',null]}],
    ['Riva chiara','Toscolano · appartamento','9,4','13',1,{2:[355,'bk:riva-chiara',null],3:[355,'bk:riva-chiara',null]}],
-   ['Hotel Locanda del Benaco','Salò · hotel sul lungolago','9,3','',0,{1:[369,'bk:locanda-del-benaco',null]}],
+   ['Hotel Locanda del Benaco','Salò · hotel sul lungolago','9,3','',0,{1:[369,'bk:benaco-salo',null]}],
    ['HOTEL LORENA','Toscolano · hotel','8,6','',0,{2:[386,'bk:lorena-toscolano-maderno',null],3:[386,'bk:lorena-toscolano-maderno',null]}],
    ['Regina del Garda Suite','Toscolano · 4★ in contesto monastico','8,7','582',0,{1:[469,'bk:antico-monastero-suite',null],2:[384,'tv',-60],3:[404,'bk:antico-monastero-suite',null]}],
    ['Reflection Boutique Hotels','Toscolano · boutique hotel','9,7','314',0,{1:[425,'bk:reflection-boutique-hotels',null],2:[388,'bk:reflection-boutique-hotels',null],3:[401,'bk:reflection-boutique-hotels',null]}]
@@ -1198,6 +1240,39 @@ button{font:inherit}
     });
   }
 
+
+  var RELEVATO=new Date(2026,7,5); /* 5 agosto 2026 */
+  function freshness(w){
+    var el=document.getElementById('fresh'), age=document.getElementById('freshAge');
+    if(!el) return;
+    var oggi=new Date(); oggi.setHours(0,0,0,0);
+    var gg=Math.max(0,Math.round((oggi-RELEVATO)/86400000));
+    el.classList.remove('warn','stale');
+    if(gg>=7) el.classList.add('stale'); else if(gg>=3) el.classList.add('warn');
+    var quando = gg===0 ? 'oggi' : (gg===1 ? 'ieri' : gg+' giorni fa');
+    var avviso = gg>=7 ? ' I prezzi di agosto si muovono ogni giorno: riverifica prima di prenotare.'
+               : (gg>=3 ? ' Controlla i canali live prima di confermare.' : '');
+    age.innerHTML='<span class="dot"></span>Prezzi rilevati <b>'+quando+'</b> per il <b>'+w.lab+'</b>.'+avviso;
+    var bk=document.getElementById('chkBk'), tv=document.getElementById('chkTv'), ab=document.getElementById('chkAb');
+    if(bk) bk.href='https://www.booking.com/searchresults.it.html?ss=Toscolano+Maderno&checkin='+w.ci+'&checkout='+w.co+'&group_adults=2&no_rooms=1&group_children=0&selected_currency=EUR&order=price';
+    if(tv) tv.href=link('tv',w);
+    if(ab) ab.href=link('ab',w);
+  }
+  var copyBtn=document.getElementById('chkCopy');
+  if(copyBtn){
+    copyBtn.addEventListener('click',function(){
+      var id=document.documentElement.getAttribute('data-win')||'3', w=WIN[id];
+      var msg='Aggiorna il dossier Garda (github.com/MrBagigio/dossier-garda-agosto-2026). '
+            +'Rifai il giro completo dei prezzi per la finestra '+w.lab+' 2026, 2 persone 2 notti: '
+            +'Booking, Airbnb, Trivago, Agoda, Vrbo e i motori di prenotazione ufficiali. '
+            +'Aggiorna prezzi, disponibilita, conteggi e link, verifica che nessuno slug sia rotto, poi fai push su GitHub.';
+      var ok=function(){ var t=copyBtn.textContent; copyBtn.textContent='Copiato — incollalo a Claude'; copyBtn.classList.add('done');
+        setTimeout(function(){copyBtn.textContent=t; copyBtn.classList.remove('done');},2600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(msg).then(ok,function(){window.prompt('Copia questo testo e incollalo a Claude:',msg);}); }
+      else { window.prompt('Copia questo testo e incollalo a Claude:',msg); }
+    });
+  }
+
   function setWin(id){
     var w=WIN[id];
     document.documentElement.setAttribute('data-win',id);
@@ -1208,7 +1283,7 @@ button{font:inherit}
       v.classList.toggle('on', v.getAttribute('data-win')===id);
     });
     Array.prototype.forEach.call(document.querySelectorAll('.winLabel'),function(el){ el.textContent='il '+w.lab; });
-    render(id); retargetLinks(w); markColumns(id);
+    render(id); retargetLinks(w); markColumns(id); freshness(w);
     try{ localStorage.setItem('gardaWin',id); }catch(e){}
   }
 

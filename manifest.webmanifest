@@ -1,0 +1,25 @@
+{
+  "name": "Dossier Garda — agosto 2026",
+  "short_name": "Garda 2026",
+  "description": "Dove dormire sul Lago di Garda per 2 persone e 2 notti, e cosa c'è intorno: prezzi, canale più conveniente, distanze.",
+  "lang": "it",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "id": "/dossier-garda-agosto-2026/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#EEF1EE",
+  "theme_color": "#EEF1EE",
+  "categories": ["travel", "lifestyle"],
+  "icons": [
+    { "src": "icona-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icona-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icona-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "14–16 agosto", "url": "./#14-16" },
+    { "name": "17–19 agosto", "url": "./#17-19" },
+    { "name": "21–23 agosto", "url": "./#21-23" }
+  ]
+}

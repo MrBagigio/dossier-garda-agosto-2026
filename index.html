@@ -653,8 +653,11 @@ button{font:inherit}
     #rosaBody td.prezzo, #rosaBody td[data-l="vs Booking"],
     #rosaBody td[data-l="voto"], #poiBody td[data-l="voto"],
     #poiBody td[data-l="prezzo"]{white-space:nowrap}
+    /* .meta e' block: dentro una cella a colonna il numero di recensioni
+       diventava un secondo elemento impilato sotto il voto, non un
+       inciso accanto. Il nowrap non c'entrava nulla. */
+    #rosaBody td .meta, #poiBody td .meta{display:inline;font-size:inherit;opacity:.7}
     #rosaBody .tags{display:inline;margin-left:6px}
-    #rosaBody .meta{font-size:inherit}
 
     /* bersagli da pollice: 19 px non si centrano */
     #rosaBody .pin{width:38px;height:38px;font-size:17px;margin:0 6px 0 0;

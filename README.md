@@ -17,7 +17,12 @@ disponibilità, verdetto, mappa e link di prenotazione. Le preferenze restano su
   recensione non deve battere un 9,6 su 188
 - **Confronto** affiancato fino a quattro strutture, con i prezzi su **tutte e tre le finestre**:
   serve a vedere se una struttura conviene su una data diversa da quella che stai guardando
-- **Mappa** in scala reale della sponda, con alloggi disponibili e prezzo minimo per paese
+- **Mappa** in scala reale della sponda: il pallino di ogni paese cresce con gli alloggi
+  liberi, e toccarlo filtra la rosa su quel comune
+- **Cosa c'è intorno** — scegli dove dormi e la pagina si riordina intorno a quel punto:
+  **130 posti** fra ristoranti, gelaterie e bar, spiagge, passeggiate, cose da vedere,
+  noleggi e centri benessere, con voto, numero di recensioni, fascia di prezzo, distanza
+  e link alle indicazioni stradali che partono dalla casa scelta
 - **Esporta** la rosa filtrata in CSV
 - **Barra freschezza** — l'età dei dati calcolata sul giorno in cui apri, con i link ai canali live
 - Tema chiaro, scuro o automatico · foglio di stampa dedicato
@@ -41,6 +46,11 @@ giorni, rossa dopo sette.
 
 Le **dotazioni sono indicate solo dove osservate durante la ricerca**: dieci strutture restano
 senza tag, e resta scritto «non verificate» invece di un'ipotesi.
+
+Nei dintorni, voti e fasce di prezzo vengono da Google (5 agosto 2026). Le distanze sono in
+linea d'aria e i minuti sono **stime**, non tempi calcolati su un percorso. Di 39 alloggi su 59
+non ho la posizione esatta: lì il punto di partenza è il centro del paese, la distanza è
+arrotondata e porta il segno di circa.
 
 Due tariffe non sono verificabili da remoto: **Camping Toscolano** e **Regina del Garda Suite**
 (gruppo Horstmann, `0365 641584`), il cui motore non accetta il numero di ospiti via URL.

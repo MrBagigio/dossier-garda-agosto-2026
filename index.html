@@ -271,17 +271,17 @@ button{font:inherit}
 
 
   /* ---------- mappa ---------- */
-  .mapwrap{display:grid;grid-template-columns:minmax(240px,320px) 1fr;gap:26px;align-items:start}
+  .mapwrap{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:26px;align-items:start}
   .mapbox{position:sticky;top:120px}
   .lakemap{width:100%;height:auto;display:block}
   .lakemap .lake{fill:var(--accent-wash);stroke:var(--accent);stroke-width:1.1;stroke-linejoin:round}
   .lakemap .ferry{stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:3 3}
   .lakemap .poi circle{fill:var(--ink-faint)}
-  .lakemap .poi text{fill:var(--ink-faint);font-family:var(--body);font-size:7px}
+  .lakemap .poi text{fill:var(--ink-faint);font-family:var(--body);font-size:8.2px}
   .lakemap .towns circle{fill:var(--accent)}
   .lakemap .towns .base circle{fill:var(--gold)}
-  .lakemap .tn{fill:var(--ink);font-family:var(--body);font-size:8.4px;font-weight:600}
-  .lakemap .td{fill:var(--ink-soft);font-family:var(--mono);font-size:6.8px}
+  .lakemap .tn{fill:var(--ink);font-family:var(--body);font-size:10px;font-weight:600}
+  .lakemap .td{fill:var(--ink-soft);font-family:var(--mono);font-size:8px}
   .lakemap .tv{fill:var(--accent);font-weight:600}
   .lakemap .base .tn{fill:var(--gold)}
   .maplegend{font-size:12.5px;color:var(--ink-soft);margin:14px 0 0;max-width:none}
@@ -291,7 +291,7 @@ button{font:inherit}
   @media (max-width:760px){
     .mapwrap{grid-template-columns:1fr;gap:18px}
     .mapbox{position:static}
-    .lakemap{max-width:330px;margin:0 auto}
+    .lakemap{max-width:400px;margin:0 auto}
   }
 
   /* ---------- barra freschezza / aggiorna ---------- */
@@ -607,7 +607,7 @@ button{font:inherit}
 
     <div class="mapwrap">
       <div class="mapbox">
-        <svg viewBox="0 0 333 560" role="img" aria-labelledby="mapTitle" class="lakemap">
+        <svg viewBox="-64 -6 400 572" role="img" aria-labelledby="mapTitle" class="lakemap">
           <title id="mapTitle">Mappa schematica del Lago di Garda con i comuni della ricerca</title>
           <path class="lake" d="M 290.2,37.7 L 315.1,56.6 L 312.0,93.2 L 292.5,137.6 L 265.2,170.9 L 246.5,214.2 L 220.7,255.3 L 192.7,297.5 L 170.0,344.1 L 188.8,374.1 L 197.3,399.6 L 204.4,427.4 L 206.7,460.6 L 188.8,499.5 L 171.6,530.6 L 132.6,541.7 L 106.1,525.0 L 101.4,499.5 L 106.9,478.4 L 98.3,466.2 L 74.9,490.6 L 50.7,508.4 L 27.3,499.5 L 13.3,469.5 L 22.6,441.8 L 54.6,421.8 L 84.2,404.0 L 75.7,379.6 L 50.7,364.1 L 29.6,371.9 L 32.8,347.4 L 64.0,335.2 L 92.0,323.0 L 118.6,304.1 L 138.1,275.3 L 157.6,244.2 L 188.8,205.4 L 226.2,161.0 L 262.1,111.0 L 285.5,66.6 Z"/>
           <line class="ferry" x1="110" y1="318.6" x2="167.7" y2="344.1"/>
@@ -620,28 +620,28 @@ button{font:inherit}
           </g>
           <g class="towns">
             <g data-town="Tignale" transform="translate(194.2,214.2)">
-              <circle r="4.4"/><text x="9" y="1.5" class="tn">Tignale</text><text x="9" y="11" class="td">20 min · <tspan class="tv">—</tspan></text>
+              <circle r="4.4"/><text x="9" y="1.5" class="tn">Tignale</text><text x="9" y="12.5" class="td">20 min · <tspan class="tv">—</tspan></text>
             </g>
             <g data-town="Gargnano" transform="translate(150.5,257.5)">
-              <circle r="4.4"/><text x="9" y="1.5" class="tn">Gargnano</text><text x="9" y="11" class="td">13 min · <tspan class="tv">—</tspan></text>
+              <circle r="4.4"/><text x="9" y="1.5" class="tn">Gargnano</text><text x="9" y="12.5" class="td">13 min · <tspan class="tv">—</tspan></text>
             </g>
             <g data-town="Toscolano" class="base" transform="translate(110,318.6)">
-              <circle r="6"/><text x="11" y="1.5" class="tn">Toscolano Maderno</text><text x="11" y="11" class="td">spiaggia · <tspan class="tv">—</tspan></text>
+              <circle r="6"/><text x="11" y="1.5" class="tn">Toscolano Maderno</text><text x="11" y="12.5" class="td">spiaggia · <tspan class="tv">—</tspan></text>
             </g>
             <g data-town="Gardone" transform="translate(75.7,330.8)">
-              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Gardone Riviera</text><text x="-9" y="11" class="td" text-anchor="end">8 min · <tspan class="tv">—</tspan></text>
+              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Gardone Riviera</text><text x="-9" y="12.5" class="td" text-anchor="end">8 min · <tspan class="tv">—</tspan></text>
             </g>
             <g data-town="Salò" transform="translate(40.6,348.5)">
-              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Salò</text><text x="-9" y="11" class="td" text-anchor="end">13 min · <tspan class="tv">—</tspan></text>
+              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Salò</text><text x="-9" y="12.5" class="td" text-anchor="end">13 min · <tspan class="tv">—</tspan></text>
             </g>
             <g data-town="San Felice" transform="translate(61.6,368.5)">
-              <circle r="4.4"/><text x="9" y="1.5" class="tn">San Felice</text><text x="9" y="11" class="td">18 min · <tspan class="tv">—</tspan></text>
+              <circle r="4.4"/><text x="9" y="1.5" class="tn">San Felice</text><text x="9" y="12.5" class="td">18 min · <tspan class="tv">—</tspan></text>
             </g>
             <g data-town="Puegnago" transform="translate(34.3,408.5)">
-              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Puegnago</text><text x="-9" y="11" class="td" text-anchor="end">22 min · <tspan class="tv">—</tspan></text>
+              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Puegnago</text><text x="-9" y="12.5" class="td" text-anchor="end">22 min · <tspan class="tv">—</tspan></text>
             </g>
             <g data-town="Manerba" transform="translate(73.3,412.9)">
-              <circle r="4.4"/><text x="9" y="1.5" class="tn">Manerba</text><text x="9" y="11" class="td">25 min · <tspan class="tv">—</tspan></text>
+              <circle r="4.4"/><text x="9" y="1.5" class="tn">Manerba</text><text x="9" y="12.5" class="td">25 min · <tspan class="tv">—</tspan></text>
             </g>
           </g>
         </svg>

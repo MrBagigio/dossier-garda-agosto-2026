@@ -836,7 +836,7 @@ button{font:inherit}
           <g class="towns">
             <g data-town="Tignale"   data-side="R" data-dy="0"  transform="translate(194.2,214.2)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="11" y="1.5">Tignale</text><text class="td" x="11" y="12.5">20 min · <tspan class="tv">—</tspan></text></g>
             <g data-town="Gargnano"  data-side="R" data-dy="0"  transform="translate(150.5,257.5)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="11" y="1.5">Gargnano</text><text class="td" x="11" y="12.5">13 min · <tspan class="tv">—</tspan></text></g>
-            <g data-town="Toscolano" data-side="R" data-dy="0"  class="base" transform="translate(110,318.6)"><circle class="halo"/><circle class="dot"/><text class="tn" x="13" y="1.5">Toscolano Maderno</text><text class="td" x="13" y="12.5">spiaggia · <tspan class="tv">—</tspan></text></g>
+            <g data-town="Toscolano" data-side="R" data-dy="0"  class="base" transform="translate(110,318.6)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="13" y="1.5">Toscolano Maderno</text><text class="td" x="13" y="12.5">spiaggia · <tspan class="tv">—</tspan></text></g>
             <g data-town="Gardone"   data-side="L" data-dy="-6" transform="translate(75.7,330.8)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="-11" y="-4.5" text-anchor="end">Gardone Riviera</text><text class="td" x="-11" y="6.5" text-anchor="end">8 min · <tspan class="tv">—</tspan></text></g>
             <g data-town="Salò"      data-side="L" data-dy="8"  transform="translate(40.6,348.5)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="-11" y="9.5" text-anchor="end">Salò</text><text class="td" x="-11" y="20.5" text-anchor="end">13 min · <tspan class="tv">—</tspan></text></g>
             <g data-town="San Felice" data-side="R" data-dy="0" transform="translate(61.6,368.5)" role="button" tabindex="0"><circle class="halo"/><circle class="dot"/><text class="tn" x="11" y="1.5">San Felice</text><text class="td" x="11" y="12.5">18 min · <tspan class="tv">—</tspan></text></g>
@@ -1532,6 +1532,7 @@ button{font:inherit}
     if(SORT==='score') rows.sort(function(a,b){ return sc(b)-sc(a) || a[5][id][0]-b[5][id][0]; });
     else if(SORT==='town') rows.sort(function(a,b){ return (townOf(a[1])||'zz').localeCompare(townOf(b[1])||'zz') || a[5][id][0]-b[5][id][0]; });
     else rows.sort(function(a,b){ return a[5][id][0]-b[5][id][0]; });
+    renderMap(id);
     body.innerHTML=rows.map(function(d){
       var e=d[5][id], price=e[0], chan=e[1], delta=e[2], note=e[3];
       var kind=chan.split(':')[0];
@@ -1622,10 +1623,20 @@ button{font:inherit}
     for(var i=0;i<TOWNS.length;i++){ if(pre.indexOf(TOWNS[i][0])===0) return TOWNS[i][0]; }
     return null;
   }
+  /* la mappa deve rispondere ai filtri dotazione, ma non a quello per paese:
+     altrimenti selezionare un paese spegnerebbe tutti gli altri pallini. */
+  function passesGeo(d){
+    var t=FILTERS.town; FILTERS.town=0;
+    var ok=passes(d); FILTERS.town=t; return ok;
+  }
+  function filtriAttivi(){
+    for(var k in FILTERS){ if(k!=='town' && FILTERS[k]) return true; }
+    return false;
+  }
   function renderMap(id){
-    var agg={};
+    var agg={}, conFiltri=filtriAttivi();
     D.forEach(function(d){
-      var e=d[5][id]; if(!e) return;
+      var e=d[5][id]; if(!e || !passesGeo(d)) return;
       var t=townOf(d[1]); if(!t) return;
       if(!agg[t]) agg[t]={n:0,min:Infinity};
       agg[t].n++; if(e[0]<agg[t].min) agg[t].min=e[0];
@@ -1639,7 +1650,7 @@ button{font:inherit}
       var r = n ? Math.min(11, 3 + Math.sqrt(n)*1.35) : 3;
       if(dot) dot.setAttribute('r', r.toFixed(2));
       if(halo) halo.setAttribute('r', (r+2.5).toFixed(2));
-      if(tv) tv.textContent = a ? (a.n+' da '+a.min+'€') : 'esaurito';
+      if(tv) tv.textContent = a ? (a.n+' da '+a.min+'€') : (conFiltri ? 'niente coi filtri' : 'esaurito');
       g.classList.toggle('vuoto', !n);
       g.classList.toggle('on', FILTERS.town===name);
       g.classList.toggle('off', !!FILTERS.town && FILTERS.town!==name);
@@ -1863,7 +1874,7 @@ button{font:inherit}
       v.classList.toggle('on', v.getAttribute('data-win')===id);
     });
     Array.prototype.forEach.call(document.querySelectorAll('.winLabel'),function(el){ el.textContent='il '+w.lab; });
-    render(id); retargetLinks(w); markColumns(id); freshness(w); renderMap(id);
+    render(id); retargetLinks(w); markColumns(id); freshness(w);
     if(HASH[id] && location.hash.replace("#","")!==HASH[id] && !location.hash.match(/^#[a-z]/)) history.replaceState(null,"","#"+HASH[id]);
     try{ localStorage.setItem('gardaWin',id); }catch(e){}
   }

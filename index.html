@@ -1723,6 +1723,7 @@ button{font:inherit}
   var cap=document.getElementById('rosaCap');
 
   function render(id){
+    if(!WIN[id]) id='3';   /* attributo sporco: non si muore, si riparte */
     var w=WIN[id];
     var all=D.filter(function(d){return d[5][id];});
     var rows=all.filter(passes);
@@ -2534,6 +2535,7 @@ button{font:inherit}
   }
 
   function setWin(id){
+    if(!WIN[id]) return;   /* mai accettare una finestra che non esiste */
     var w=WIN[id];
     document.documentElement.setAttribute('data-win',id);
     Array.prototype.forEach.call(document.querySelectorAll('.switcher button'),function(b){
@@ -2548,7 +2550,11 @@ button{font:inherit}
     try{ localStorage.setItem('gardaWin',id); }catch(e){}
   }
 
-  Array.prototype.forEach.call(document.querySelectorAll('.switcher button'),function(b){
+  /* solo i bottoni che una finestra ce l'hanno davvero: nella stessa barra
+     vivono anche "tema" ed "esporta", e un clic li' scriveva data-win="null",
+     dopodiche' ogni render successivo trovava WIN["null"] undefined e la
+     rosa restava vuota fino al ricaricamento. */
+  Array.prototype.forEach.call(document.querySelectorAll('.switcher button[data-win]'),function(b){
     b.addEventListener('click',function(){ setWin(b.getAttribute('data-win')); });
   });
 

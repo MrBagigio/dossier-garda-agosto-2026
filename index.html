@@ -271,6 +271,52 @@ button{font:inherit}
 
 
 
+
+  /* ---------- confronto ---------- */
+  .pin{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:19px;height:19px;margin-right:7px;vertical-align:-3px;
+    border:1px solid var(--line);background:var(--paper);color:var(--ink-faint);
+    border-radius:3px;font-family:var(--mono);font-size:12px;line-height:1;cursor:pointer;padding:0;
+  }
+  .pin:hover{border-color:var(--accent);color:var(--accent)}
+  .pin.on{background:var(--accent);border-color:var(--accent);color:var(--paper-2);font-weight:700}
+  .cmpbar{
+    position:sticky;top:64px;z-index:45;background:var(--ink);color:var(--paper);
+    display:flex;align-items:center;gap:14px;padding:9px 14px;
+    font-family:var(--mono);font-size:12px;letter-spacing:.03em;
+  }
+  .cmpbar #cmpCount{font-weight:600}
+  .cmpbar #cmpCount.limit{color:var(--gold)}
+  .cmpbar .cmpgo{color:var(--paper);text-decoration:underline;text-underline-offset:3px;margin-left:auto}
+  .cmpbar button{
+    background:none;border:1px solid rgba(255,255,255,.35);color:var(--paper);
+    font-family:var(--mono);font-size:11px;padding:4px 9px;border-radius:2px;cursor:pointer;
+  }
+  .cmpbar button:hover{border-color:var(--paper)}
+  table.cmp{min-width:0}
+  table.cmp th.cmpk{
+    text-align:left;white-space:nowrap;background:var(--paper-2);
+    position:sticky;left:0;z-index:5;border-right:1px solid var(--line);
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-soft);font-weight:600;vertical-align:middle;
+  }
+  table.cmp thead th{vertical-align:top;min-width:150px}
+  table.cmp .cmpname{display:block;font-family:var(--display);font-size:15px;font-weight:600;color:var(--ink);text-transform:none;letter-spacing:0;line-height:1.2;margin-bottom:6px}
+  table.cmp .cmpx{
+    background:none;border:none;color:var(--danger);font-family:var(--mono);font-size:10px;
+    cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;text-transform:none;letter-spacing:0;
+  }
+  table.cmp tbody td{vertical-align:top}
+  table.cmp tbody tr:hover{background:transparent}
+  @media (max-width:760px){
+    .cmpbar{top:76px;font-size:11.5px;padding:8px 10px;gap:9px}
+    .cmpbar .cmpgo{font-size:11px}
+    table.cmp thead th{min-width:128px}
+    table.cmp th.cmpk{font-size:9.5px}
+  }
+  @media print{ .cmpbar,.pin{display:none!important} table.cmp th.cmpk{position:static} }
+
   /* ---------- filtri rosa ---------- */
   .filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 16px}
   .filters .flbl,.filters .sortl{
@@ -476,9 +522,16 @@ button{font:inherit}
     </div>
   </div>
 
+  <div class="cmpbar" id="cmpBar" hidden>
+    <span id="cmpCount">—</span>
+    <a href="#confronto" class="cmpgo">vedi il confronto ↓</a>
+    <button type="button" id="cmpClear">svuota</button>
+  </div>
+
   <nav class="toc" aria-label="Indice">
     <a href="#verdetto">Verdetto</a>
     <a href="#rosa">La rosa</a>
+    <a href="#confronto">Confronto</a>
     <a href="#mappa">Mappa</a>
     <a href="#raggio">Giorno e sera</a>
     <a href="#matrice">Tutte le strutture</a>
@@ -684,9 +737,17 @@ button{font:inherit}
     </div>
   </section>
 
+
+  <!-- =================== CONFRONTO =================== -->
+  <section id="confronto" hidden>
+    <h2><span class="num">03</span>Il confronto</h2>
+    <p class="sub">Le strutture che hai spillato, affiancate. Le prime tre righe sono i prezzi su <b>tutte e tre le finestre</b>: serve a vedere se quella struttura conviene su un'altra data, non solo su quella che stai guardando. La riga evidenziata è la finestra attiva.</p>
+    <div class="tablewrap" id="cmpTable"></div>
+  </section>
+
   <!-- =================== MAPPA =================== -->
   <section id="mappa">
-    <h2><span class="num">03</span>Dove sono, sul serio</h2>
+    <h2><span class="num">04</span>Dove sono, sul serio</h2>
     <p class="sub">Tutto in questo dossier gira intorno a una domanda — quanto guido. Qui sotto la sponda bresciana in scala reale: i minuti sono tempi d'auto verso la <b>spiaggia di Toscolano</b>, dove il parcheggio è gratuito. I numeri accanto a ogni paese cambiano con la finestra che hai scelto.</p>
 
     <div class="mapwrap">
@@ -749,7 +810,7 @@ button{font:inherit}
 
   <!-- =================== RAGGIO =================== -->
   <section id="raggio">
-    <h2><span class="num">04</span>Silenzio di giorno, qualcosa da fare la sera</h2>
+    <h2><span class="num">05</span>Silenzio di giorno, qualcosa da fare la sera</h2>
     <p class="sub">L'equilibrio che serve: dormire in un posto quieto, ma avere una cena e una passeggiata sul lago a portata senza organizzare una spedizione. Con l'auto e senza vincoli di rientro nessun comune è escluso — cambia solo quanto guidate per andare a mangiare.</p>
 
     <div class="tablewrap">
@@ -782,7 +843,7 @@ button{font:inherit}
 
   <!-- =================== MATRICE =================== -->
   <section id="matrice">
-    <h2><span class="num">05</span>Tutte le strutture, comune per comune</h2>
+    <h2><span class="num">06</span>Tutte le strutture, comune per comune</h2>
     <p class="sub">Prezzo totale per 2 notti e 2 persone, miglior canale disponibile. Dove ci sono due numeri, il primo è la tariffa minima del motore e il secondo il prezzo della scheda di ricerca — la differenza è tipicamente rimborsabile contro non rimborsabile. <span class="flag f-thin">poche rec</span> segnala un punteggio costruito su meno di 20 recensioni: statisticamente non dice nulla. <span class="flag f-walk">a piedi</span> significa che il centro del paese si raggiunge senza auto.</p>
 
     <h3>Salò — 46 strutture · il lungolago più lungo e vivo della sponda</h3>
@@ -932,7 +993,7 @@ button{font:inherit}
 
   <!-- =================== CANALI =================== -->
   <section id="canali">
-    <h2><span class="num">06</span>Dove costa meno la stessa camera</h2>
+    <h2><span class="num">07</span>Dove costa meno la stessa camera</h2>
     <p class="sub">La differenza non è quasi mai tra un'agenzia e l'altra: è tra le agenzie e il sito ufficiale, o tra Booking e i canali minori. Expedia, Hotels.com e Vrbo qui non distribuiscono praticamente nulla.</p>
 
     <div class="tablewrap">
@@ -991,7 +1052,7 @@ button{font:inherit}
 
   <!-- =================== DIRETTO =================== -->
   <section id="diretto">
-    <h2><span class="num">07</span>Cosa dicono i siti ufficiali</h2>
+    <h2><span class="num">08</span>Cosa dicono i siti ufficiali</h2>
     <p class="sub">Motori di prenotazione interrogati uno per uno, non solo la quotazione che trivago espone per i suoi hotel partner.</p>
 
     <div class="tablewrap">
@@ -1057,7 +1118,7 @@ button{font:inherit}
 
   <!-- =================== SCARTATI =================== -->
   <section id="scartati">
-    <h2><span class="num">08</span>Scartati, e perché</h2>
+    <h2><span class="num">09</span>Scartati, e perché</h2>
     <p class="sub">Ogni voce qui sotto è comparsa in una ricerca come affare e non lo era.</p>
     <div class="tablewrap">
       <table>
@@ -1077,7 +1138,7 @@ button{font:inherit}
 
   <!-- =================== AIRBNB =================== -->
   <section id="airbnb">
-    <h2><span class="num">09</span>Airbnb, quello che vale</h2>
+    <h2><span class="num">10</span>Airbnb, quello che vale</h2>
     <p class="sub">Su Airbnb 4,8 è la media, non un voto alto: sotto 4,7 è un avvertimento. Nella finestra di Ferragosto la piattaforma è così vuota che riempie i risultati con date diverse dalle tue — sei dei ventiquattro annunci mostrati erano «15–17» o «14–17 agosto».</p>
     <div class="tablewrap">
       <table>
@@ -1105,7 +1166,7 @@ button{font:inherit}
 
   <!-- =================== LOGISTICA =================== -->
   <section id="logistica">
-    <h2><span class="num">10</span>Spiagge, auto, traghetti, barche</h2>
+    <h2><span class="num">11</span>Spiagge, auto, traghetti, barche</h2>
 
     <h3>Le spiagge di Toscolano — e il parcheggio è gratis</h3>
     <div class="tablewrap">
@@ -1151,7 +1212,7 @@ button{font:inherit}
 
   <!-- =================== QUANDO =================== -->
   <section id="quando">
-    <h2><span class="num">11</span>Meteo, eventi, tavola</h2>
+    <h2><span class="num">12</span>Meteo, eventi, tavola</h2>
 
     <h3>Previsioni — due modelli incrociati</h3>
     <div class="tablewrap">
@@ -1201,7 +1262,7 @@ button{font:inherit}
 
   <!-- =================== PIANO =================== -->
   <section id="piano">
-    <h2><span class="num">12</span>Cosa fare, in ordine</h2>
+    <h2><span class="num">13</span>Cosa fare, in ordine</h2>
     <p class="sub">Le scadenze di cancellazione gratuita corrono: 13 agosto Garda Friends · 15 agosto Sorriso, Eden e Maderno · 16 agosto Villaggio Maderno, Camping Toscolano ed Ennesima.</p>
 
     <ol class="steps">
@@ -1420,7 +1481,7 @@ button{font:inherit}
       var noteTxt=note?(' <span class="meta">'+note+'</span>'):'';
       var cn=NAMES[kind]||'—';
       return '<tr'+(isAlt?' class="rowmark"':'')+'>'+
-        '<td class="name">'+d[0]+'<a class="geo" target="_blank" rel="noopener" title="Vedi su Maps" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d[0]+' '+d[1].split(' · ')[0]+' lago di Garda')+'">⌖</a></td>'+
+        '<td class="name"><button type="button" class="pin'+(isPicked(d[0])?' on':'')+'" data-pick="'+d[0].replace(/"/g,'&quot;')+'" aria-pressed="'+(isPicked(d[0])?'true':'false')+'" aria-label="Aggiungi al confronto">'+(isPicked(d[0])?'✓':'+')+'</button>'+d[0]+'<a class="geo" target="_blank" rel="noopener" title="Vedi su Maps" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d[0]+' '+d[1].split(' · ')[0]+' lago di Garda')+'">⌖</a></td>'+
         '<td class="meta">'+d[1]+tagChips(d[0])+'</td>'+
         '<td class="num">'+priceCell+'</td>'+
         '<td>'+(isAlt?('<b>'+cn+'</b>'):cn)+noteTxt+'</td>'+
@@ -1434,6 +1495,12 @@ button{font:inherit}
     }
     var attivi=Object.keys(FILTERS).filter(function(k){return FILTERS[k];}).length;
     var cl=document.getElementById('fClear'); if(cl) cl.hidden = attivi===0;
+    Array.prototype.forEach.call(body.querySelectorAll('.pin'),function(b){
+      b.addEventListener('click',function(){
+        if(togglePick(b.getAttribute('data-pick'))) render(document.documentElement.getAttribute('data-win')||'3');
+      });
+    });
+    renderCompare(id);
     cap.innerHTML = attivi
       ? '<b>'+rows.length+' di '+all.length+'</b> strutture disponibili il <b>'+w.lab+'</b> passano i filtri · totale 2 persone, 2 notti'
       : '<b>'+all.length+' strutture</b> disponibili il <b>'+w.lab+'</b> ('+w.dow+') · totale 2 persone, 2 notti';
@@ -1577,6 +1644,110 @@ button{font:inherit}
     });
   }
 
+  /* ---------- confronto ---------- */
+  var PICKS=[];
+  try{ var sp=localStorage.getItem('gardaPicks'); if(sp) PICKS=JSON.parse(sp)||[]; }catch(e){ PICKS=[]; }
+  var MAXPICK=4;
+
+  function savePicks(){ try{ localStorage.setItem('gardaPicks',JSON.stringify(PICKS)); }catch(e){} }
+  function isPicked(n){ return PICKS.indexOf(n)>=0; }
+  function togglePick(n){
+    var i=PICKS.indexOf(n);
+    if(i>=0) PICKS.splice(i,1);
+    else{
+      if(PICKS.length>=MAXPICK){ flashLimit(); return false; }
+      PICKS.push(n);
+    }
+    savePicks(); return true;
+  }
+  function flashLimit(){
+    var b=document.getElementById('cmpCount');
+    if(!b) return;
+    b.classList.add('limit');
+    b.textContent='massimo '+MAXPICK+' alla volta';
+    setTimeout(function(){ b.classList.remove('limit'); updateCmpBar(); },1800);
+  }
+  function findRow(n){ for(var i=0;i<D.length;i++){ if(D[i][0]===n) return D[i]; } return null; }
+
+  function updateCmpBar(){
+    var bar=document.getElementById('cmpBar'), c=document.getElementById('cmpCount');
+    if(!bar) return;
+    bar.hidden = PICKS.length===0;
+    if(c && !c.classList.contains('limit'))
+      c.textContent = PICKS.length===1 ? '1 struttura scelta' : PICKS.length+' strutture a confronto';
+  }
+
+  var DRIVE={}; /* paese -> minuti dalla spiaggia di Toscolano */
+  function driveOf(place){
+    var t=townOf(place); if(!t) return null;
+    for(var i=0;i<TOWNS.length;i++) if(TOWNS[i][0]===t) return TOWNS[i];
+    return null;
+  }
+
+  function renderCompare(id){
+    var sec=document.getElementById('confronto'), host=document.getElementById('cmpTable');
+    if(!sec||!host) return;
+    updateCmpBar();
+    sec.hidden = PICKS.length===0;
+    if(!PICKS.length){ host.innerHTML=''; return; }
+
+    var rows=PICKS.map(findRow).filter(Boolean);
+    var head='<tr><th scope="col" class="cmpk">A confronto</th>'+rows.map(function(d){
+      return '<th scope="col"><span class="cmpname">'+d[0]+'</span>'+
+             '<button type="button" class="cmpx" data-drop="'+d[0].replace(/"/g,'&quot;')+'" aria-label="Togli '+d[0].replace(/"/g,'&quot;')+' dal confronto">togli</button></th>';
+    }).join('')+'</tr>';
+
+    function line(label,fn,cls){
+      return '<tr><th scope="row" class="cmpk">'+label+'</th>'+
+        rows.map(function(d){ return '<td'+(cls?' class="'+cls+'"':'')+'>'+fn(d)+'</td>'; }).join('')+'</tr>';
+    }
+
+    var body='';
+    ['1','2','3'].forEach(function(k){
+      body+=line((k===id?'▸ ':'')+WIN[k].lab, function(d){
+        var e=d[5][k];
+        if(!e) return '<span class="p p-x">esaurito</span>';
+        var kind=e[1].split(':')[0];
+        var extra = kind!=='bk' ? ' <span class="meta">'+NAMES[kind]+'</span>' : '';
+        return '<b>'+e[0]+' €</b>'+extra;
+      }, k===id?'num selcol':'num');
+    });
+    body+=line('Risparmio vs Booking',function(d){
+      var e=d[5][id]; if(!e) return '—';
+      return e[2]==null ? '—' : '<span class="p p-ok">'+e[2]+' €</span>';
+    },'num');
+    body+=line('Voto',function(d){
+      var rv=d[3]?(' <span class="meta">su '+d[3]+' recensioni</span>'):'';
+      var thin=d[4]?' <span class="flag f-thin">poche rec</span>':'';
+      return '<b>'+d[2]+'</b>'+rv+thin;
+    });
+    body+=line('Dove',function(d){ return d[1].split(' · ')[0]; });
+    body+=line('Cos’è',function(d){ var p=d[1].split(' · '); return p.length>1?p.slice(1).join(' · '):'—'; });
+    body+=line('→ spiaggia Toscolano',function(d){
+      var t=driveOf(d[1]); if(!t) return '—';
+      return t[2]===0?'a piedi':t[2]+' min';
+    },'num');
+    body+=line('Dotazioni',function(d){
+      var t=tagsOf(d[0]); if(!t) return '<span class="meta">non verificate</span>';
+      var out=''; for(var i=0;i<t.length;i++) if(TAGLABEL[t[i]]) out+='<span class="tag">'+TAGLABEL[t[i]]+'</span>';
+      return '<span class="tags">'+out+'</span>';
+    });
+    body+=line('Prenota',function(d){
+      var e=d[5][id];
+      if(!e) return '<span class="meta">non su questa data</span>';
+      return '<a href="'+link(e[1],WIN[id])+'" target="_blank" rel="noopener">'+NAMES[e[1].split(':')[0]]+' →</a>';
+    });
+
+    host.innerHTML='<table class="cmp"><thead>'+head+'</thead><tbody>'+body+'</tbody></table>';
+    Array.prototype.forEach.call(host.querySelectorAll('.cmpx'),function(b){
+      b.addEventListener('click',function(){
+        var n=b.getAttribute('data-drop');
+        var i=PICKS.indexOf(n); if(i>=0){ PICKS.splice(i,1); savePicks(); }
+        render(document.documentElement.getAttribute('data-win')||'3');
+      });
+    });
+  }
+
   function setWin(id){
     var w=WIN[id];
     document.documentElement.setAttribute('data-win',id);
@@ -1596,6 +1767,13 @@ button{font:inherit}
     b.addEventListener('click',function(){ setWin(b.getAttribute('data-win')); });
   });
 
+  (function(){
+    var cc=document.getElementById('cmpClear');
+    if(cc) cc.addEventListener('click',function(){
+      PICKS.length=0; savePicks();
+      render(document.documentElement.getAttribute('data-win')||'3');
+    });
+  })();
   bindFilters();
   var saved='3';
   try{ var v=localStorage.getItem('gardaWin'); if(v&&WIN[v]) saved=v; }catch(e){}

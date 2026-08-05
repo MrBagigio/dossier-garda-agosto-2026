@@ -275,6 +275,15 @@ button{font:inherit}
   @media (max-width:720px){.switcher .hint{display:none}}
 
 
+  .askbox{width:100%;margin-top:10px;padding:12px 14px;border:1px solid var(--rule);
+    border-radius:10px;background:var(--paper-2)}
+  .askbox p{margin:0 0 8px;font-size:13.5px}
+  .askbox textarea{width:100%;box-sizing:border-box;padding:9px 10px;border-radius:8px;
+    border:1px solid var(--rule);background:var(--paper);color:var(--ink);
+    font-family:var(--mono);font-size:12px;line-height:1.5;resize:vertical}
+  .askbox .asknote{margin:8px 0 0;font-size:12.5px;color:var(--ink-faint)}
+  @media print{ .askbox{display:none!important} }
+
   /* ---- dintorni ---- */
   .basebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
     margin:18px 0 6px;padding:12px 14px;border:1px solid var(--rule);
@@ -603,7 +612,12 @@ button{font:inherit}
       <a class="chk" id="chkBk" href="#" target="_blank" rel="noopener">Booking live →</a>
       <a class="chk" id="chkTv" href="#" target="_blank" rel="noopener">trivago live →</a>
       <a class="chk" id="chkAb" href="#" target="_blank" rel="noopener">Airbnb live →</a>
-      <button type="button" class="chk primary" id="chkCopy">Chiedi a Claude di riaggiornare tutto</button>
+      <button type="button" class="chk primary" id="chkCopy">Copia la richiesta di aggiornamento</button>
+      <div class="askbox" id="askBox" hidden>
+        <p>Questo testo non parte da solo: <b>incollalo a Claude</b> in una chat nuova.</p>
+        <textarea id="askText" readonly rows="4" aria-label="Richiesta da incollare a Claude"></textarea>
+        <p class="asknote" id="askNote"></p>
+      </div>
     </div>
   </div>
 
@@ -1806,10 +1820,23 @@ button{font:inherit}
             +'Rifai il giro completo dei prezzi per la finestra '+w.lab+' 2026, 2 persone 2 notti: '
             +'Booking, Airbnb, Trivago, Agoda, Vrbo e i motori di prenotazione ufficiali. '
             +'Aggiorna prezzi, disponibilita, conteggi e link, verifica che nessuno slug sia rotto, poi fai push su GitHub.';
-      var ok=function(){ var t=copyBtn.textContent; copyBtn.textContent='Copiato — incollalo a Claude'; copyBtn.classList.add('done');
-        setTimeout(function(){copyBtn.textContent=t; copyBtn.classList.remove('done');},2600); };
-      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(msg).then(ok,function(){window.prompt('Copia questo testo e incollalo a Claude:',msg);}); }
-      else { window.prompt('Copia questo testo e incollalo a Claude:',msg); }
+      /* Il pulsante non parla con Claude: copia un testo. Quindi il testo
+         resta a schermo, selezionabile, anche quando la copia fallisce
+         (sul telefono succede, e in silenzio). */
+      var box=document.getElementById('askBox'), ta=document.getElementById('askText'),
+          nota=document.getElementById('askNote');
+      if(box && ta){
+        box.hidden=false; ta.value=msg;
+        try{ ta.focus(); ta.setSelectionRange(0,msg.length); }catch(e){}
+        var dillo=function(t){ if(nota) nota.textContent=t; };
+        dillo('Selezionato qui sopra: copialo a mano se serve.');
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(msg).then(
+            function(){ dillo('Copiato negli appunti.'); },
+            function(){ dillo('Gli appunti non sono disponibili qui: copia il testo qui sopra a mano.'); });
+        }
+        box.scrollIntoView({block:'nearest'});
+      } else { window.prompt('Copia questo testo e incollalo a Claude:',msg); }
     });
   }
 

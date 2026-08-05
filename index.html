@@ -1400,6 +1400,7 @@ button{font:inherit}
         <th scope="col"ead><tr><th scope="col">Struttura</th><th scope="col" class="num">Prezzo</th><th scope="col" class="num">Voto</th><th scope="col">Il problema</th></tr></thead>
         <tbody>
           <tr><td class="name">Casa Collio <span class="meta">Airbnb</span></td><td class="num">176–205</td><td class="num">4,52/5</td><td>Si chiama così perché <b>è a Collio, in Val Trompia</b>: 850 m di quota, 1h15–1h30 dal lago. Il 5 % delle recensioni è da 1 stella; pulizia 4,4, qualità-prezzo 4,2</td></tr>
+          <tr><td class="name">Il covo dei ranocchi <span class="meta">Vrbo</span></td><td class="num">282</td><td class="num">9,8</td><td>Compariva sotto Salò perché la scheda dice «9,5&nbsp;km da Salò», ma <b>è a Calvagese della Riviera</b>, nell’entroterra: circa <b>mezz’ora dalla spiaggia di Toscolano</b>, il doppio dei quindici minuti che ci siamo dati. Il 9,8 poggia su <b>15 recensioni</b></td></tr>
           <tr><td class="name">Ca' del Rì <span class="meta">Gargnano</span></td><td class="num">114</td><td class="num">9,5</td><td>Sono <b>2 posti in un dormitorio misto da 8 letti</b>. È un ostello, non una camera</td></tr>
           <tr><td class="name">Casa Vacanze La Piazzetta <span class="meta">Maderno, Airbnb</span></td><td class="num">204.421</td><td class="num">4,97/5</td><td>Prezzo-blocco dell'host per date che non vuole affittare. Peccato: 61 recensioni e a 100 m dal lago</td></tr>
           <tr><td class="name">Oro Bianco 1630</td><td class="num">220–232</td><td class="num">10</td><td>È una <b>stanza in foresteria</b>, non un appartamento, e il 10 poggia su <b>una recensione</b></td></tr>
@@ -1656,8 +1657,7 @@ button{font:inherit}
    ['Colibrì','Salò · monolocale intero 22 m², colazione inclusa','9,1','36',0,{3:[278,'bk:colibri-salo',null]}],
    ['Appartamento a Cecina','Toscolano · appartamento 70 m², in collina','4,8/5','56',0,{2:[280,'ab',-4],3:[280,'ab',-4]}],
    ['Casa della musica','Gardone · appartamento','4,87/5','134',0,{3:[280,'ab',null]}],
-   ['Il covo dei ranocchi','9,5 km da Salò · casa vacanze','9,8','15',0,{3:[282,'vr',null]}],
-   ['Villa Cappellina','Toscolano · 4★, 30 m dal lago, spiaggia e pontile privati, piscina panoramica','8,2','598',0,{2:[506,'ec',-21],3:[282,'tv',-29]}],
+      ['Villa Cappellina','Toscolano · 4★, 30 m dal lago, spiaggia e pontile privati, piscina panoramica','8,2','598',0,{2:[506,'ec',-21],3:[282,'tv',-29]}],
    ['Garda Sol SPA Hotel','Toscolano · sauna, bagno turco, idromassaggio, piscina, solarium','8,3','541',0,{1:[426,'sr:gardasol-toscolanomaderno',-114],2:[299,'tv',-88],3:[288,'sr:gardasol-toscolanomaderno',-52]}],
    ["Ca' due Olivi",'Toscolano · appartamento','9,3','64',0,{3:[294,'bk:ca-39-due-olivi-toscolano-maderno',null]}],
    ['Hotel Panoramica','Salò · hotel','8,7','377',0,{1:[390,'bk:panoramica-salo',null],2:[290,'bk:panoramica-salo',null],3:[323,'bk:panoramica-salo',null]}],
@@ -1848,7 +1848,6 @@ button{font:inherit}
               ['Puegnago','Puegnago del Garda',22],['Manerba','Manerba del Garda',25]];
   function townOf(place){
     var pre=place.split(' · ')[0].trim();
-    if(pre.indexOf('da Salò')>=0) return 'Salò';
     for(var i=0;i<TOWNS.length;i++){ if(pre.indexOf(TOWNS[i][0])===0) return TOWNS[i][0]; }
     return null;
   }
@@ -2219,8 +2218,7 @@ button{font:inherit}
     ['Colibrì','Salo',45.6068,10.525,0],
     ['Appartamento a Cecina','Toscolano',45.65464,10.62877,1],
     ['Casa della musica','Gardone',45.6215,10.564,0],
-    ['Il covo dei ranocchi','Salo',45.6068,10.525,0],
-    ['Villa Cappellina','Toscolano',45.65197,10.62859,1],
+        ['Villa Cappellina','Toscolano',45.65197,10.62859,1],
     ['Garda Sol SPA Hotel','Toscolano',45.636,10.604,0],
     ['Hotel Panoramica','Salo',45.59456,10.51074,1],
     ['Asso Bed & Breakfast','Manerba',45.548,10.556,0],

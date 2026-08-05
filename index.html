@@ -648,7 +648,12 @@ button{font:inherit}
       border:1px solid var(--accent);border-radius:9px;color:var(--accent);
       text-decoration:none;font-weight:600;font-size:15px}
     #rosaBody td.empty, #poiBody td.empty{flex:1 0 100%;display:block;font-size:15px}
-    #rosaBody .tags{display:block;margin-top:4px}
+    /* "9,0 (42)" andava a capo in una cella da 34 px e da sola alzava
+       la riga dei fatti a 68: e' un valore solo, non si spezza */
+    #rosaBody td.prezzo, #rosaBody td[data-l="vs Booking"],
+    #rosaBody td[data-l="voto"], #poiBody td[data-l="voto"],
+    #poiBody td[data-l="prezzo"]{white-space:nowrap}
+    #rosaBody .tags{display:inline;margin-left:6px}
     #rosaBody .meta{font-size:inherit}
 
     /* bersagli da pollice: 19 px non si centrano */

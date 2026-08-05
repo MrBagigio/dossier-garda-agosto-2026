@@ -131,11 +131,21 @@
     });
 
     this.testoPulito('#rosaBody', p);
-    var d = this.doc.documentElement;
-    if (d.scrollWidth > d.clientWidth + 1) p.push('la pagina scorre di lato');
+    if (this.scorreDiLato()) p.push('la pagina scorre di lato');
 
     this.stati++;
     this.segnala(dove, p);
+  };
+
+  /* La soglia non e' un pixel: dentro una cornice la barra di scorrimento
+     compare dopo il primo layout e sposta il bordo destro di frazioni di
+     pixel. Con la soglia a uno questo controllo segnalava migliaia di
+     scorrimenti che su un telefono vero non esistono. Tre pixel separano
+     l'assestamento del rendering da un vero sbordamento, che parte sempre
+     da decine. */
+  Banco.prototype.scorreDiLato = function () {
+    var d = this.doc.documentElement;
+    return d.scrollWidth > d.clientWidth + 3;
   };
 
   Banco.prototype.testoPulito = function (sel, p) {
@@ -179,8 +189,7 @@
     });
 
     this.testoPulito('#poiBody', p);
-    var dd = this.doc.documentElement;
-    if (dd.scrollWidth > dd.clientWidth + 1) p.push('la pagina scorre di lato');
+    if (this.scorreDiLato()) p.push('la pagina scorre di lato');
 
     this.stati++;
     this.segnala(dove, p);
@@ -356,8 +365,14 @@
     this.qq('img').forEach(function (i) {
       if (!i.hasAttribute('alt')) p.push('immagine senza alt');
     });
+    var self = this;
     this.qq('button').forEach(function (b) {
-      if (!b.textContent.trim() && !b.getAttribute('aria-label')) p.push('bottone senza nome accessibile');
+      /* un bottone nascosto non e' esposto: il chip del comune nasce vuoto
+         e si riempie quando serve */
+      if (b.hidden || self.win.getComputedStyle(b).display === 'none') return;
+      if (!b.textContent.trim() && !b.getAttribute('aria-label')) {
+        p.push('bottone senza nome accessibile: ' + (b.id || b.className || '?'));
+      }
     });
     if (!this.doc.documentElement.lang) p.push('manca la lingua del documento');
 

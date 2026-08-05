@@ -647,6 +647,9 @@ button{font:inherit}
     #poiBody td.poitype{flex:1 0 100%;padding:0;color:var(--ink-soft);font-size:13.5px}
     #poiBody td.dist{flex:1 1 auto;font-size:15px;font-weight:600;padding-top:7px}
     #rosaBody td.vai, #poiBody td.vai{flex:1 0 100%;padding:10px 0 0}
+    /* "prenota su" serve quando il link e' un pulsante largo; nella
+       tabella del desktop la colonna e' stretta e mandava a capo */
+    #rosaBody td.vai a.cta::before{content:'prenota su '}
     #rosaBody td.vai a.cta, #poiBody td.vai a.cta{
       display:block;min-height:44px;line-height:44px;text-align:center;
       border:1px solid var(--accent);border-radius:9px;color:var(--accent);
@@ -1752,7 +1755,7 @@ button{font:inherit}
         '<td data-l="canale">'+(isAlt?('<b>'+cn+'</b>'):cn)+noteTxt+'</td>'+
         '<td class="num" data-l="vs Booking">'+deltaCell+'</td>'+
         '<td class="num" data-l="voto">'+d[2]+rev+thin+'</td>'+
-        '<td class="vai" data-l=""><a class="cta" href="'+link(chan,w)+'">prenota su '+cn+' →</a></td>'+
+        '<td class="vai" data-l=""><a class="cta" href="'+link(chan,w)+'">'+cn+' →</a></td>'+
       '</tr>';
     }).join('');
     if(!rows.length){

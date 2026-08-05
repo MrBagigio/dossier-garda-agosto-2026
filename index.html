@@ -628,10 +628,14 @@ button{font:inherit}
       flex:0 0 auto;white-space:normal}
     /* etichetta minuscola sopra il valore, cosi' la riga dei fatti sta
        su una sola linea invece che su quattro */
+    /* La cella NON deve essere un contenitore flex: i figli di un flex
+       vengono blockificati, quindi "(2387)" finiva sotto "4,2" invece che
+       accanto, e nessun display:inline poteva rimediare. Blocco normale,
+       etichetta come ::before a tutta riga. */
     #rosaBody td[data-l]:not([data-l=""]), #poiBody td[data-l]:not([data-l=""]){
-      display:flex;flex-direction:column;gap:1px;padding-top:7px}
+      display:block;padding-top:7px}
     #rosaBody td[data-l]:not([data-l=""])::before, #poiBody td[data-l]:not([data-l=""])::before{
-      content:attr(data-l);
+      content:attr(data-l);display:block;margin-bottom:1px;
       font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;
       text-transform:uppercase;color:var(--ink-faint);line-height:1.1}
 

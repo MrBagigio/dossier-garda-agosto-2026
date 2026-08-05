@@ -85,10 +85,23 @@ distanze sbagliate di quasi dieci chilometri &mdash; e ventidue tabelle su venti
     });
   }
 
+  /* La cornice va allargata della barra di scorrimento, altrimenti a "375"
+     il dossier vive in 360 e si collauda una larghezza che non e' quella
+     che si voleva provare. */
+  var barraPx=null;
   function carica(larghezza){
     return new Promise(function(risolvi){
-      cornice.style.width=larghezza+'px';
-      cornice.onload=function(){ setTimeout(function(){ risolvi(cornice.contentWindow); }, 350); };
+      cornice.style.width=(larghezza+(barraPx||0))+'px';
+      cornice.onload=function(){
+        setTimeout(function(){
+          var w=cornice.contentWindow, d=w.document.documentElement;
+          if(barraPx===null){
+            barraPx=Math.max(0, w.innerWidth-d.clientWidth);
+            if(barraPx>0){ cornice.style.width=(larghezza+barraPx)+'px'; }
+          }
+          setTimeout(function(){ risolvi(cornice.contentWindow); }, 250);
+        }, 350);
+      };
       cornice.src='./index.html?collaudo='+Date.now()+'#21-23';
     });
   }

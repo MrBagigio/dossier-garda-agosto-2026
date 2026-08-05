@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Garda 2026 - Dossier alloggi</title>
-<meta name="description" content="Dossier interattivo alloggi Lago di Garda, agosto 2026: prezzi, disponibilita e link di prenotazione per tre finestre di date.">
+<meta name="description" content="Dossier interattivo alloggi Lago di Garda, agosto 2026: mappa, prezzi, disponibilita e link di prenotazione per tre finestre di date.">
 <meta name="theme-color" content="#EEF1EE" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1719" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
@@ -15,7 +15,7 @@
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0}
-img{max-width:100%;height:auto}
+img,svg{max-width:100%}
 button{font:inherit}
 </style>
 </head>
@@ -269,6 +269,31 @@ button{font:inherit}
   .vset.on{display:block}
 
 
+
+  /* ---------- mappa ---------- */
+  .mapwrap{display:grid;grid-template-columns:minmax(240px,320px) 1fr;gap:26px;align-items:start}
+  .mapbox{position:sticky;top:120px}
+  .lakemap{width:100%;height:auto;display:block}
+  .lakemap .lake{fill:var(--accent-wash);stroke:var(--accent);stroke-width:1.1;stroke-linejoin:round}
+  .lakemap .ferry{stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:3 3}
+  .lakemap .poi circle{fill:var(--ink-faint)}
+  .lakemap .poi text{fill:var(--ink-faint);font-family:var(--body);font-size:7px}
+  .lakemap .towns circle{fill:var(--accent)}
+  .lakemap .towns .base circle{fill:var(--gold)}
+  .lakemap .tn{fill:var(--ink);font-family:var(--body);font-size:8.4px;font-weight:600}
+  .lakemap .td{fill:var(--ink-soft);font-family:var(--mono);font-size:6.8px}
+  .lakemap .tv{fill:var(--accent);font-weight:600}
+  .lakemap .base .tn{fill:var(--gold)}
+  .maplegend{font-size:12.5px;color:var(--ink-soft);margin:14px 0 0;max-width:none}
+  .mapside h3{margin-top:0}
+  a.geo{text-decoration:none;color:var(--ink-faint);font-size:11px;margin-left:5px}
+  a.geo:hover{color:var(--accent)}
+  @media (max-width:760px){
+    .mapwrap{grid-template-columns:1fr;gap:18px}
+    .mapbox{position:static}
+    .lakemap{max-width:330px;margin:0 auto}
+  }
+
   /* ---------- barra freschezza / aggiorna ---------- */
   .fresh{
     border:1px solid var(--line);border-left:3px solid var(--accent);
@@ -389,6 +414,7 @@ button{font:inherit}
   <nav class="toc" aria-label="Indice">
     <a href="#verdetto">Verdetto</a>
     <a href="#rosa">La rosa</a>
+    <a href="#mappa">Mappa</a>
     <a href="#raggio">Giorno e sera</a>
     <a href="#matrice">Tutte le strutture</a>
     <a href="#canali">Dove costa meno</a>
@@ -574,9 +600,72 @@ button{font:inherit}
     </div>
   </section>
 
+  <!-- =================== MAPPA =================== -->
+  <section id="mappa">
+    <h2><span class="num">03</span>Dove sono, sul serio</h2>
+    <p class="sub">Tutto in questo dossier gira intorno a una domanda — quanto guido. Qui sotto la sponda bresciana in scala reale: i minuti sono tempi d'auto verso la <b>spiaggia di Toscolano</b>, dove il parcheggio è gratuito. I numeri accanto a ogni paese cambiano con la finestra che hai scelto.</p>
+
+    <div class="mapwrap">
+      <div class="mapbox">
+        <svg viewBox="0 0 333 560" role="img" aria-labelledby="mapTitle" class="lakemap">
+          <title id="mapTitle">Mappa schematica del Lago di Garda con i comuni della ricerca</title>
+          <path class="lake" d="M 290.2,37.7 L 315.1,56.6 L 312.0,93.2 L 292.5,137.6 L 265.2,170.9 L 246.5,214.2 L 220.7,255.3 L 192.7,297.5 L 170.0,344.1 L 188.8,374.1 L 197.3,399.6 L 204.4,427.4 L 206.7,460.6 L 188.8,499.5 L 171.6,530.6 L 132.6,541.7 L 106.1,525.0 L 101.4,499.5 L 106.9,478.4 L 98.3,466.2 L 74.9,490.6 L 50.7,508.4 L 27.3,499.5 L 13.3,469.5 L 22.6,441.8 L 54.6,421.8 L 84.2,404.0 L 75.7,379.6 L 50.7,364.1 L 29.6,371.9 L 32.8,347.4 L 64.0,335.2 L 92.0,323.0 L 118.6,304.1 L 138.1,275.3 L 157.6,244.2 L 188.8,205.4 L 226.2,161.0 L 262.1,111.0 L 285.5,66.6 Z"/>
+          <line class="ferry" x1="110" y1="318.6" x2="167.7" y2="344.1"/>
+          <g class="poi">
+            <circle cx="167.7" cy="344.1" r="2.6"/><text x="173" y="347">Torri del Benaco</text>
+            <circle cx="265.2" cy="170.9" r="2.6"/><text x="270" y="174">Malcesine</text>
+            <circle cx="290.2" cy="37.7" r="2.6"/><text x="283" y="34" text-anchor="end">Riva</text>
+            <circle cx="106.1" cy="472.9" r="2.6"/><text x="111" y="476">Sirmione</text>
+            <circle cx="50.7" cy="500.6" r="2.6"/><text x="45" y="504" text-anchor="end">Desenzano</text>
+          </g>
+          <g class="towns">
+            <g data-town="Tignale" transform="translate(194.2,214.2)">
+              <circle r="4.4"/><text x="9" y="1.5" class="tn">Tignale</text><text x="9" y="11" class="td">20 min · <tspan class="tv">—</tspan></text>
+            </g>
+            <g data-town="Gargnano" transform="translate(150.5,257.5)">
+              <circle r="4.4"/><text x="9" y="1.5" class="tn">Gargnano</text><text x="9" y="11" class="td">13 min · <tspan class="tv">—</tspan></text>
+            </g>
+            <g data-town="Toscolano" class="base" transform="translate(110,318.6)">
+              <circle r="6"/><text x="11" y="1.5" class="tn">Toscolano Maderno</text><text x="11" y="11" class="td">spiaggia · <tspan class="tv">—</tspan></text>
+            </g>
+            <g data-town="Gardone" transform="translate(75.7,330.8)">
+              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Gardone Riviera</text><text x="-9" y="11" class="td" text-anchor="end">8 min · <tspan class="tv">—</tspan></text>
+            </g>
+            <g data-town="Salò" transform="translate(40.6,348.5)">
+              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Salò</text><text x="-9" y="11" class="td" text-anchor="end">13 min · <tspan class="tv">—</tspan></text>
+            </g>
+            <g data-town="San Felice" transform="translate(61.6,368.5)">
+              <circle r="4.4"/><text x="9" y="1.5" class="tn">San Felice</text><text x="9" y="11" class="td">18 min · <tspan class="tv">—</tspan></text>
+            </g>
+            <g data-town="Puegnago" transform="translate(34.3,408.5)">
+              <circle r="4.4"/><text x="-9" y="1.5" class="tn" text-anchor="end">Puegnago</text><text x="-9" y="11" class="td" text-anchor="end">22 min · <tspan class="tv">—</tspan></text>
+            </g>
+            <g data-town="Manerba" transform="translate(73.3,412.9)">
+              <circle r="4.4"/><text x="9" y="1.5" class="tn">Manerba</text><text x="9" y="11" class="td">25 min · <tspan class="tv">—</tspan></text>
+            </g>
+          </g>
+        </svg>
+        <p class="maplegend">Il tratteggio è il <b>traghetto Maderno&nbsp;⇄&nbsp;Torri del Benaco</b>, l'unico del lago che imbarca le auto: 30 minuti, ogni 30–40, 6,50&nbsp;€ a piedi e 10,70&nbsp;€ con l'auto.</p>
+      </div>
+
+      <div class="mapside">
+        <h3>Per paese, sulla finestra scelta</h3>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Paese</th><th class="num">Alloggi</th><th class="num">Da</th><th class="num">→ spiaggia</th><th>Maps</th></tr></thead>
+            <tbody id="mapBody"></tbody>
+          </table>
+        </div>
+        <div class="note">
+          <p><strong>Il traghetto cambia la geografia.</strong> Da Maderno si sbarca a Torri del Benaco in mezz'ora, con l'auto a bordo: la sponda veronese — Torri, Garda, Bardolino — diventa una gita da mezza giornata invece che il giro di tutto il lago. Malcesine e la funivia del Monte Baldo restano più comode via strada dall'alto lago.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- =================== RAGGIO =================== -->
   <section id="raggio">
-    <h2><span class="num">03</span>Silenzio di giorno, qualcosa da fare la sera</h2>
+    <h2><span class="num">04</span>Silenzio di giorno, qualcosa da fare la sera</h2>
     <p class="sub">L'equilibrio che serve: dormire in un posto quieto, ma avere una cena e una passeggiata sul lago a portata senza organizzare una spedizione. Con l'auto e senza vincoli di rientro nessun comune è escluso — cambia solo quanto guidate per andare a mangiare.</p>
 
     <div class="tablewrap">
@@ -609,7 +698,7 @@ button{font:inherit}
 
   <!-- =================== MATRICE =================== -->
   <section id="matrice">
-    <h2><span class="num">04</span>Tutte le strutture, comune per comune</h2>
+    <h2><span class="num">05</span>Tutte le strutture, comune per comune</h2>
     <p class="sub">Prezzo totale per 2 notti e 2 persone, miglior canale disponibile. Dove ci sono due numeri, il primo è la tariffa minima del motore e il secondo il prezzo della scheda di ricerca — la differenza è tipicamente rimborsabile contro non rimborsabile. <span class="flag f-thin">poche rec</span> segnala un punteggio costruito su meno di 20 recensioni: statisticamente non dice nulla. <span class="flag f-walk">a piedi</span> significa che il centro del paese si raggiunge senza auto.</p>
 
     <h3>Salò — 46 strutture · il lungolago più lungo e vivo della sponda</h3>
@@ -759,7 +848,7 @@ button{font:inherit}
 
   <!-- =================== CANALI =================== -->
   <section id="canali">
-    <h2><span class="num">05</span>Dove costa meno la stessa camera</h2>
+    <h2><span class="num">06</span>Dove costa meno la stessa camera</h2>
     <p class="sub">La differenza non è quasi mai tra un'agenzia e l'altra: è tra le agenzie e il sito ufficiale, o tra Booking e i canali minori. Expedia, Hotels.com e Vrbo qui non distribuiscono praticamente nulla.</p>
 
     <div class="tablewrap">
@@ -818,7 +907,7 @@ button{font:inherit}
 
   <!-- =================== DIRETTO =================== -->
   <section id="diretto">
-    <h2><span class="num">06</span>Cosa dicono i siti ufficiali</h2>
+    <h2><span class="num">07</span>Cosa dicono i siti ufficiali</h2>
     <p class="sub">Motori di prenotazione interrogati uno per uno, non solo la quotazione che trivago espone per i suoi hotel partner.</p>
 
     <div class="tablewrap">
@@ -884,7 +973,7 @@ button{font:inherit}
 
   <!-- =================== SCARTATI =================== -->
   <section id="scartati">
-    <h2><span class="num">07</span>Scartati, e perché</h2>
+    <h2><span class="num">08</span>Scartati, e perché</h2>
     <p class="sub">Ogni voce qui sotto è comparsa in una ricerca come affare e non lo era.</p>
     <div class="tablewrap">
       <table>
@@ -904,7 +993,7 @@ button{font:inherit}
 
   <!-- =================== AIRBNB =================== -->
   <section id="airbnb">
-    <h2><span class="num">08</span>Airbnb, quello che vale</h2>
+    <h2><span class="num">09</span>Airbnb, quello che vale</h2>
     <p class="sub">Su Airbnb 4,8 è la media, non un voto alto: sotto 4,7 è un avvertimento. Nella finestra di Ferragosto la piattaforma è così vuota che riempie i risultati con date diverse dalle tue — sei dei ventiquattro annunci mostrati erano «15–17» o «14–17 agosto».</p>
     <div class="tablewrap">
       <table>
@@ -932,7 +1021,7 @@ button{font:inherit}
 
   <!-- =================== LOGISTICA =================== -->
   <section id="logistica">
-    <h2><span class="num">09</span>Spiagge, auto, traghetti, barche</h2>
+    <h2><span class="num">10</span>Spiagge, auto, traghetti, barche</h2>
 
     <h3>Le spiagge di Toscolano — e il parcheggio è gratis</h3>
     <div class="tablewrap">
@@ -978,7 +1067,7 @@ button{font:inherit}
 
   <!-- =================== QUANDO =================== -->
   <section id="quando">
-    <h2><span class="num">10</span>Meteo, eventi, tavola</h2>
+    <h2><span class="num">11</span>Meteo, eventi, tavola</h2>
 
     <h3>Previsioni — due modelli incrociati</h3>
     <div class="tablewrap">
@@ -1028,7 +1117,7 @@ button{font:inherit}
 
   <!-- =================== PIANO =================== -->
   <section id="piano">
-    <h2><span class="num">11</span>Cosa fare, in ordine</h2>
+    <h2><span class="num">12</span>Cosa fare, in ordine</h2>
     <p class="sub">Le scadenze di cancellazione gratuita corrono: 13 agosto Garda Friends · 15 agosto Sorriso, Eden e Maderno · 16 agosto Villaggio Maderno, Camping Toscolano ed Ennesima.</p>
 
     <ol class="steps">
@@ -1190,7 +1279,7 @@ button{font:inherit}
       var noteTxt=note?(' <span class="meta">'+note+'</span>'):'';
       var cn=NAMES[kind]||'—';
       return '<tr'+(isAlt?' class="rowmark"':'')+'>'+
-        '<td class="name">'+d[0]+'</td>'+
+        '<td class="name">'+d[0]+'<a class="geo" target="_blank" rel="noopener" title="Vedi su Maps" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d[0]+' '+d[1].split(' · ')[0]+' lago di Garda')+'">⌖</a></td>'+
         '<td class="meta">'+d[1]+'</td>'+
         '<td class="num">'+priceCell+'</td>'+
         '<td>'+(isAlt?('<b>'+cn+'</b>'):cn)+noteTxt+'</td>'+
@@ -1241,6 +1330,48 @@ button{font:inherit}
   }
 
 
+
+  var TOWNS=[['Toscolano','Toscolano Maderno',0],['Gardone','Gardone Riviera',8],['Salò','Salò',13],
+              ['Gargnano','Gargnano',13],['San Felice','San Felice del Benaco',18],['Tignale','Tignale',20],
+              ['Puegnago','Puegnago del Garda',22],['Manerba','Manerba del Garda',25]];
+  function townOf(place){
+    var pre=place.split(' · ')[0].trim();
+    if(pre.indexOf('da Salò')>=0) return 'Salò';
+    for(var i=0;i<TOWNS.length;i++){ if(pre.indexOf(TOWNS[i][0])===0) return TOWNS[i][0]; }
+    return null;
+  }
+  function renderMap(id){
+    var agg={};
+    D.forEach(function(d){
+      var e=d[5][id]; if(!e) return;
+      var t=townOf(d[1]); if(!t) return;
+      if(!agg[t]) agg[t]={n:0,min:Infinity};
+      agg[t].n++; if(e[0]<agg[t].min) agg[t].min=e[0];
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.lakemap g[data-town]'),function(g){
+      var a=agg[g.getAttribute('data-town')], tv=g.querySelector('.tv');
+      if(tv) tv.textContent = a ? (a.n+' da '+a.min+'€') : 'esaurito';
+    });
+    var tb=document.getElementById('mapBody'); if(!tb) return;
+    tb.innerHTML=TOWNS.map(function(t){
+      var a=agg[t[0]];
+      var q=encodeURIComponent(t[1]+' lago di Garda');
+      return '<tr'+(t[2]===0?' class="rowmark"':'')+'>'+
+        '<td class="name">'+t[1]+'</td>'+
+        '<td class="num">'+(a?a.n:'<span class="p p-x">0</span>')+'</td>'+
+        '<td class="num">'+(a?'<span class="p p-ok">'+a.min+'</span>':'—')+'</td>'+
+        '<td class="num">'+(t[2]===0?'a piedi':t[2]+' min')+'</td>'+
+        '<td><a href="https://www.google.com/maps/search/?api=1&query='+q+'" target="_blank" rel="noopener">apri →</a></td>'+
+      '</tr>';
+    }).join('');
+  }
+  var HASH={'1':'14-16','2':'17-19','3':'21-23'};
+  function winFromHash(){
+    var h=(location.hash||'').replace('#','');
+    for(var k in HASH){ if(HASH[k]===h) return k; }
+    return null;
+  }
+
   var RELEVATO=new Date(2026,7,5); /* 5 agosto 2026 */
   function freshness(w){
     var el=document.getElementById('fresh'), age=document.getElementById('freshAge');
@@ -1283,7 +1414,8 @@ button{font:inherit}
       v.classList.toggle('on', v.getAttribute('data-win')===id);
     });
     Array.prototype.forEach.call(document.querySelectorAll('.winLabel'),function(el){ el.textContent='il '+w.lab; });
-    render(id); retargetLinks(w); markColumns(id); freshness(w);
+    render(id); retargetLinks(w); markColumns(id); freshness(w); renderMap(id);
+    if(HASH[id] && location.hash.replace("#","")!==HASH[id] && !location.hash.match(/^#[a-z]/)) history.replaceState(null,"","#"+HASH[id]);
     try{ localStorage.setItem('gardaWin',id); }catch(e){}
   }
 
@@ -1293,6 +1425,8 @@ button{font:inherit}
 
   var saved='3';
   try{ var v=localStorage.getItem('gardaWin'); if(v&&WIN[v]) saved=v; }catch(e){}
+  var fromUrl=winFromHash(); if(fromUrl) saved=fromUrl;
+  window.addEventListener('hashchange',function(){ var h=winFromHash(); if(h) setWin(h); });
   setWin(saved);
 })();
 </script>

@@ -284,6 +284,26 @@ button{font:inherit}
   .askbox .asknote{margin:8px 0 0;font-size:12.5px;color:var(--ink-faint)}
   @media print{ .askbox{display:none!important} }
 
+  /* ---- archivio richiudibile + tabelle a blocchi ---- */
+  section.arch:not(.open) > :not(h2):not(.sub){display:none!important}
+  section.arch h2{cursor:pointer}
+  section.arch .archbtn{margin-left:12px;padding:5px 12px;border:1px solid var(--rule);
+    border-radius:999px;background:var(--paper-2);color:var(--ink-soft);cursor:pointer;
+    font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+    vertical-align:middle;white-space:nowrap}
+  section.arch .archbtn:hover{border-color:var(--accent);color:var(--accent)}
+  section.arch:not(.open) .sub{margin-bottom:0}
+  nav.toc a.sec{opacity:.6;font-size:.92em}
+  nav.toc .toclbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-faint);align-self:center;white-space:nowrap}
+  tr.more td{padding:6px 0}
+  tr.more button{width:100%;padding:10px;border:1px dashed var(--rule);border-radius:8px;
+    background:transparent;color:var(--accent);cursor:pointer;
+    font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  tr.more button:hover{border-color:var(--accent)}
+  @media print{ section.arch:not(.open) > :not(h2):not(.sub){display:revert!important}
+    .archbtn{display:none!important} }
+
   /* ---- dintorni ---- */
   .basebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
     margin:18px 0 6px;padding:12px 14px;border:1px solid var(--rule);
@@ -1495,6 +1515,7 @@ button{font:inherit}
   }
 
   /* [nome, luogo/cos'è, voto, recensioni, storicoSottile, {finestra:[prezzo, canale, deltaVsBooking|null, nota|null]}] */
+  var ROSATUTTE=false;
   var D=[
    ['B&B Giardini di Corte','Toscolano · B&B','8,4','119',0,{2:[272,'bk:bed-amp-breakfast-giardini-di-corte',null],3:[218,'ab',-54]}],
    ['B&B Dolce Risveglio','Puegnago · B&B in collina, il posto più silenzioso','9,7','75',0,{2:[222,'bk:dolce-risveglio-puegnago',null],3:[222,'bk:dolce-risveglio-puegnago',null]}],
@@ -1627,7 +1648,8 @@ button{font:inherit}
     else if(SORT==='town') rows.sort(function(a,b){ return (townOf(a[1])||'zz').localeCompare(townOf(b[1])||'zz') || a[5][id][0]-b[5][id][0]; });
     else rows.sort(function(a,b){ return a[5][id][0]-b[5][id][0]; });
     renderMap(id);
-    body.innerHTML=rows.map(function(d){
+    var visRosa=(!ROSATUTTE && rows.length>18)?rows.slice(0,15):rows;
+    body.innerHTML=visRosa.map(function(d){
       var e=d[5][id], price=e[0], chan=e[1], delta=e[2], note=e[3];
       var kind=chan.split(':')[0];
       var isAlt=(kind!=='bk');
@@ -1657,6 +1679,11 @@ button{font:inherit}
       if(FILTERS.town){ tc.textContent='paese: '+FILTERS.town+' ×'; tc.setAttribute('aria-pressed','true'); }
     }
     var cl=document.getElementById('fClear'); if(cl) cl.hidden = attivi===0;
+    if(visRosa.length<rows.length){
+      body.insertAdjacentHTML('beforeend','<tr class="more"><td colspan="7"><button type="button" id="rosaMore">Mostra tutte le '+rows.length+' strutture</button></td></tr>');
+      var rmB=document.getElementById('rosaMore');
+      if(rmB) rmB.addEventListener('click',function(){ ROSATUTTE=true; render(document.documentElement.getAttribute('data-win')||'3'); });
+    }
     Array.prototype.forEach.call(body.querySelectorAll('.pin[data-pick]'),function(b){
       b.addEventListener('click',function(){
         if(togglePick(b.getAttribute('data-pick'))) render(document.documentElement.getAttribute('data-win')||'3');
@@ -1846,6 +1873,60 @@ button{font:inherit}
     var out=''; for(var i=0;i<t.length;i++){ var k=t[i]; if(TAGLABEL[k]) out+='<span class="tag">'+TAGLABEL[k]+'</span>'; }
     return out?('<span class="tags">'+out+'</span>'):'';
   }
+
+
+  /* ============ ARCHIVIO RICHIUDIBILE ============ */
+  /* Le sezioni 01-06 servono a decidere, queste sette sono le prove:
+     restano tutte, ma chiuse finche' non servono. La pagina passa da
+     ~43 schermate a molte meno senza perdere una riga. */
+  var ARCH=['matrice','canali','diretto','scartati','airbnb','logistica','quando'];
+  function apriArch(id){
+    var sez=document.getElementById(id);
+    if(sez && sez.classList.contains('arch') && !sez.classList.contains('open')){
+      sez.classList.add('open');
+      var b=sez.querySelector('.archbtn'); if(b){ b.setAttribute('aria-expanded','true'); b.textContent='chiudi'; }
+    }
+  }
+  (function(){
+    ARCH.forEach(function(id){
+      var sez=document.getElementById(id); if(!sez) return;
+      sez.classList.add('arch');
+      var h=sez.querySelector('h2'); if(!h) return;
+      var b=document.createElement('button');
+      b.type='button'; b.className='archbtn'; b.textContent='apri';
+      b.setAttribute('aria-expanded','false');
+      h.appendChild(b);
+      var tg=function(){
+        var aperto=sez.classList.toggle('open');
+        b.setAttribute('aria-expanded',aperto?'true':'false');
+        b.textContent=aperto?'chiudi':'apri';
+      };
+      b.addEventListener('click',function(e){ e.stopPropagation(); tg(); });
+      h.addEventListener('click',function(e){ if(e.target!==b) tg(); });
+    });
+    /* i link interni e la stampa devono trovare le sezioni aperte */
+    document.addEventListener('click',function(e){
+      var a=e.target.closest?e.target.closest('a[href^="#"]'):null;
+      if(a) apriArch(a.getAttribute('href').slice(1));
+    });
+    window.addEventListener('hashchange',function(){ apriArch((location.hash||'').replace('#','')); });
+    if(location.hash) apriArch(location.hash.replace('#',''));
+    window.addEventListener('beforeprint',function(){ ARCH.forEach(apriArch); });
+    /* nell'indice, le voci d'archivio pesano meno */
+    var toc=document.querySelector('nav.toc');
+    if(toc){
+      var primo=null;
+      Array.prototype.forEach.call(toc.querySelectorAll('a'),function(a){
+        var id=(a.getAttribute('href')||'').slice(1);
+        if(ARCH.indexOf(id)>=0){ a.classList.add('sec'); if(!primo) primo=a; }
+      });
+      if(primo){
+        var lbl=document.createElement('span');
+        lbl.className='toclbl'; lbl.textContent='archivio:';
+        toc.insertBefore(lbl,primo);
+      }
+    }
+  })();
 
   /* ====================== DINTORNI ====================== */
   var POI=[
@@ -2044,7 +2125,7 @@ button{font:inherit}
 
   /* Le CASE con l'ultimo campo a 0 non hanno una posizione verificata:
      vale il centro del paese, e la riga lo dichiara. */
-  var BASE=null, POICAT='M', POIRANGE=20, POISORT='dist';
+  var BASE=null, POICAT='M', POIRANGE=20, POISORT='dist', POITUTTI=false;
 
   function kmTra(a1,o1,a2,o2){
     var dy=(a1-a2)*111.2, dx=(o1-o2)*111.2*Math.cos(45.62*Math.PI/180);
@@ -2124,11 +2205,12 @@ button{font:inherit}
     if(cnt) cnt.textContent=righe.length+' '+(etichetta[POICAT]||'')+' '+quanto+
       ' da '+c[0]+(c[4]?'':' (centro paese)');
 
+    var visPoi=(!POITUTTI && righe.length>18)?righe.slice(0,15):righe;
     if(!righe.length){
       body.innerHTML='<tr><td colspan="6" class="empty">Niente di questo tipo così vicino. '+
         'Allarga il raggio qui sopra, oppure cambia categoria.</td></tr>';
     } else {
-      body.innerHTML=righe.map(function(r){
+      body.innerHTML=visPoi.map(function(r){
         var p=r.p;
         var vicino=r.km<=1.6;
         /* Se la casa e' localizzata solo al centro del paese, i metri sarebbero
@@ -2156,6 +2238,11 @@ button{font:inherit}
       }).join('');
     }
 
+    if(visPoi.length<righe.length){
+      body.insertAdjacentHTML('beforeend','<tr class="more"><td colspan="6"><button type="button" id="poiMore">Mostra gli altri '+(righe.length-visPoi.length)+'</button></td></tr>');
+      var pmB=document.getElementById('poiMore');
+      if(pmB) pmB.addEventListener('click',function(){ POITUTTI=true; renderPoi(); });
+    }
     var foot=document.getElementById('poiFoot');
     if(foot) foot.innerHTML='Le distanze sono in linea d’aria; i minuti sono <b>stime</b> '+
       '(strada un terzo più lunga della linea retta, 40&nbsp;km/h d’agosto, 4,5&nbsp;km/h a piedi), '+
@@ -2182,7 +2269,7 @@ button{font:inherit}
   }
 
   function scegliBase(i, salta){
-    BASE={i:i};
+    BASE={i:i}; POITUTTI=false;
     try{ localStorage.setItem('gardaBase', String(i)); }catch(e){}
     var sel=document.getElementById('baseSel'); if(sel) sel.value=String(i);
     var n=document.getElementById('baseNote');
@@ -2201,7 +2288,7 @@ button{font:inherit}
     if(sel) sel.addEventListener('change',function(){ scegliBase(+sel.value,false); });
     Array.prototype.forEach.call(document.querySelectorAll('#catChips .fchip'),function(b){
       b.addEventListener('click',function(){
-        POICAT=b.getAttribute('data-c');
+        POICAT=b.getAttribute('data-c'); POITUTTI=false;
         Array.prototype.forEach.call(document.querySelectorAll('#catChips .fchip'),function(o){
           var on=(o===b); o.classList.toggle('on',on); o.setAttribute('aria-pressed',on?'true':'false');
         });
@@ -2210,7 +2297,7 @@ button{font:inherit}
     });
     Array.prototype.forEach.call(document.querySelectorAll('#rangeChips .fchip'),function(b){
       b.addEventListener('click',function(){
-        POIRANGE=parseFloat(b.getAttribute('data-r'));
+        POIRANGE=parseFloat(b.getAttribute('data-r')); POITUTTI=false;
         Array.prototype.forEach.call(document.querySelectorAll('#rangeChips .fchip'),function(o){
           var on=(o===b); o.classList.toggle('on',on); o.setAttribute('aria-pressed',on?'true':'false');
         });

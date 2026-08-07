@@ -2685,9 +2685,9 @@ button{font:inherit}
     /* Le date sono state fissate al 17-19 a giro gia' iniziato: chi aveva usato
        l'app si porta dietro un'altra finestra salvata. La riallineo una volta
        sola, poi la sua scelta torna a comandare. */
-    if(localStorage.getItem('gardaDate2') !== '17-19'){
+    if(localStorage.getItem('gardaDate3') !== '17-19'){
       localStorage.setItem('gardaWin','2');
-      localStorage.setItem('gardaDate2','17-19');
+      localStorage.setItem('gardaDate3','17-19');
     }
     var v=localStorage.getItem('gardaWin'); if(v&&WIN[v]) saved=v;
   }catch(e){}

@@ -66,21 +66,35 @@ distanze sbagliate di quasi dieci chilometri &mdash; e ventidue tabelle su venti
 
 <iframe id="prova" title="Copia del dossier sotto collaudo"></iframe>
 
-<script src="collaudo.js?v=4"></script>
+<script src="collaudo.js?v=5"></script>
 <script>
 (function(){
-  var chiaviNostre=['gardaWin','gardaPicks','gardaBase','gardaTheme'];
+  /* Un elenco fisso di chiavi non regge: la prima chiave nuova che l'app
+     introduce viene consumata dal collaudo e poi non ripristinata. E'
+     successo con gardaDate2, il segnale che allineava la finestra alle date
+     scelte: il collaudo l'ha marcato come gia' fatto e ha rimesso la
+     finestra vecchia, quindi l'app si apriva sulle date sbagliate.
+     Ora si salva e si rimette tutto cio' che comincia per garda. */
+  function chiaviApp(){
+    var k=[]; try{ for(var i=0;i<localStorage.length;i++){ var c=localStorage.key(i);
+      if(c && c.indexOf('garda')===0) k.push(c); } }catch(e){}
+    return k;
+  }
   var stato=document.getElementById('stato');
   var risultati=document.getElementById('risultati');
   var cornice=document.getElementById('prova');
 
   function salvaPreferenze(){
     var m={};
-    chiaviNostre.forEach(function(k){ try{ m[k]=localStorage.getItem(k); }catch(e){} });
+    chiaviApp().forEach(function(k){ try{ m[k]=localStorage.getItem(k); }catch(e){} });
     return m;
   }
   function rimettiPreferenze(m){
-    chiaviNostre.forEach(function(k){
+    /* rimette com'erano, e toglie quelle che il collaudo ha creato */
+    chiaviApp().forEach(function(k){
+      try{ if(!(k in m)) localStorage.removeItem(k); }catch(e){}
+    });
+    Object.keys(m).forEach(function(k){
       try{ if(m[k]===null) localStorage.removeItem(k); else localStorage.setItem(k,m[k]); }catch(e){}
     });
   }

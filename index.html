@@ -123,6 +123,8 @@ button{font:inherit}
   .dett p{margin:0 0 8px}
   .dett p:last-child{margin:0}
   .dett .nota{color:var(--ink)}
+  .tariffe{font-size:14.5px;color:var(--ink);line-height:1.75;margin:0 0 8px}
+  .tariffe b{font-family:var(--mono);color:var(--accent)}
   .vuoto{padding:22px 4px;color:var(--ink-soft);font-size:15px}
 
   /* ---------- servizi della struttura ---------- */
@@ -196,6 +198,7 @@ Toccane una per vedere solo le sue strutture.</p>
   <button type="button" class="ord" data-ord="voto" aria-pressed="false">voto</button>
   <button type="button" class="ord" data-ord="vicino" aria-pressed="false">vicinanza</button>
   <button type="button" class="ord" id="soloCol" aria-pressed="false">con colazione</button>
+  <button type="button" class="ord" id="soloDis" aria-pressed="false">disdetta gratuita</button>
 </div>
 <div id="lista"></div>
 
@@ -215,10 +218,11 @@ Toccane una per vedere solo le sue strutture.</p>
 <div id="intorno"></div>
 
 <footer>
-  <p>Prezzi per 2 persone e 2 notti, tasse comprese, verificati il <b>6 agosto</b>;
-  alcune strutture riaperte una a una l&rsquo;<b>8 agosto</b>. Il prezzo mostrato &egrave;
-  il pi&ugrave; basso trovato e <b>quasi mai comprende la colazione</b>: prima di prenotare,
-  aprite la struttura.</p>
+  <p>Prezzi per 2 persone e 2 notti, tasse comprese, <b>riletti tariffa per tariffa
+  l&rsquo;8 agosto</b> sull&rsquo;elenco di Booking. Il prezzo che vedete segue il filtro
+  acceso: senza filtri &egrave; il pi&ugrave; basso, che quasi mai comprende la colazione.
+  <b>Sei strutture risultano esaurite</b> per queste date e non compaiono pi&ugrave;
+  nell&rsquo;elenco.</p>
   <p><a href="archivio.html">Archivio completo &rarr;</a> &mdash; le altre due finestre
   di date, i canali confrontati, le strutture scartate e il perch&eacute;, la logistica,
   la mappa e i dintorni.</p>
@@ -652,6 +656,58 @@ Toccane una per vedere solo le sue strutture.</p>
    "La Casa Di Campagna Sul Garda":{s:['Piscina scoperta','WiFi gratuito','Parcheggio gratuito','Camere non fumatori'],c:''},
    "Asso Bed & Breakfast":{s:['Fronte spiaggia','Camere non fumatori','Parcheggio gratuito','WiFi gratuito'],c:'20 m² · Aria condizionata · Bagno in camera · Appendiabiti · Vista giardino'},
   };
+  /* Prezzi per tariffa, letti dall'elenco di Booking l'8 agosto 2026.
+     m = il piu' basso in assoluto; c = il piu' basso CON colazione inclusa;
+     d = il piu' basso con cancellazione gratuita, ds = la sua scadenza;
+     cd = il piu' basso che ha entrambe, cds la scadenza; n = quante tariffe
+     ho letto; x = esaurita per queste date; u = pagina non raggiungibile.
+
+     ATTENZIONE a c: l'assenza NON significa "senza colazione". Nei B&B la
+     colazione non e' una tariffa ma una caratteristica della struttura -
+     Dolce Risveglio ha "Colazione eccezionale" fra i servizi e nessun
+     contrassegno sulle tariffe. Va letto come "esiste una tariffa che la
+     dichiara", mai come una negazione. */
+  var TARIFFE={
+   "B&B Giardini di Corte":{m:272,d:272,ds:'10 agosto 2026',n:2},
+   "B&B Dolce Risveglio":{m:264,n:4},
+   "Affitta camere La Fenice":{m:260,n:4},
+   "La corte dell'Elmo":{m:219,n:1},
+   "Oro Bianco 1630":{m:220,n:2},
+   "Ennesima Osteria — Bike Hotel":{m:201,c:252,d:201,ds:'14 agosto 2026',cd:290,cds:'12 agosto 2026',n:10},
+   "Hotel Gallo":{m:399,d:399,ds:'14 agosto 2026',n:1},
+   "Hotel Central Giacomini":{m:329,d:329,ds:'12 agosto 2026',n:1},
+   "Cozy Castello":{m:240,n:2},
+   "Hotel Adria & Resort":{m:389,c:389,d:432,ds:'15 agosto 2026',cd:432,cds:'15 agosto 2026',n:2},
+   "Casa Dealbata":{m:296,d:360,ds:'16 agosto 2026',n:2},
+   "B&B GARDA IN":{m:256,n:2},
+   "Hotel & Restaurant San Marco AB":{m:241,c:241,d:241,ds:'10 agosto 2026',cd:241,cds:'10 agosto 2026',n:1},
+   "Garnì Marika":{m:186,n:1},
+   "Hotel Villa Europa":{m:465,n:1},
+   "La Casa Incartata":{m:365,n:2},
+   "Albergo Ristorante Le Fontane":{m:262,c:262,n:2},
+   "Il Giardino di Sara":{m:264,n:4},
+   "B&B Casa Olivia":{m:222,c:267,n:6},
+   "Hotel Eden":{m:268,d:268,ds:'12 agosto 2026',n:6},
+   "Villa Mayoti B&B":{m:271,c:271,n:4},
+   "BiancoGelso b&b Vegan":{m:253,n:2},
+   "2bebike":{m:306,d:306,ds:'10 agosto 2026',n:3},
+   "Hotel Panoramica":{m:371,d:371,ds:'10 agosto 2026',n:2},
+   "Asso Bed & Breakfast":{m:336,n:4},
+   "Hotel Maderno":{x:1},
+   "Agriturismo Scuderia Castello":{m:302,c:302,d:302,ds:'16 agosto 2026',cd:302,cds:'16 agosto 2026',n:1},
+   "Hotel Splendid":{m:306,n:2},
+   "La Casa Di Campagna Sul Garda":{x:1},
+   "Hotel Sorriso":{m:296,d:296,ds:'12 agosto 2026',n:4},
+   "Camping Toscolano":{x:1},
+   "Casa Sol":{m:336,n:2},
+   "Aromi Piccolo Hotel":{m:358,d:358,ds:'14 agosto 2026',n:2},
+   "Cascina Monte Tivino":{x:1},
+   "Riva chiara":{m:355,d:394,ds:'12 agosto 2026',n:2},
+   "Hotel Locanda del Benaco":{x:1},
+   "HOTEL LORENA":{x:1},
+   "Reflection Boutique Hotels":{m:389,d:389,ds:'12 agosto 2026',n:1},
+   "All Inclusive Piccolo Paradiso":{u:1},
+  };
 
   /* ---------------------------------------------------------------
      Le zone. I minuti vengono da TOWNS e sono misurati dalla spiaggia
@@ -675,7 +731,7 @@ Toccane una per vedere solo le sue strutture.</p>
               ec:'sito ufficiale'};
 
   var FINESTRA='2';               /* 17-19 agosto: le date sono fisse */
-  var zonaScelta=null, ordine='prezzo', soloColazione=false;
+  var zonaScelta=null, ordine='prezzo', soloColazione=false, soloDisdetta=false;
 
   function kmTra(a1,o1,a2,o2){
     var R=6371, r=Math.PI/180;
@@ -708,7 +764,19 @@ Toccane una per vedere solo le sue strutture.</p>
              zona:zonaDi(r), paese:p, minuti: minutiDi(r,p),
              nota_:t[3]||'' };
   }).filter(Boolean);
-  CASE_UTILI.forEach(function(c){ c.col=statoColazione(c); });
+  CASE_UTILI.forEach(function(c){
+    c.col=statoColazione(c);
+    var t=TARIFFE[c.nome];
+    c.tar = t || null;
+    c.esaurita = !!(t && t.x);
+    /* il prezzo letto oggi dall'elenco tariffe batte quello del dossier */
+    if(t && t.m) c.prezzo = t.m;
+    c.pCol = t && t.c ? t.c : null;
+    c.pDis = t && t.d ? t.d : null;
+    c.pDisSca = t && t.ds ? t.ds : null;
+    c.pColDis = t && t.cd ? t.cd : null;
+    c.pColDisSca = t && t.cds ? t.cds : null;
+  });
 
   /* La colazione ha quattro stati, non due. Il tag diceva solo si/no e su
      Hotel Sorriso mentiva: segnato "inclusa" mentre la nota della tariffa
@@ -757,11 +825,21 @@ Toccane una per vedere solo le sue strutture.</p>
     return null;
   }
   function nomeCanale(c){ return CANALE[String(c.canale).split(':')[0]] || c.canale; }
+
+  /* Il prezzo che si vede dev'essere quello della tariffa che stai
+     chiedendo. Mostrare la piu' economica mentre il filtro dice "con
+     colazione" e' la stessa bugia di prima, solo travestita da filtro. */
+  function prezzoMostrato(c){
+    if(soloColazione && soloDisdetta && c.pColDis) return {p:c.pColDis, q:'con colazione e disdetta', sca:c.pColDisSca};
+    if(soloColazione && c.pCol) return {p:c.pCol, q:'con colazione', sca:null};
+    if(soloDisdetta && c.pDis) return {p:c.pDis, q:'disdicibile', sca:c.pDisSca};
+    return {p:c.prezzo, q:'', sca:null};
+  }
   function virgola(n){ return String(n).replace('.',','); }
 
   /* ---------------- zone ---------------- */
   function datiZona(z){
-    var dentro=CASE_UTILI.filter(function(c){ return c.zona===z; });
+    var dentro=CASE_UTILI.filter(function(c){ return c.zona===z && !c.esaurita; });
     var conCol=dentro.filter(function(c){ return c.col==='si'; });
     function minimo(a){
       return a.length ? Math.min.apply(null, a.map(function(c){ return c.prezzo; })) : null;
@@ -823,14 +901,17 @@ Toccane una per vedere solo le sue strutture.</p>
     var box=document.getElementById('lista');
     var righe=CASE_UTILI.filter(function(c){
       if(zonaScelta && (!c.zona || c.zona.id!==zonaScelta)) return false;
-      if(soloColazione && c.col!=='si') return false;
+      if(c.esaurita) return false;              /* niente camere: non e' una scelta */
+      if(soloColazione && c.col!=='si' && !c.pCol) return false;
+      if(soloDisdetta && !c.pDis && !c.pColDis) return false;
       return true;
     });
     righe.sort(function(a,b){
-      if(ordine==='voto')   return b.voto-a.voto || a.prezzo-b.prezzo;
+      var pa=prezzoMostrato(a).p, pb=prezzoMostrato(b).p;
+      if(ordine==='voto')   return b.voto-a.voto || pa-pb;
       if(ordine==='vicino') return (a.minuti===null?999:a.minuti)-(b.minuti===null?999:b.minuti)
-                                   || a.prezzo-b.prezzo;
-      return a.prezzo-b.prezzo;
+                                   || pa-pb;
+      return pa-pb;
     });
 
     var z=null;
@@ -847,11 +928,11 @@ Toccane una per vedere solo le sue strutture.</p>
     }
     righe.forEach(function(c){
       var d=document.createElement('div'); d.className='casa';
-      var u=link(c);
+      var u=link(c), pm=prezzoMostrato(c);
       d.innerHTML=
         '<button type="button" class="cap" aria-expanded="false">'+
           '<span class="r1"><span class="cn">'+c.nome+'</span>'+
-          '<span class="cp">'+c.prezzo+' €</span></span>'+
+          '<span class="cp">'+pm.p+' €</span></span>'+
           '<span class="r2">'+
             '<span>'+(c.paese ? c.paese[1] : '—')+'</span>'+
             (c.voto ? '<span>'+virgola(c.voto)+(c.rec ? ' · '+c.rec+' rec' : '')+'</span>' : '')+
@@ -859,6 +940,19 @@ Toccane una per vedere solo le sue strutture.</p>
           '</span>'+
         '</button>'+
         '<div class="dett" hidden>'+
+          (function(){
+            if(!c.tar || c.tar.u) return '';
+            var r=[];
+            if(c.tar.m) r.push('<b>'+c.tar.m+' €</b> la più economica');
+            if(c.pCol) r.push('<b>'+c.pCol+' €</b> con colazione inclusa');
+            if(c.pDis) r.push('<b>'+c.pDis+' €</b> disdicibile fino al '+c.pDisSca);
+            if(c.pColDis) r.push('<b>'+c.pColDis+' €</b> colazione e disdetta, fino al '+c.pColDisSca);
+            if(!r.length) return '';
+            return '<p class="tariffe">'+r.join('<br>')+'</p>'+
+              '<p class="fonte">'+c.tar.n+' tariffe lette l\u20198 agosto. '+
+              (c.pCol ? '' : 'Nessuna tariffa dichiara la colazione: nei B&amp;B è spesso compresa nel prezzo senza essere una tariffa a parte.')+
+              '</p>';
+          })()+
           (c.nota ? '<p class="nota">'+c.nota+'</p>' : '')+
           (function(){
             var sv=servizi(c);
@@ -897,10 +991,10 @@ Toccane una per vedere solo le sue strutture.</p>
 
   /* ---------------- la risposta unica ---------------- */
   function renderConsiglio(){
-    var conCol=CASE_UTILI.filter(function(c){ return c.col==='si'; })
+    var conCol=CASE_UTILI.filter(function(c){ return c.col==='si' && !c.esaurita; })
                          .sort(function(a,b){ return a.prezzo-b.prezzo; });
     var economica=conCol[0], miglior=miglioreDi(conCol);
-    var aTosc=CASE_UTILI.filter(function(c){ return c.minuti===0 && c.col==='si'; })
+    var aTosc=CASE_UTILI.filter(function(c){ return c.minuti===0 && c.col==='si' && !c.esaurita; })
                         .sort(function(a,b){ return a.prezzo-b.prezzo; });
 
     /* Ordinare per solo voto proponeva un 431 €: il meglio votato non è il
@@ -1078,6 +1172,12 @@ Toccane una per vedere solo le sue strutture.</p>
   sc.addEventListener('click',function(){
     soloColazione=!soloColazione;
     sc.setAttribute('aria-pressed', soloColazione ? 'true' : 'false');
+    renderLista();
+  });
+  var sd=document.getElementById('soloDis');
+  sd.addEventListener('click',function(){
+    soloDisdetta=!soloDisdetta;
+    sd.setAttribute('aria-pressed', soloDisdetta ? 'true' : 'false');
     renderLista();
   });
 

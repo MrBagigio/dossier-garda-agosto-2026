@@ -299,6 +299,42 @@ button{font:inherit}
   #radiale select{padding:7px 10px;border-radius:8px;border:1px solid var(--rule);
     background:var(--paper);color:var(--ink);font-family:inherit;font-size:13.5px;max-width:min(280px,70vw)}
   .fchip.qta.on{background:var(--accent);border-color:var(--accent);color:var(--paper);font-weight:600}
+  @media (max-width:760px){
+    /* i comandi di verifica servono di rado: restano, ma non prima del contenuto */
+    .fresh .acts{
+      display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;
+      max-height:0;overflow:hidden;opacity:0;transition:max-height .18s,opacity .18s}
+    .fresh.aperta .acts{max-height:400px;opacity:1}
+    .fresh .acts .chk{min-height:44px;display:flex;align-items:center;justify-content:center}
+    .fresh .acts #chkCopy{grid-column:1 / -1}
+    .freshToggle{
+      margin-top:8px;padding:8px 12px;min-height:40px;border:1px solid var(--rule);
+      border-radius:9px;background:transparent;color:var(--ink-soft);cursor:pointer;
+      font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+  }
+  .freshToggle{display:none}
+  @media (max-width:760px){ .freshToggle{display:block} }
+
+  /* ---- filtri richiudibili sul telefono ---- */
+  .filtriToggle{display:none}
+  @media (max-width:760px){
+    .filtriToggle{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      width:100%;margin:16px 0 0;padding:13px 15px;min-height:52px;
+      border:1px solid var(--rule);border-radius:11px;background:var(--paper-2);
+      color:var(--ink);cursor:pointer;text-align:left}
+    .filtriToggle .ft-lbl{font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+      text-transform:uppercase}
+    .filtriToggle .ft-stato{font-size:13.5px;color:var(--ink-soft);text-align:right;
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:58%}
+    .filtriToggle[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
+    .filtriToggle[aria-expanded="true"] .ft-stato{color:var(--accent)}
+    .filtriToggle.attivi{border-color:var(--accent)}
+    #filtriPanel{display:none}
+    #filtriPanel.aperto{display:block}
+    #filtriPanel .filters{margin-top:10px}
+  }
+
   /* ---- barra "sei senza campo" ---- */
   .offline{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;
     padding:10px 14px;background:var(--ink);color:var(--paper);
@@ -741,6 +777,7 @@ button{font:inherit}
 
   <div class="fresh" id="fresh">
     <div class="age" id="freshAge"><span class="dot"></span>—</div>
+    <button type="button" class="freshToggle" id="freshToggle" aria-expanded="false">verifica dal vivo</button>
     <div class="acts">
       <a class="chk" id="chkBk" href="#" target="_blank" rel="noopener">Booking live →</a>
       <a class="chk" id="chkTv" href="#" target="_blank" rel="noopener">trivago live →</a>
@@ -966,7 +1003,11 @@ button{font:inherit}
       <p><strong>Come leggerla.</strong> «Migliore» è il prezzo più basso trovato per due persone e due notti su tutti i canali che ho verificato. Dove il canale non è Booking, la colonna «vs Booking» dice quanto risparmiate cambiando sito. I link ai motori ufficiali hanno già le date dentro; su <b>BookingExpert</b> (Horstmann) dovete alzare gli ospiti a 2 a mano, è l'unico che non accetta il parametro via URL.</p>
     </div>
 
-    <div class="filters" role="group" aria-label="Filtra e ordina la rosa">
+    <button type="button" class="filtriToggle" id="filtriToggle" aria-expanded="false" aria-controls="filtriPanel">
+    <span class="ft-lbl">Filtri e ordine</span><span class="ft-stato" id="filtriStato">tutte le strutture</span>
+  </button>
+  <div id="filtriPanel">
+  <div class="filters" role="group" aria-label="Filtra e ordina la rosa">
       <span class="flbl">Partendo da</span>
       <div class="chips" id="radiale">
         <select id="centroSel" aria-label="Punto di partenza per l&rsquo;ordine radiale">
@@ -994,6 +1035,7 @@ button{font:inherit}
       </select>
       <button type="button" class="fclear" id="fClear" hidden>azzera filtri</button>
     </div>
+  </div>
     <div class="note" id="ferragosto" hidden></div>
     <p class="foot" id="notaRadiale" hidden></p>
     <div class="tablewrap">
@@ -1959,6 +2001,18 @@ button{font:inherit}
       if(FILTERS.town){ tc.textContent='paese: '+FILTERS.town+' ×'; tc.setAttribute('aria-pressed','true'); }
     }
     var cl=document.getElementById('fClear'); if(cl) cl.hidden = attivi===0;
+    var fs=document.getElementById('filtriStato'), fb=document.getElementById('filtriToggle');
+    if(fs){
+      var pezzi=[];
+      if(CENTRO) pezzi.push((QUANTE?('le '+QUANTE+' più vicine a '):'da ')+(CENTRILBL[CENTRO]||CENTRO));
+      if(FILTERS.tipo) pezzi.push(TIPOLBL[FILTERS.tipo]||FILTERS.tipo);
+      if(FILTERS.town) pezzi.push(FILTERS.town);
+      var dot=[]; for(var kk in TAGLABEL){ if(FILTERS[kk]) dot.push(TAGLABEL[kk]); }
+      if(FILTERS.hi) dot.push('voto alto');
+      if(dot.length) pezzi.push(dot.join(' + '));
+      fs.textContent = pezzi.length ? pezzi.join(' · ') : (rows.length+' strutture, tutte');
+      if(fb) fb.classList.toggle('attivi', pezzi.length>0);
+    }
     if(visRosa.length<rows.length){
       body.insertAdjacentHTML('beforeend','<tr class="more"><td colspan="8"><button type="button" id="rosaMore">Mostra tutte le '+rows.length+' strutture</button></td></tr>');
       var rmB=document.getElementById('rosaMore');
@@ -2697,6 +2751,20 @@ button{font:inherit}
         });
         render(document.documentElement.getAttribute('data-win')||'3');
       });
+    });
+    /* Apre e chiude il pannello. Chiuso, la barra deve dire cosa sta
+       filtrando: un contatore da solo costringe ad aprire per ricordarselo. */
+    var frB=document.getElementById('freshToggle'), frBox=document.getElementById('fresh');
+    if(frB&&frBox) frB.addEventListener('click',function(){
+      var ap=frBox.classList.toggle('aperta');
+      frB.setAttribute('aria-expanded',ap?'true':'false');
+      frB.textContent=ap?'nascondi':'verifica dal vivo';
+    });
+    var ftBtn=document.getElementById('filtriToggle'), ftPan=document.getElementById('filtriPanel');
+    if(ftBtn&&ftPan) ftBtn.addEventListener('click',function(){
+      var ap=ftPan.classList.toggle('aperto');
+      ftBtn.setAttribute('aria-expanded',ap?'true':'false');
+      if(ap) ftPan.scrollIntoView({block:'nearest'});
     });
     var tc2=document.getElementById('townChip');
     if(tc2) tc2.addEventListener('click',function(){ FILTERS.town=0; render(document.documentElement.getAttribute('data-win')||'3'); });

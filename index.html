@@ -588,8 +588,38 @@ Toccane una per vedere solo le sue strutture.</p>
              rec:parseInt(r[3],10)||0,
              prezzo:t[0], canale:t[1], nota:t[3]||'',
              zona:zonaDi(r), paese:p, minuti: p?p[2]:null,
-             colazione:(TAGS[r[0]]||'').indexOf('b')>=0 };
+             nota_:t[3]||'' };
   }).filter(Boolean);
+  CASE_UTILI.forEach(function(c){ c.col=statoColazione(c); });
+
+  /* La colazione ha quattro stati, non due. Il tag diceva solo si/no e su
+     Hotel Sorriso mentiva: segnato "inclusa" mentre la nota della tariffa
+     dice 15 € a testa. Quando le due fonti litigano vince la nota, che è il
+     dato verificato aprendo la struttura; il tag è una sintesi. */
+  function statoColazione(c){
+    var n=(c.nota||'').toLowerCase();
+    if(/colazione non inclusa|colazione non compresa|senza colazione/.test(n)) return 'no';
+    if(/colazione\D{0,12}\d+\s*€|colazione \d+/.test(n)) return 'pag';
+    if(/colazione inclusa|colazione compresa/.test(n)) return 'si';
+    return (TAGS[c.nome]||'').indexOf('b')>=0 ? 'si' : '?';
+  }
+  var COLLBL={si:'colazione inclusa', pag:'colazione a pagamento',
+              no:'senza colazione', '?':'colazione da verificare'};
+
+  /* Un 10 su una recensione sola non è un voto migliore di un 9,4 su
+     duecento: è meno informazione. Il voto va tirato verso la media finché
+     le recensioni non lo reggono, altrimenti "voto più alto" premia sempre
+     la struttura appena aperta. */
+  var VOTO_MEDIO=8.6, PESO=20;
+  function punteggio(c){
+    if(!c.voto) return 0;
+    return (c.voto*c.rec + VOTO_MEDIO*PESO)/(c.rec+PESO);
+  }
+  function miglioreDi(elenco){
+    var m=null;
+    elenco.forEach(function(c){ if(!m || punteggio(c)>punteggio(m)) m=c; });
+    return m;
+  }
 
   function link(c){
     if(c.canale && c.canale.indexOf('bk:')===0){
@@ -604,12 +634,11 @@ Toccane una per vedere solo le sue strutture.</p>
   /* ---------------- zone ---------------- */
   function datiZona(z){
     var dentro=CASE_UTILI.filter(function(c){ return c.zona===z; });
-    var conCol=dentro.filter(function(c){ return c.colazione; });
+    var conCol=dentro.filter(function(c){ return c.col==='si'; });
     function minimo(a){
       return a.length ? Math.min.apply(null, a.map(function(c){ return c.prezzo; })) : null;
     }
-    var migliore=null;
-    dentro.forEach(function(c){ if(!migliore || c.voto>migliore.voto) migliore=c; });
+    var migliore=miglioreDi(dentro);
     var minuti=[];
     z.paesi.forEach(function(p){
       for(var i=0;i<TOWNS.length;i++) if(TOWNS[i][0]===p) minuti.push(TOWNS[i][2]);
@@ -650,7 +679,8 @@ Toccane una per vedere solo le sue strutture.</p>
         '<span class="zc">'+z.cosa+'</span>'+
         '<span class="zi">'+d.dentro.length+' strutture'+
         (giro ? ' · entro 3 km: '+giro : '')+
-        (d.migliore ? ' · voto più alto: '+d.migliore.nome+' '+virgola(d.migliore.voto) : '')+
+        (d.migliore ? ' · il più solido: '+d.migliore.nome+' '+virgola(d.migliore.voto)+
+                      (d.migliore.rec ? ' su '+d.migliore.rec : '') : '')+
         '</span>';
       b.addEventListener('click',function(){
         zonaScelta = (zonaScelta===z.id) ? null : z.id;
@@ -667,7 +697,7 @@ Toccane una per vedere solo le sue strutture.</p>
     var box=document.getElementById('lista');
     var righe=CASE_UTILI.filter(function(c){
       if(zonaScelta && (!c.zona || c.zona.id!==zonaScelta)) return false;
-      if(soloColazione && !c.colazione) return false;
+      if(soloColazione && c.col!=='si') return false;
       return true;
     });
     righe.sort(function(a,b){
@@ -699,8 +729,7 @@ Toccane una per vedere solo le sue strutture.</p>
           '<span class="r2">'+
             '<span>'+(c.paese ? c.paese[1] : '—')+'</span>'+
             (c.voto ? '<span>'+virgola(c.voto)+(c.rec ? ' · '+c.rec+' rec' : '')+'</span>' : '')+
-            (c.colazione ? '<span class="pill si">colazione inclusa</span>'
-                         : '<span class="pill">colazione da verificare</span>')+
+            '<span class="pill'+(c.col==='si'?' si':'')+'">'+COLLBL[c.col]+'</span>'+
           '</span>'+
         '</button>'+
         '<div class="dett" hidden>'+
@@ -725,18 +754,18 @@ Toccane una per vedere solo le sue strutture.</p>
 
   /* ---------------- la risposta unica ---------------- */
   function renderConsiglio(){
-    var conCol=CASE_UTILI.filter(function(c){ return c.colazione; })
+    var conCol=CASE_UTILI.filter(function(c){ return c.col==='si'; })
                          .sort(function(a,b){ return a.prezzo-b.prezzo; });
-    var economica=conCol[0], miglior=null;
-    conCol.forEach(function(c){ if(!miglior || c.voto>miglior.voto) miglior=c; });
-    var aTosc=CASE_UTILI.filter(function(c){ return c.minuti===0 && c.colazione; })
+    var economica=conCol[0], miglior=miglioreDi(conCol);
+    var aTosc=CASE_UTILI.filter(function(c){ return c.minuti===0 && c.col==='si'; })
                         .sort(function(a,b){ return a.prezzo-b.prezzo; });
 
     var h='';
     if(miglior){
       h+='<p class="nome"><b>'+miglior.nome+'</b></p>'+
          '<p class="riga"><span class="num">'+miglior.prezzo+' €</span> · '+
-         virgola(miglior.voto)+(miglior.rec ? ' su '+miglior.rec+' recensioni' : '')+
+         virgola(miglior.voto)+(miglior.rec ? ' su '+miglior.rec+' recensioni'
+                                              : ' (recensioni non registrate)')+
          ' · colazione inclusa · '+(miglior.paese ? miglior.paese[1] : '')+'</p>';
     }
     var alt=[];

@@ -259,7 +259,16 @@
       if (etDopo === etPrima) p.push('cambiando base l etichetta non cambia');
       if (etDopo.indexOf('da ') !== 0) p.push('l etichetta della base non dice da dove');
       var dopo = distanze();
-      if (dopo.join(',') === prima) p.push('cambiando base le distanze restano identiche');
+      /* Due basi diverse possono dare le stesse distanze, ed e' corretto:
+         le strutture per cui non ho la posizione esatta stanno tutte sul
+         centro del loro paese, quindi partire dall'una o dall'altra e' lo
+         stesso punto. Il difetto sarebbe che accada fra due posizioni
+         ESATTE - li' le distanze devono cambiare. L'app dichiara quali
+         sono approssimate, e il collaudo si fida di quella dichiarazione. */
+      var approssimate = /approssimata/.test(etPrima) || /approssimata/.test(etDopo);
+      if (dopo.join(',') === prima && !approssimate) {
+        p.push('due basi entrambe esatte danno le stesse distanze');
+      }
       for (var j = 1; j < dopo.length; j++) {
         if (dopo[j] < dopo[j - 1]) { p.push('dopo il cambio base l ordine si rompe'); break; }
       }

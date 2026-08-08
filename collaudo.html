@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Collaudo — Dossier Garda 2026</title>
 <meta name="robots" content="noindex">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <style>
   :root{
     --paper:#EEF1EE; --paper-2:#F7F9F7; --ink:#152227; --ink-soft:#516268;
@@ -66,7 +68,13 @@ distanze sbagliate di quasi dieci chilometri &mdash; e ventidue tabelle su venti
 
 <iframe id="prova" title="Copia del dossier sotto collaudo"></iframe>
 
-<script src="collaudo.js?v=9"></script>
+<script>
+/* Il codice del collaudo si chiede con l'istante del caricamento, non con un
+   numero di versione da incrementare a mano: quello me lo dimenticavo, e un
+   collaudo che gira sul proprio codice di ieri produce un verde che non vale
+   niente. E' gia' successo due volte. */
+document.write('<script src="collaudo.js?t='+Date.now()+'"><\/script>');
+</script>
 <script>
 (function(){
   /* Un elenco fisso di chiavi non regge: la prima chiave nuova che l'app

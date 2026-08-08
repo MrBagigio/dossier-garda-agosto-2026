@@ -291,6 +291,14 @@ button{font:inherit}
 
   .fchip.tipo.on{background:var(--accent);border-color:var(--accent);color:var(--paper);font-weight:600}
   #tipoChips{margin-right:6px}
+  #rosa td.dist{ text-align:right }
+  #rosa table:not(.conDistanza) th:nth-last-child(2){ display:none }
+  /* !important perche' il blocco telefono, che viene dopo, rende blocchi
+     tutte le celle con data-l: senza questo ricomparirebbe una riga vuota */
+  #rosaBody td.dist.vuota{ display:none !important }
+  #radiale select{padding:7px 10px;border-radius:8px;border:1px solid var(--rule);
+    background:var(--paper);color:var(--ink);font-family:inherit;font-size:13.5px;max-width:min(280px,70vw)}
+  .fchip.qta.on{background:var(--accent);border-color:var(--accent);color:var(--paper);font-weight:600}
   /* ---- barra "sei senza campo" ---- */
   .offline{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;
     padding:10px 14px;background:var(--ink);color:var(--paper);
@@ -826,17 +834,16 @@ button{font:inherit}
     <div class="picks">
       <article class="pick best">
         <p class="rank best-l">Prima scelta · 17–19 agosto</p>
-        <h3 class="name" style="text-transform:none;letter-spacing:normal;color:var(--ink);font-size:1.35rem;margin:0">Ostello delle cartiere</h3>
-        <p class="where">Toscolano Maderno · camera doppia con bagno privato e vista lago · 1,2 km dal centro</p>
-        <div class="figure"><span class="price">124 €</span><span class="score">8,8 · 875 rec · si paga in struttura</span></div>
+        <h3 class="name" style="text-transform:none;letter-spacing:normal;color:var(--ink);font-size:1.35rem;margin:0">Villa Giulia Rooms &amp; Bike</h3>
+        <p class="where">Toscolano Maderno · 400 m dal centro · piscina e sauna · colazione inclusa</p>
+        <div class="figure"><span class="price">208 €</span><span class="score">9,4 · 208 rec · su Super.com</span></div>
         <ul>
-          <li><b>Meno della metà</b> di quasi tutto il resto, e con <b>875 recensioni</b> alle spalle: pulizia 9,1, staff 9,5, rapporto qualità-prezzo 9,2. Le coppie gli danno <b>9,2</b></li>
-          <li>Il nome inganna: <b>non è un dormitorio</b>. È una camera doppia con <b>bagno privato</b> e <b>vista lago</b>, due letti singoli, parcheggio gratuito</li>
-          <li><b>Non paghi niente adesso</b> — si salda in struttura. Disdire costa una notte, non tutto: è il rischio più basso di tutta la rosa</li>
-          <li>È a Toscolano, dove serve essere martedì sera. La colazione è a parte, <b>5&nbsp;€</b>, e le recensioni la promuovono</li>
-          <li><b>Ne resta una</b></li>
+          <li><b>Booking ne chiede 331</b>, Super.com <b>208</b> e trivago 214: <b>123&nbsp;€ di divario</b> sulla stessa camera, il più largo del dossier. Booking stesso lo ammette in pagina</li>
+          <li><b>Colazione inclusa</b>, piscina scoperta, sauna, vasca idromassaggio, barbecue, parcheggio gratuito. Camera di 40&nbsp;m²</li>
+          <li>A <b>400 m dal centro</b> di Toscolano: la sera del martedì è a piedi. Posizione 9,6, le coppie danno 9,5</li>
+          <li>L&rsquo;unico neo, che si legge solo aprendo la scheda: il <b>bagno privato è esterno</b> alla camera. È vostro, ma è fuori dalla porta</li>
         </ul>
-        <p class="cta"><a href="https://www.booking.com/hotel/it/ostello-delle-cartiere.it.html?checkin=2026-08-17&checkout=2026-08-19&group_adults=2&no_rooms=1">Apri su Booking →</a></p>
+        <p class="cta"><a href="https://www.trivago.it/it/lm/hotel-toscolano-maderno-italia?search=200-68669;dr-20260817-20260819;drs-40;tp-true">Confronta su trivago →</a></p>
       </article>
 
       <article class="pick">
@@ -848,7 +855,7 @@ button{font:inherit}
           <li>Il <b>voto più alto</b> della fascia economica: 9,3 su 203 recensioni, camera <b>deluxe vista lago</b>, colazione e tasse comprese</li>
           <li><b>Non è sul lungolago</b>: sta a Navazzo, frazione in quota dentro il Parco Alto Garda. Booking scrive «1,8 km dal centro», ma da lì a Toscolano sono <b>15,7 km e 31 minuti</b> di strada di montagna — non i 13 che avevo scritto prima di verificarlo</li>
           <li>Se cercate silenzio in collina è un pregio; se volete l&rsquo;acqua sotto casa, no</li>
-          <li>Il rovescio: <b>ne resta una</b> e <b>non è rimborsabile</b>. Costa <b>62&nbsp;€ più dell&rsquo;Ostello</b>, che però è a Toscolano</li>
+          <li>Il rovescio: <b>ne resta una</b> e <b>non è rimborsabile</b>. Costa <b>22&nbsp;€ meno di Villa Giulia</b>, ma quella è a Toscolano e questa a mezz&rsquo;ora</li>
           <li>Se contasse poter disdire a costo zero, c&rsquo;è <b>Ennesima Osteria</b> a 203&nbsp;€, a Toscolano e con la cena al piano di sotto. Attenzione però: il dossier le attribuiva <b>8,6 su 704 recensioni</b> e Booking ne dichiara <b>8,3 su 413</b> — numeri miei sbagliati, corretti stasera</li>
         </ul>
         <p class="cta"><a href="https://www.booking.com/hotel/it/garni-marika.it.html?checkin=2026-08-17&checkout=2026-08-19&group_adults=2&no_rooms=1">Apri su Booking →</a></p>
@@ -889,10 +896,10 @@ button{font:inherit}
         <li><b>Hotel Adria</b> — <b>389&nbsp;€</b>, colazione inclusa, camera quadrupla, l’unica rimasta</li>
       </ul>
       <p><b>Il sito ufficiale dell’Hotel Eden non è verificabile da qui</b>: il suo motore (SimpleBooking) non risponde affatto, non è un banner da accettare. I 238&nbsp;€ che il dossier gli attribuiva risalgono al 5 agosto e restano <b>non riverificati</b>; i 268 di Booking invece li ho visti con i miei occhi.</p>
-      <p><b>Senza colazione, quindi fuori dalla vostra richiesta</b> anche se il prezzo attira: La corte dell’Elmo 219&nbsp;€ (scesa da 240, ne resta 1), B&amp;B GARDA IN 256, Il Giardino di Sara 264, Ennesima 203, e l’Ostello dove costa 5&nbsp;€ a testa. <b>Hotel Colomber</b>, che il dossier dava a 226&nbsp;€, sul 17–19 è <b>esaurito</b>.</p>
+      <p><b>Senza colazione, quindi fuori dalla vostra richiesta</b> anche se il prezzo attira: La corte dell’Elmo 219&nbsp;€ (scesa da 240, ne resta 1), B&amp;B GARDA IN 256, Il Giardino di Sara 264, ed Ennesima a 203. <b>Hotel Colomber</b>, che il dossier dava a 226&nbsp;€, sul 17–19 è <b>esaurito</b>.</p>
 
       <p><strong>Il prezzo che vedete nella rosa è il più basso possibile, e quasi mai comprende la colazione.</strong> Verificando struttura per struttura la sera del 6 agosto sono usciti tre numeri sbagliati: <b>Hotel Sorriso</b> non fa 260&nbsp;€ ma <b>306</b>, e la colazione lì costa 15&nbsp;€ a testa (356 inclusa); <b>Hotel Eden</b> costa 268 <em>con</em> la colazione dentro; e <b>Ennesima</b> aveva un numero di recensioni gonfiato. Prima di prenotare, aprite la struttura: la scheda della lista non basta.</p>
-      <p><strong>Perché l’Ostello non era mai comparso.</strong> Ogni ricerca fatta finora leggeva solo le <b>prime 25 schede</b> di Booking, e a Toscolano ce ne sono 34. L’Ostello sta in fondo all’elenco per prezzo, in seconda pagina. Due limiti diversi — il raggio dei quindici minuti e la prima pagina — tenevano fuori le due strutture migliori. Ora l’ho ribattuto tutto: seconda pagina di ogni comune, ordinamento per voto oltre che per prezzo, e Airbnb ricontrollato su queste date (il meglio sotto i 250 € è un monolocale a <b>226 €</b>, 4,86 su 90).</p>
+      <p><strong>Perché certe strutture non comparivano.</strong> Ogni ricerca fatta finora leggeva solo le <b>prime 25 schede</b> di Booking, e a Toscolano ce ne sono 34. Più di una struttura sta in fondo all’elenco per prezzo, in seconda pagina. Due limiti diversi — il raggio dei quindici minuti e la prima pagina — tenevano fuori le alternative migliori. Ora l’ho ribattuto tutto: seconda pagina di ogni comune, ordinamento per voto oltre che per prezzo, e Airbnb ricontrollato su queste date (il meglio sotto i 250 € è un monolocale a <b>226 €</b>, 4,86 su 90).</p>
       <p>Limone, Tremosine, Peschiera, Lazise, Bardolino, Desenzano, Padenghe e Manerba li ho guardati e non offrono niente che batta i 186&nbsp;€ di Marika a parità di voto: sull’alto lago si parte da 296&nbsp;€, sulla sponda veronese da 255.</p>
     </div>
     </div>
@@ -960,8 +967,14 @@ button{font:inherit}
     </div>
 
     <div class="filters" role="group" aria-label="Filtra e ordina la rosa">
+      <span class="flbl">Partendo da</span>
+      <div class="chips" id="radiale">
+        <select id="centroSel" aria-label="Punto di partenza per l&rsquo;ordine radiale">
+          <option value="">— nessun punto, ordine normale —</option><option value="Toscolano">Toscolano Maderno</option><option value="Gardone">Gardone Riviera</option><option value="Salo">Salò</option><option value="Gargnano">Gargnano</option><option value="San Felice">San Felice del Benaco</option><option value="Manerba">Manerba del Garda</option><option value="Puegnago">Puegnago del Garda</option><option value="Tignale">Tignale</option></select>
+        <button type="button" class="fchip qta" data-q="5" aria-pressed="false">le 5 più vicine</button><button type="button" class="fchip qta" data-q="10" aria-pressed="false">le 10</button><button type="button" class="fchip qta" data-q="20" aria-pressed="false">le 20</button><button type="button" class="fchip qta on" data-q="0" aria-pressed="true">tutte</button>
+      </div>
       <span class="flbl">Che tipo</span>
-      <div class="chips" id="tipoChips"><button type="button" class="fchip tipo" data-t="h" aria-pressed="false">hotel</button><button type="button" class="fchip tipo" data-t="b" aria-pressed="false">B&B e camere</button><button type="button" class="fchip tipo" data-t="a" aria-pressed="false">appartamento</button><button type="button" class="fchip tipo" data-t="g" aria-pressed="false">agriturismo</button><button type="button" class="fchip tipo" data-t="o" aria-pressed="false">ostello</button><button type="button" class="fchip tipo" data-t="c" aria-pressed="false">campeggio</button></div>
+      <div class="chips" id="tipoChips"><button type="button" class="fchip tipo" data-t="h" aria-pressed="false">hotel</button><button type="button" class="fchip tipo" data-t="b" aria-pressed="false">B&B e camere</button><button type="button" class="fchip tipo" data-t="a" aria-pressed="false">appartamento</button><button type="button" class="fchip tipo" data-t="g" aria-pressed="false">agriturismo</button><button type="button" class="fchip tipo" data-t="c" aria-pressed="false">campeggio</button></div>
       <span class="flbl">Mostra solo</span>
       <div class="chips">
         <button type="button" class="fchip" data-f="w" aria-pressed="false">piscina o spa</button>
@@ -982,11 +995,12 @@ button{font:inherit}
       <button type="button" class="fclear" id="fClear" hidden>azzera filtri</button>
     </div>
     <div class="note" id="ferragosto" hidden></div>
+    <p class="foot" id="notaRadiale" hidden></p>
     <div class="tablewrap">
       <table>
         <caption id="rosaCap" aria-live="polite">Disponibili il <b>21–23 agosto</b> · totale 2 persone, 2 notti · ordinate per prezzo</caption>
         <thead>
-          <tr><th scope="col">Struttura</th><th scope="col">Dove · cos'è</th><th scope="col" class="num">Migliore</th><th scope="col">Canale</th><th scope="col" class="num">vs Booking</th><th scope="col" class="num">Voto</th><th scope="col">Prenota</th></tr>
+          <tr><th scope="col">Struttura</th><th scope="col">Dove · cos'è</th><th scope="col" class="num">Migliore</th><th scope="col">Canale</th><th scope="col" class="num">vs Booking</th><th scope="col" class="num">Voto</th><th scope="col" class="num">Da qui</th><th scope="col">Prenota</th></tr>
         </thead>
         <tbody id="rosaBody"></tbody>
       </table>
@@ -1437,6 +1451,7 @@ button{font:inherit}
         <thead><tr><th scope="col">Struttura</th><th scope="col" class="num">Prezzo</th><th scope="col" class="num">Voto</th><th scope="col">Il problema</th></tr></thead>
         <tbody>
           <tr><td class="name">Casa Collio <span class="meta">Airbnb</span></td><td class="num">176–205</td><td class="num">4,52/5</td><td>Si chiama così perché <b>è a Collio, in Val Trompia</b>: 850 m di quota, 1h15–1h30 dal lago. Il 5 % delle recensioni è da 1 stella; pulizia 4,4, qualità-prezzo 4,2</td></tr>
+          <tr><td class="name">Ostello delle cartiere <span class="meta">Toscolano</span></td><td class="num">124</td><td class="num">8,8</td><td>Niente di sbagliato: camera doppia con <b>bagno privato e vista lago</b>, 8,8 su <b>875 recensioni</b>, pulizia 9,1, e si pagava in struttura. Era la prima scelta a <b>124&nbsp;€</b>, metà di tutto il resto. <b>Escluso su vostra richiesta</b>: niente ostelli</td></tr>
           <tr><td class="name">Il covo dei ranocchi <span class="meta">Vrbo</span></td><td class="num">282</td><td class="num">9,8</td><td>Compariva sotto Salò perché la scheda dice «9,5&nbsp;km da Salò», ma <b>è a Calvagese della Riviera</b>, nell’entroterra: circa <b>mezz’ora dalla spiaggia di Toscolano</b>, il doppio dei quindici minuti che ci siamo dati. Il 9,8 poggia su <b>15 recensioni</b></td></tr>
           <tr><td class="name">Ca' del Rì <span class="meta">Gargnano</span></td><td class="num">114</td><td class="num">9,5</td><td>Sono <b>2 posti in un dormitorio misto da 8 letti</b>. È un ostello, non una camera</td></tr>
           <tr><td class="name">Casa Vacanze La Piazzetta <span class="meta">Maderno, Airbnb</span></td><td class="num">204.421</td><td class="num">4,97/5</td><td>Prezzo-blocco dell'host per date che non vuole affittare. Peccato: 61 recensioni e a 100 m dal lago</td></tr>
@@ -1683,7 +1698,6 @@ button{font:inherit}
    ['Casa Johanna','Gargnano · appartamento intero 50 m²','9,7','35',0,{3:[258,'bk:casa-johanna-gargnano',null]}],
    ['B&B Renzano bedrooms','Salò · B&B','9,0','27',0,{1:[298,'bk:b-amp-b-renzano',null],3:[258,'bk:b-amp-b-renzano',null]}],
    ['Hotel & Restaurant San Marco AB','Toscolano · edificio storico, vista lago','6,2','160',0,{1:[261,'bk:amp-restaurant-san-marco-ab',null],2:[254,'bk:amp-restaurant-san-marco-ab',null],3:[261,'bk:amp-restaurant-san-marco-ab',null]}],
-   ['Ostello delle cartiere','Toscolano · camera doppia con bagno privato, vista lago, 1,2 km dal centro','8,8','875',0,{2:[124,'bk:ostello-delle-cartiere',null,'si paga in struttura']}],
    ['Monolocale Castello','Toscolano · monolocale con cucina, Superhost','4,86/5','90',0,{2:[226,'ab',null]}],
    ['Garnì Marika','Gargnano · Navazzo, in collina sopra il lago · 31 min da Toscolano','9,3','203',0,{2:[186,'bk:garni-marika',null,'colazione inclusa, ne resta 1']}],
    ['Hotel Villa Europa','Gargnano · hotel sul lago','9,4','175',0,{2:[357,'bk:europa-gargnano',null]}],
@@ -1754,8 +1768,6 @@ button{font:inherit}
    /* verificate sulla scheda Booking il 6 agosto */
    'Garnì Marika':'b',            /* colazione inclusa nella tariffa */
    'Albergo Ristorante Le Fontane':'b',  /* colazione inclusa */
-   'Ostello delle cartiere':'a'  /* parcheggio privato gratuito; la colazione costa 5 €, quindi niente tag */
-  ,
    'Villa Giulia Rooms & Bike':'wpb'  /* piscina, centro a piedi, colazione inclusa — verificate il 6 agosto */};
   var TAGLABEL={w:'piscina o spa',l:'sul lago',p:'centro a piedi',k:'cucina',b:'colazione',a:'posto auto'};
   function tagsOf(n){ return TAGS[n]||''; }
@@ -1820,7 +1832,6 @@ button{font:inherit}
     'Locanda San Felice':'b',
     'Monolocale Castello':'a',
     'Oro Bianco 1630':'b',
-    'Ostello delle cartiere':'o',
     'Pizzocolo Resort Fasano':'h',
     'Reflection Boutique Hotels':'h',
     'Regina del Garda Suite':'h',
@@ -1832,10 +1843,12 @@ button{font:inherit}
     'Villa Mayoti B&B':'b',
     'Villaggio Turistico Maderno':'c'
   };
-  var TIPOLBL={h:'hotel',b:'B&B e camere',a:'appartamento',g:'agriturismo',o:'ostello',c:'campeggio'};
+  var TIPOLBL={h:'hotel',b:'B&B e camere',a:'appartamento',g:'agriturismo',c:'campeggio'};
   function tipoOf(nome){ return TIPI[nome]||null; }
   var DOTAZIONI=['w','l','p','k','b','a'];
   var FILTERS={w:0,l:0,p:0,k:0,b:0,a:0,hi:0,town:0,tipo:0};
+  /* punto di partenza per l'ordine radiale, e quante proposte mostrare */
+  var CENTRO=0, QUANTE=0;
   var SORT='price';
 
   function passes(d){
@@ -1874,7 +1887,15 @@ button{font:inherit}
       var n=parseInt(String(d[3]).replace('.',''),10); if(isNaN(n)) n=0;
       return (v*n + 8.6*20)/(n+20);
     };
-    if(SORT==='score') rows.sort(function(a,b){ return sc(b)-sc(a) || a[5][id][0]-b[5][id][0]; });
+    if(CENTRO){
+      rows.sort(function(a,b){
+        var da=distanzaDa(CENTRO,a[0]), db=distanzaDa(CENTRO,b[0]);
+        if(da==null&&db==null) return a[5][id][0]-b[5][id][0];
+        if(da==null) return 1; if(db==null) return -1;
+        return da-db || a[5][id][0]-b[5][id][0];
+      });
+    }
+    else if(SORT==='score') rows.sort(function(a,b){ return sc(b)-sc(a) || a[5][id][0]-b[5][id][0]; });
     else if(SORT==='town') rows.sort(function(a,b){ return (townOf(a[1])||'zz').localeCompare(townOf(b[1])||'zz') || a[5][id][0]-b[5][id][0]; });
     else rows.sort(function(a,b){ return a[5][id][0]-b[5][id][0]; });
     /* Il 14-16 e' Ferragosto: gran parte delle strutture non ha piu' una
@@ -1892,7 +1913,9 @@ button{font:inherit}
       } else { fer.hidden=true; fer.innerHTML=''; }
     }
     renderMap(id);
-    var visRosa=(!ROSATUTTE && rows.length>18)?rows.slice(0,15):rows;
+    var visRosa;
+    if(QUANTE) visRosa=rows.slice(0,QUANTE);
+    else visRosa=(!ROSATUTTE && rows.length>18)?rows.slice(0,15):rows;
     body.innerHTML=visRosa.map(function(d){
       var e=d[5][id], price=e[0], chan=e[1], delta=e[2], note=e[3];
       var kind=chan.split(':')[0];
@@ -1910,11 +1933,20 @@ button{font:inherit}
         '<td data-l="canale">'+(isAlt?('<b>'+cn+'</b>'):cn)+noteTxt+'</td>'+
         '<td class="num" data-l="vs Booking">'+deltaCell+'</td>'+
         '<td class="num" data-l="voto">'+d[2]+rev+thin+'</td>'+
+        '<td class="dist'+(CENTRO?'':' vuota')+'" data-l="'+(CENTRO?'da qui':'')+'">'+(function(){
+          if(!CENTRO) return '';
+          var km=distanzaDa(CENTRO,d[0]);
+          if(km==null) return '—';
+          var circa=ESATTA[d[0]]?'':'≈ ';
+          var auto=Math.max(2,Math.round(km*1.35/40*60));
+          return circa+Math.max(0.1,Math.round(km*10)/10).toFixed(1).replace('.',',')+' km'+
+                 '<span class="meta"> · '+circa+auto+'′</span>';
+        })()+'</td>'+
         '<td class="vai" data-l=""><a class="cta" href="'+link(chan,w)+'">'+cn+' →</a></td>'+
       '</tr>';
     }).join('');
     if(!rows.length){
-      body.innerHTML='<tr><td colspan="7" class="empty">Nessuna struttura ha tutte le caratteristiche richieste il '+w.lab+'. Togli un filtro, oppure prova una finestra di date diversa.</td></tr>';
+      body.innerHTML='<tr><td colspan="8" class="empty">Nessuna struttura ha tutte le caratteristiche richieste il '+w.lab+'. Togli un filtro, oppure prova una finestra di date diversa.</td></tr>';
     }
     var attivi=Object.keys(FILTERS).filter(function(k){return FILTERS[k];}).length;
     Array.prototype.forEach.call(document.querySelectorAll('.fchip[data-t]'),function(o){
@@ -1928,7 +1960,7 @@ button{font:inherit}
     }
     var cl=document.getElementById('fClear'); if(cl) cl.hidden = attivi===0;
     if(visRosa.length<rows.length){
-      body.insertAdjacentHTML('beforeend','<tr class="more"><td colspan="7"><button type="button" id="rosaMore">Mostra tutte le '+rows.length+' strutture</button></td></tr>');
+      body.insertAdjacentHTML('beforeend','<tr class="more"><td colspan="8"><button type="button" id="rosaMore">Mostra tutte le '+rows.length+' strutture</button></td></tr>');
       var rmB=document.getElementById('rosaMore');
       if(rmB) rmB.addEventListener('click',function(){ ROSATUTTE=true; render(document.documentElement.getAttribute('data-win')||'3'); });
     }
@@ -1938,7 +1970,28 @@ button{font:inherit}
       });
     });
     renderCompare(id);
-    cap.innerHTML = attivi
+    var nr=document.getElementById('notaRadiale');
+    if(nr){
+      if(CENTRO){
+        var esatte=0, totali=0;
+        rows.forEach(function(d){ if(COORD[d[0]]){ totali++; if(ESATTA[d[0]]) esatte++; } });
+        nr.hidden=false;
+        nr.innerHTML='Distanze in linea d’aria dal centro di <b>'+(CENTRILBL[CENTRO]||CENTRO)+
+          '</b>, con i minuti stimati come nella sezione dintorni. '+
+          'Di queste '+totali+' strutture ne ho la posizione esatta per <b>'+esatte+'</b>: '+
+          'le altre stanno al centro del proprio comune e portano il segno di circa, '+
+          'quindi <b>fra strutture dello stesso paese l’ordine non è geografico ma per prezzo</b>.';
+      } else { nr.hidden=true; nr.innerHTML=''; }
+    }
+    if(CENTRO){
+      /* con un punto di partenza la didascalia cambia mestiere: dice da dove
+         si misura e quante proposte si stanno vedendo, non quante esistono */
+      var mostrate=Math.min(QUANTE||rows.length, rows.length);
+      cap.innerHTML = '<b>'+mostrate+'</b> propost'+(mostrate===1?'a':'e')+
+        ' in ordine di distanza da <b>'+(CENTRILBL[CENTRO]||CENTRO)+'</b>'+
+        (attivi? ' fra le '+rows.length+' che passano i filtri' : ' su '+all.length+' disponibili')+
+        ' il '+w.lab+' · totale 2 persone, 2 notti';
+    } else cap.innerHTML = attivi
       ? '<b>'+rows.length+' di '+all.length+'</b> strutture disponibili il <b>'+w.lab+'</b> passano i filtri · totale 2 persone, 2 notti'
       : '<b>'+all.length+' strutture</b> disponibili il <b>'+w.lab+'</b> ('+w.dow+') · totale 2 persone, 2 notti';
   }
@@ -2385,7 +2438,14 @@ button{font:inherit}
     ['Hotel Locanda del Benaco','Salo',45.6068,10.525,0],
     ['HOTEL LORENA','Toscolano',45.64271,10.61506,1],
     ['Regina del Garda Suite','Toscolano',45.636,10.604,0],
-    ['Reflection Boutique Hotels','Toscolano',45.636,10.604,0]
+    ['Reflection Boutique Hotels','Toscolano',45.636,10.604,0],
+    ['La corte dell\'Elmo','Salo',45.6068,10.525,0],
+    ['Monolocale Castello','Toscolano',45.636,10.604,0],
+    ['Garnì Marika','Gargnano',45.68507,10.63425,1],
+    ['Hotel Villa Europa','Gargnano',45.688,10.663,0],
+    ['La Casa Incartata','Toscolano',45.64198,10.60934,1],
+    ['B&B Solstizio d\'estate','San Felice',45.585,10.548,0],
+    ['Ca\' due Olivi','Toscolano',45.636,10.604,0]
   ];
 
   /* Le CASE con l'ultimo campo a 0 non hanno una posizione verificata:
@@ -2426,6 +2486,24 @@ button{font:inherit}
     });
     sel.innerHTML=h;
     if(BASE) sel.value=String(BASE.i);
+  }
+
+  /* Ordine radiale: da un punto scelto, dalla piu' vicina alla piu' lontana.
+     Le coordinate vengono da CASE; per le strutture di cui non ho la
+     posizione esatta vale il centro del paese, e la riga lo dichiara con
+     il segno di circa, come gia' fa la sezione dintorni. */
+  var COORD={}, ESATTA={};
+  CASE.forEach(function(c){ COORD[c[0]]=[c[2],c[3]]; ESATTA[c[0]]=!!c[4]; });
+  var CENTRI={'Toscolano':[45.6360,10.6040],'Gardone':[45.6215,10.5640],'Salo':[45.6068,10.5250],
+    'Gargnano':[45.6880,10.6630],'San Felice':[45.5850,10.5480],'Manerba':[45.5480,10.5560],
+    'Puegnago':[45.5580,10.5170],'Tignale':[45.7180,10.7130]};
+  var CENTRILBL={'Toscolano':'Toscolano Maderno','Gardone':'Gardone Riviera','Salo':'Salò',
+    'Gargnano':'Gargnano','San Felice':'San Felice del Benaco','Manerba':'Manerba del Garda',
+    'Puegnago':'Puegnago del Garda','Tignale':'Tignale'};
+  function distanzaDa(centro, nome){
+    var a=CENTRI[centro], b=COORD[nome];
+    if(!a||!b) return null;
+    return kmTra(a[0],a[1],b[0],b[1]);
   }
 
   function scorePoi(p){
@@ -2599,6 +2677,23 @@ button{font:inherit}
         Array.prototype.forEach.call(document.querySelectorAll('.fchip[data-t]'),function(o){
           var on=(FILTERS.tipo===o.getAttribute('data-t'));
           o.classList.toggle('on',on); o.setAttribute('aria-pressed',on?'true':'false');
+        });
+        render(document.documentElement.getAttribute('data-win')||'3');
+      });
+    });
+    /* ordine radiale: il punto di partenza e quante proposte */
+    var cs=document.getElementById('centroSel');
+    if(cs) cs.addEventListener('change',function(){
+      CENTRO=cs.value||0;
+      var tab=document.querySelector('#rosa table');
+      if(tab) tab.classList.toggle('conDistanza', !!CENTRO);
+      render(document.documentElement.getAttribute('data-win')||'3');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.fchip[data-q]'),function(b){
+      b.addEventListener('click',function(){
+        QUANTE=parseInt(b.getAttribute('data-q'),10)||0;
+        Array.prototype.forEach.call(document.querySelectorAll('.fchip[data-q]'),function(o){
+          var on=(o===b); o.classList.toggle('on',on); o.setAttribute('aria-pressed',on?'true':'false');
         });
         render(document.documentElement.getAttribute('data-win')||'3');
       });

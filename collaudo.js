@@ -397,16 +397,32 @@
     return st.display !== 'none' && st.visibility !== 'hidden';
   };
 
-  /* Un pannello che si chiude senza un comando VISIBILE per riaprirlo non e'
-     compatto: e' contenuto sparito. E non si scopre premendo, perche'
-     element.click() riesce anche su un elemento display:none - va guardato
-     lo stile calcolato. E' successo davvero: la regola che nasconde i
-     pulsanti stava dopo la media query, stessa specificita', quindi vinceva
-     lei e sul telefono schede e note si chiudevano per sempre. */
+  /* Un pannello che nasconde contenuto senza un comando VISIBILE per
+     riportarlo indietro non e' compatto: e' contenuto sparito. E non si
+     scopre premendo, perche' element.click() riesce anche su un elemento
+     display:none - va guardato lo stile calcolato. E' successo davvero: la
+     regola che nasconde i pulsanti stava dopo la media query, stessa
+     specificita', quindi vinceva lei e sul telefono schede e note si
+     chiudevano per sempre.
+
+     La domanda e' "cosa e' sparito davvero", non "che classe ha": le stesse
+     classi restano anche su schermo grande, dove pero' il CSS non nasconde
+     niente e i comandi sono giustamente invisibili. */
   Banco.prototype.giroRichiudibili = function () {
     var p = [], self = this;
 
+    function comandoDiRiapertura(e) {
+      return e.querySelector('.apri, .notaApri, [aria-expanded]');
+    }
+
     this.qq('.chiusa').forEach(function (e) {
+      /* quanto contenuto e' effettivamente nascosto, escluso il comando stesso */
+      var nascosti = Array.prototype.filter.call(e.children, function (c) {
+        return !c.classList.contains('apri') && !c.classList.contains('notaApri') &&
+               !self.visibile(c);
+      });
+      if (!nascosti.length) return;          /* non e' sparito niente: la classe non conta qui */
+
       var dentro = Array.prototype.filter.call(e.querySelectorAll('button'), function (b) {
         return self.visibile(b);
       });
@@ -414,8 +430,12 @@
         ? self.qq('[aria-controls="' + e.id + '"]').filter(function (b) { return self.visibile(b); })
         : [];
       if (!dentro.length && !fuori.length) {
-        p.push('chiuso senza comando visibile per riaprirlo: ' +
+        p.push('nasconde ' + nascosti.length + ' element' + (nascosti.length === 1 ? 'o' : 'i') +
+               ' senza comando visibile per riaprirlo: ' +
                (e.id || e.className || e.tagName).toString().slice(0, 40));
+      }
+      if (!comandoDiRiapertura(e) && !fuori.length) {
+        p.push('pannello chiuso senza alcun comando di riapertura: ' + (e.id || e.className));
       }
     });
 
@@ -438,9 +458,9 @@
       }
     });
 
-    /* i comandi del verdetto: premere deve cambiare cio che si VEDE */
+    /* dove il comando SI VEDE, premerlo deve cambiare cio' che si vede */
     this.qq('#verdetto .apri').forEach(function (b) {
-      if (!self.visibile(b)) { p.push('comando "apri" presente ma invisibile'); return; }
+      if (!self.visibile(b)) return;
       var scheda = b.parentElement, elenco = scheda.querySelector('ul');
       if (!elenco) return;
       var prima = self.visibile(elenco);
@@ -448,9 +468,6 @@
       if (self.visibile(elenco) === prima) p.push('"apri" non mostra il contenuto della scheda');
       b.click();
       if (self.visibile(elenco) !== prima) p.push('"apri" non richiude la scheda');
-    });
-    this.qq('#verdetto .notaApri').forEach(function (b) {
-      if (!self.visibile(b)) p.push('titolo di nota presente ma invisibile');
     });
 
     this.stati++;

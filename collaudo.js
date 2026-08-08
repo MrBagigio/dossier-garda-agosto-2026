@@ -104,7 +104,9 @@
     if (dichiarate > 0 && vuoto) p.push('messaggio di vuoto con ' + dichiarate + ' dichiarate');
 
     righe.forEach(function (tr) {
-      if (tr.querySelectorAll('td').length !== 7) p.push('riga con celle mancanti');
+      /* otto celle da quando c'e' la colonna della distanza radiale: e' sempre
+         nel DOM, nascosta finche' non si sceglie un punto di partenza */
+      if (tr.querySelectorAll('td').length !== 8) p.push('riga con celle mancanti');
 
       var tag = Array.prototype.slice.call(tr.querySelectorAll('.tag'))
         .map(function (x) { return x.textContent.trim(); });

@@ -220,9 +220,15 @@
   Banco.prototype.giroIntorno = function () {
     var p = [], self = this;
 
+    /* La distanza si legge dalla SUA cella, non dal testo dell'intera riga:
+       li' il conteggio delle recensioni si incolla ai chilometri e
+       "5 su 38" + "2,7 km" diventa "382,7 km". Il collaudo segnalava
+       distanze da settemila chilometri, che erano un difetto suo. */
     function distanze() {
       return self.qq('#intorno .luogo').map(function (l) {
-        var m = (l.textContent || '').match(/([\d.]+)\s*km/);
+        var b = l.querySelector('.ld b');
+        if (!b) return null;
+        var m = (b.textContent || '').match(/^\s*([\d.]+)\s*km\s*$/);
         return m ? parseFloat(m[1]) : null;
       }).filter(function (x) { return x !== null; });
     }

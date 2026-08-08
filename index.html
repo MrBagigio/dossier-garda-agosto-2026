@@ -76,6 +76,11 @@ button{font:inherit}
   .scelta .nome{font-size:1.2rem;margin:12px 0 2px}
   .scelta .riga{color:var(--ink-soft);font-size:15px;margin:5px 0 0}
   .scelta .num{font-family:var(--mono);font-size:1.5rem;color:var(--ink)}
+  .scelta .eti{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--accent);white-space:nowrap}
+  .scelta .perche{font-size:13.5px;color:var(--ink-faint)}
+  .scelta .nome{margin-top:16px}
+  .scelta .nome:first-child{margin-top:12px}
 
   /* ---------- zone ---------- */
   h2.sez{font-size:1.3rem;margin:34px 0 4px}
@@ -587,7 +592,7 @@ Toccane una per vedere solo le sue strutture.</p>
              voto:parseFloat(String(r[2]).replace(',','.'))||0,
              rec:parseInt(r[3],10)||0,
              prezzo:t[0], canale:t[1], nota:t[3]||'',
-             zona:zonaDi(r), paese:p, minuti: p?p[2]:null,
+             zona:zonaDi(r), paese:p, minuti: minutiDi(r,p),
              nota_:t[3]||'' };
   }).filter(Boolean);
   CASE_UTILI.forEach(function(c){ c.col=statoColazione(c); });
@@ -621,6 +626,16 @@ Toccane una per vedere solo le sue strutture.</p>
     return m;
   }
 
+  /* Garni' Marika sta a Navazzo, in collina: 31 minuti, non i 13 del comune
+     di Gargnano - e nella sua descrizione c'e' scritto. Come per la
+     colazione, il dato della singola struttura batte la media del paese;
+     usare il comune faceva sembrare vicino un posto a mezz'ora di tornanti. */
+  function minutiDi(riga, paese){
+    var m=String(riga[1]).match(/(\d+)\s*min da Toscolano/i);
+    if(m) return parseInt(m[1],10);
+    return paese ? paese[2] : null;
+  }
+
   function link(c){
     if(c.canale && c.canale.indexOf('bk:')===0){
       return 'https://www.booking.com/hotel/it/'+c.canale.slice(3)+
@@ -639,10 +654,8 @@ Toccane una per vedere solo le sue strutture.</p>
       return a.length ? Math.min.apply(null, a.map(function(c){ return c.prezzo; })) : null;
     }
     var migliore=miglioreDi(dentro);
-    var minuti=[];
-    z.paesi.forEach(function(p){
-      for(var i=0;i<TOWNS.length;i++) if(TOWNS[i][0]===p) minuti.push(TOWNS[i][2]);
-    });
+    var minuti=dentro.map(function(c){ return c.minuti; })
+                     .filter(function(x){ return x!==null; });
     var vicini={};
     POI.forEach(function(p){
       if(kmTra(z.centro[0],z.centro[1],p[5],p[6])<=3) vicini[p[0]]=(vicini[p[0]]||0)+1;
@@ -760,24 +773,36 @@ Toccane una per vedere solo le sue strutture.</p>
     var aTosc=CASE_UTILI.filter(function(c){ return c.minuti===0 && c.col==='si'; })
                         .sort(function(a,b){ return a.prezzo-b.prezzo; });
 
+    /* Ordinare per solo voto proponeva un 431 €: il meglio votato non è il
+       migliore da scegliere, e un consiglio che ignora il prezzo non è un
+       consiglio. Il compromesso si cerca fra le opzioni che non sfondano,
+       cioè sotto la mediana di quelle con la colazione dentro. */
+    var prezzi=conCol.map(function(c){ return c.prezzo; })
+                     .sort(function(a,b){ return a-b; });
+    var mediana=prezzi.length ? prezzi[Math.floor(prezzi.length/2)] : 0;
+    var compromesso=miglioreDi(conCol.filter(function(c){ return c.prezzo<=mediana; }));
+
+    function scheda(c, etichetta, perche){
+      if(!c) return '';
+      return '<p class="nome"><b>'+c.nome+'</b> <span class="eti">'+etichetta+'</span></p>'+
+        '<p class="riga"><span class="num">'+c.prezzo+' €</span> · '+
+        (c.voto ? virgola(c.voto)+(c.rec ? ' su '+c.rec+' recensioni'
+                                         : ' (recensioni non registrate)')+' · ' : '')+
+        (c.paese ? c.paese[1] : '')+
+        (c.minuti ? ' · '+c.minuti+' min martedì sera' : ' · ci sei già martedì sera')+
+        '</p>'+(perche ? '<p class="riga perche">'+perche+'</p>' : '');
+    }
     var h='';
-    if(miglior){
-      h+='<p class="nome"><b>'+miglior.nome+'</b></p>'+
-         '<p class="riga"><span class="num">'+miglior.prezzo+' €</span> · '+
-         virgola(miglior.voto)+(miglior.rec ? ' su '+miglior.rec+' recensioni'
-                                              : ' (recensioni non registrate)')+
-         ' · colazione inclusa · '+(miglior.paese ? miglior.paese[1] : '')+'</p>';
+    h+=scheda(compromesso,'il compromesso',
+              'Il voto più solido fra quelle che non sfondano il prezzo.');
+    if(economica && economica!==compromesso)
+      h+=scheda(economica,'la più economica','');
+    if(aTosc.length && aTosc[0]!==compromesso && aTosc[0]!==economica)
+      h+=scheda(aTosc[0],'senza guidare martedì','');
+    if(miglior && miglior!==compromesso){
+      h+='<p class="riga perche">Il voto più alto in assoluto è <b>'+miglior.nome+
+         '</b> ('+virgola(miglior.voto)+'), ma costa '+miglior.prezzo+' €.</p>';
     }
-    var alt=[];
-    if(economica && economica!==miglior){
-      alt.push('la più economica con colazione è <b>'+economica.nome+'</b> a '+
-               economica.prezzo+' €');
-    }
-    if(aTosc.length && aTosc[0]!==miglior){
-      alt.push('per non guidare martedì sera, a Toscolano si parte da <b>'+
-               aTosc[0].nome+'</b> a '+aTosc[0].prezzo+' €');
-    }
-    if(alt.length) h+='<p class="riga">Se conta altro: '+alt.join('; ')+'.</p>';
     document.getElementById('consiglio').innerHTML=h;
   }
 

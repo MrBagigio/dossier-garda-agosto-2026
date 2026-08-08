@@ -2275,17 +2275,18 @@ button{font:inherit}
   (function(){
     if(!window.matchMedia || !window.matchMedia('(max-width:760px)').matches) return;
     function compatta(){
-      Array.prototype.forEach.call(document.querySelectorAll('#verdetto .vset.on .pick'),function(a,i){
-        if(a.querySelector('.apri')) return;
-        if(i===0) return;                      /* la prima scelta resta aperta */
-        a.classList.add('chiusa');
-        var b=document.createElement('button');
-        b.type='button'; b.className='apri'; b.textContent='perché — apri';
-        b.addEventListener('click',function(){
-          var ap=!a.classList.toggle('chiusa');
-          b.textContent=ap?'chiudi':'perché — apri';
+      Array.prototype.forEach.call(document.querySelectorAll('#verdetto .vset'),function(gruppo){
+        Array.prototype.forEach.call(gruppo.querySelectorAll('.pick'),function(a,i){
+          if(a.querySelector('.apri') || i===0) return;   /* la prima scelta resta aperta */
+          a.classList.add('chiusa');
+          var b=document.createElement('button');
+          b.type='button'; b.className='apri'; b.textContent='perché — apri';
+          b.addEventListener('click',function(){
+            var ap=!a.classList.toggle('chiusa');
+            b.textContent=ap?'chiudi':'perché — apri';
+          });
+          a.appendChild(b);
         });
-        a.appendChild(b);
       });
     }
     Array.prototype.forEach.call(document.querySelectorAll('#verdetto .note'),function(n){

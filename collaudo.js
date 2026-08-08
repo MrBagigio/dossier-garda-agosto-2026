@@ -1,32 +1,27 @@
-/* Banco di prova del dossier Garda.
+/* Collaudo dell'interfaccia nuova.
  *
- * Pilota l'interfaccia vera dentro un iframe e controlla degli invarianti dopo
- * ogni cambio di stato. Non verifica che il codice faccia quello che dice il
- * codice: verifica che il RISULTATO A SCHERMO sia coerente con quello che la
- * pagina promette all'utente. Per esempio, con il filtro "piscina o spa"
- * attivo, ogni riga mostrata deve davvero portare quella dotazione — non basta
- * che il conteggio torni.
+ * Non legge il codice: pilota la pagina vera dentro una cornice e controlla,
+ * dopo ogni cambio di stato, che quello che si VEDE corrisponda a quello che
+ * la pagina promette. Le verifiche sono invarianti - "non deve mai succedere
+ * che..." - perche' un difetto vero si presenta quasi sempre come una
+ * promessa smentita dallo schermo, non come un'eccezione.
  *
- * Tre difetti veri sono usciti proprio da qui:
- *  - un clic su "tema" scriveva data-win="null" e azzerava la rosa;
- *  - una casa a Calvagese veniva contata a Salo', e da li' le distanze dei
- *    dintorni erano sbagliate di quasi dieci chilometri;
- *  - ventidue tabelle su venticinque non avevano un <thead>.
+ * Tre trappole gia' pagate su questo stesso progetto, e per questo hanno un
+ * controllo dedicato:
+ *  - element.click() riesce anche su un elemento display:none, quindi
+ *    premere non prova che un comando sia raggiungibile: si guarda lo stile
+ *    calcolato (visibile(), giroRichiudibili);
+ *  - legare un gestore per classe cattura i fratelli che condividono lo
+ *    stile ma non l'attributo dati, e lo stato si avvelena in silenzio;
+ *  - un dato riassunto che contraddice un dato specifico - la colazione
+ *    "inclusa" dal tag mentre la nota dice 15 EUR a parte - non solleva
+ *    errori: va confrontato esplicitamente (giroDati).
  *
- * Uso: apri collaudo.html. Aggiungi ?rapido per il giro breve.
+ * L'interfaccia precedente vive in archivio.html e non e' piu' collaudata:
+ * e' congelata, e il collaudo serve a proteggere cio' che cambia.
  */
 (function (globale) {
   'use strict';
-
-  var DOTAZIONI = {
-    w: 'piscina o spa', l: 'sul lago', p: 'centro a piedi',
-    k: 'cucina', b: 'colazione', a: 'posto auto'
-  };
-  var CHIAVI = ['w', 'l', 'p', 'k', 'b', 'a', 'hi'];
-  var CATEGORIE = ['M', 'B', 'S', 'P', 'V', 'X', 'W'];
-  var RAGGI = [['1.5', 1.5], ['10', 10], ['20', 20], ['0', 0]];
-  var FINESTRE = ['1', '2', '3'];
-  var ORDINI = ['price', 'score', 'town'];
 
   function Banco(win, opzioni) {
     opzioni = opzioni || {};
@@ -38,9 +33,9 @@
     this.problemi = [];
   }
 
-  Banco.prototype.q = function (sel) { return this.doc.querySelector(sel); };
-  Banco.prototype.qq = function (sel) {
-    return Array.prototype.slice.call(this.doc.querySelectorAll(sel));
+  Banco.prototype.q = function (s) { return this.doc.querySelector(s); };
+  Banco.prototype.qq = function (s) {
+    return Array.prototype.slice.call(this.doc.querySelectorAll(s));
   };
   Banco.prototype.segnala = function (dove, elenco) {
     if (!elenco.length) return;
@@ -48,312 +43,23 @@
     elenco.forEach(function (x) { unici[x] = 1; });
     this.problemi.push(this.etichetta + dove + ' :: ' + Object.keys(unici).join(' ; '));
   };
-
-  /* ---------------------------------------------------------- comandi */
-
-  Banco.prototype.chipAcceso = function (k) {
-    var b = this.q('.fchip[data-f="' + k + '"]');
-    return !!b && b.getAttribute('aria-pressed') === 'true';
+  Banco.prototype.visibile = function (e) {
+    if (!e || e.hidden) return false;
+    var st = this.win.getComputedStyle(e);
+    return st.display !== 'none' && st.visibility !== 'hidden';
   };
-  Banco.prototype.imponi = function (k, valore) {
-    if (this.chipAcceso(k) !== valore) this.q('.fchip[data-f="' + k + '"]').click();
+  Banco.prototype.euro = function (testo) {
+    var m = String(testo).match(/(\d+)\s*€/);
+    return m ? parseInt(m[1], 10) : null;
   };
-  Banco.prototype.applicaMaschera = function (m) {
-    var self = this;
-    CHIAVI.forEach(function (k, i) { self.imponi(k, !!(m & (1 << i))); });
-  };
-  Banco.prototype.finestra = function (w) {
-    this.q('.switcher button[data-win="' + w + '"]').click();
-  };
-  Banco.prototype.ordina = function (idSelect, valore) {
-    var s = this.doc.getElementById(idSelect);
-    if (!s) return;
-    s.value = valore;
-    s.dispatchEvent(new this.win.Event('change', { bubbles: true }));
-  };
-  Banco.prototype.paese = function (nome) {
-    var chip = this.doc.getElementById('townChip');
-    if (chip && !chip.hidden) chip.click();
-    if (nome) {
-      this.q('.lakemap g[data-town="' + nome + '"]')
-        .dispatchEvent(new this.win.MouseEvent('click', { bubbles: true }));
-    }
-  };
-  Banco.prototype.espandi = function (id) {
-    var b = this.doc.getElementById(id);
-    if (b) b.click();
-  };
+  Banco.prototype.righe = function () { return this.qq('.casa'); };
 
-  /* ------------------------------------------------------- invarianti */
-
-  Banco.prototype.verificaRosa = function (dove, maschera, paeseAtteso) {
-    var p = [], self = this;
-    var w = this.doc.documentElement.getAttribute('data-win');
-    if (!{ '1': 1, '2': 1, '3': 1 }[w]) p.push('data-win non valido: ' + w);
-
-    var vuoto = !!this.q('#rosaBody td.empty');
-    var righe = vuoto ? [] : this.qq('#rosaBody tr:not(.more)');
-    var cap = this.doc.getElementById('rosaCap');
-    var m = cap && cap.textContent.match(/^(\d+)/);
-    var dichiarate = m ? +m[1] : -1;
-
-    if (!vuoto && righe.length > dichiarate) {
-      p.push('mostrate ' + righe.length + ' ma dichiarate ' + dichiarate);
-    }
-    if (dichiarate === 0 && !vuoto) p.push('zero strutture senza messaggio di vuoto');
-    if (dichiarate > 0 && vuoto) p.push('messaggio di vuoto con ' + dichiarate + ' dichiarate');
-
-    righe.forEach(function (tr) {
-      /* otto celle da quando c'e' la colonna della distanza radiale: e' sempre
-         nel DOM, nascosta finche' non si sceglie un punto di partenza */
-      if (tr.querySelectorAll('td').length !== 8) p.push('riga con celle mancanti');
-
-      var tag = Array.prototype.slice.call(tr.querySelectorAll('.tag'))
-        .map(function (x) { return x.textContent.trim(); });
-      CHIAVI.forEach(function (k, i) {
-        if (!(maschera & (1 << i)) || k === 'hi') return;
-        if (tag.indexOf(DOTAZIONI[k]) < 0) p.push('filtro "' + DOTAZIONI[k] + '" ma riga senza quella dotazione');
-      });
-
-      if (maschera & 64) {
-        var cella = tr.querySelector('td[data-l="voto"]');
-        var s = cella ? cella.textContent : '';
-        var voto = parseFloat((s.match(/([\d,]+)/) || [0, '0'])[1].replace(',', '.'));
-        var rec = parseInt((s.match(/\((\d+)\)/) || [0, '0'])[1], 10);
-        var soglia = s.indexOf('/5') >= 0 ? 4.85 : 9;
-        if (!(voto >= soglia) || !(rec >= 20)) p.push('"voto alto e collaudato" ma ' + voto + ' su ' + rec + ' recensioni');
-      }
-
-      if (paeseAtteso) {
-        var dove2 = tr.querySelector('td.meta');
-        if (dove2 && dove2.textContent.trim().indexOf(paeseAtteso) !== 0) {
-          p.push('riga fuori dal comune ' + paeseAtteso);
-        }
-      }
-    });
-
-    this.testoPulito('#rosaBody', p);
-    if (this.scorreDiLato()) p.push('la pagina scorre di lato');
-
-    this.stati++;
-    this.segnala(dove, p);
-  };
-
-  /* La soglia non e' un pixel: dentro una cornice la barra di scorrimento
-     compare dopo il primo layout e sposta il bordo destro di frazioni di
-     pixel. Con la soglia a uno questo controllo segnalava migliaia di
-     scorrimenti che su un telefono vero non esistono. Tre pixel separano
-     l'assestamento del rendering da un vero sbordamento, che parte sempre
-     da decine. */
-  Banco.prototype.scorreDiLato = function () {
-    var d = this.doc.documentElement;
-    return d.scrollWidth > d.clientWidth + 3;
-  };
-
-  Banco.prototype.testoPulito = function (sel, p) {
-    var el = this.q(sel);
-    if (!el) return;
-    var t = el.textContent;
-    ['undefined', 'NaN', '[object'].forEach(function (b) {
-      if (t.indexOf(b) >= 0) p.push('testo sporco: ' + b);
-    });
-  };
-
-  Banco.prototype.verificaDintorni = function (dove, raggio, perDistanza) {
-    var p = [];
-    var vuoto = !!this.q('#poiBody td.empty');
-    var righe = vuoto ? [] : this.qq('#poiBody tr:not(.more)');
-    var c = this.doc.getElementById('poiCount');
-    var m = c && c.textContent.match(/^(\d+)/);
-    var dichiarati = m ? +m[1] : -1;
-
-    if (!vuoto && righe.length > dichiarati) p.push('mostrati ' + righe.length + ' ma dichiarati ' + dichiarati);
-    if (dichiarati === 0 && !vuoto) p.push('zero luoghi senza messaggio di vuoto');
-    if (dichiarati > 0 && vuoto) p.push('messaggio di vuoto con ' + dichiarati + ' dichiarati');
-
-    var precedente = -1;
-    righe.forEach(function (tr) {
-      var s = (tr.querySelector('td.dist') || {}).textContent || '';
-      var km = s.match(/([\d,]+)\s*km/), metri = s.match(/(\d+)\s*m\b/);
-      var d = km ? parseFloat(km[1].replace(',', '.')) : (metri ? +metri[1] / 1000 : null);
-      if (d === null) { p.push('distanza illeggibile'); return; }
-      if (raggio === 1.5 && d > 1.55) p.push('oltre il raggio "due passi": ' + d + ' km');
-      if (raggio === 10 || raggio === 20) {
-        var min = s.match(/(\d+)′/);
-        if (min && s.indexOf('auto') >= 0 && +min[1] > raggio) p.push('oltre ' + raggio + ' minuti: ' + min[1]);
-      }
-      /* l'ordine per distanza vale solo quando e' quello scelto: ordinando
-         per voto o prezzo le distanze sono giustamente sparse */
-      if (perDistanza) {
-        if (precedente >= 0 && d + 0.06 < precedente) p.push('ordine per distanza rotto');
-        precedente = d;
-      }
-    });
-
-    this.testoPulito('#poiBody', p);
-    if (this.scorreDiLato()) p.push('la pagina scorre di lato');
-
-    this.stati++;
-    this.segnala(dove, p);
-  };
-
-  /* ------------------------------------------------------------ giri */
-
-  Banco.prototype.giroFiltri = function () {
-    var self = this;
-    var ordini = this.rapido ? ['price'] : ORDINI;
-    var passo = this.rapido ? 8 : 1;
-    FINESTRE.forEach(function (w) {
-      self.finestra(w);
-      ordini.forEach(function (o) {
-        self.ordina('rosaSort', o);
-        for (var m = 0; m < 128; m += passo) {
-          self.applicaMaschera(m);
-          self.espandi('rosaMore');
-          self.verificaRosa('filtri finestra ' + w + ' ordine ' + o + ' maschera ' + m, m, null);
-        }
-      });
-    });
-    this.applicaMaschera(0);
-  };
-
-  Banco.prototype.giroPaesi = function () {
-    var self = this;
-    var paesi = this.qq('.lakemap g[data-town]').map(function (g) { return g.getAttribute('data-town'); });
-    var finestre = this.rapido ? ['3'] : FINESTRE;
-    var passo = this.rapido ? 16 : 1;
-    finestre.forEach(function (w) {
-      self.finestra(w);
-      paesi.forEach(function (nome) {
-        self.paese(nome);
-        for (var m = 0; m < 128; m += passo) {
-          self.applicaMaschera(m);
-          self.espandi('rosaMore');
-          self.verificaRosa('paese ' + nome + ' finestra ' + w + ' maschera ' + m, m, nome);
-        }
-        self.applicaMaschera(0);
-      });
-      self.paese(null);
-    });
-  };
-
-  Banco.prototype.giroDintorni = function () {
-    var self = this;
-    var sel = this.doc.getElementById('baseSel');
-    if (!sel) { this.problemi.push('dintorni: elenco delle basi assente'); return; }
-    var basi = [];
-    for (var i = 0; i < sel.options.length; i++) basi.push(i);
-    if (this.rapido) basi = basi.filter(function (i) { return i % 12 === 0; });
-
-    basi.forEach(function (i) {
-      sel.selectedIndex = i;
-      sel.dispatchEvent(new self.win.Event('change', { bubbles: true }));
-      var nome = sel.options[i].text.slice(0, 20);
-      CATEGORIE.forEach(function (cat) {
-        self.q('#catChips .fchip[data-c="' + cat + '"]').click();
-        RAGGI.forEach(function (r) {
-          self.q('#rangeChips .fchip[data-r="' + r[0] + '"]').click();
-          ['dist', 'score', 'price'].forEach(function (o) {
-            self.ordina('poiSort', o);
-            self.espandi('poiMore');
-            self.verificaDintorni(
-              'dintorni ' + nome + ' ' + cat + ' raggio ' + r[0] + ' ordine ' + o,
-              r[1], o === 'dist');
-          });
-        });
-      });
-    });
-  };
-
-  Banco.prototype.giroSequenze = function () {
-    var self = this, p = [];
-
-    /* confronto: il tetto dichiarato e' quattro */
-    this.applicaMaschera(0);
-    this.paese(null);
-    this.espandi('rosaMore');
-    var pin = this.qq('#rosaBody .pin[data-pick]');
-    for (var i = 0; i < 6 && i < pin.length; i++) pin[i].click();
-    var scelte = this.qq('#rosaBody .pin[data-pick][aria-pressed="true"]').length;
-    if (scelte > 4) p.push('confronto: ' + scelte + ' selezionate, il tetto e\' quattro');
-    var colonne = this.qq('.cmp thead th').length - 1;
-    if (colonne >= 0 && colonne !== scelte) p.push('confronto: ' + colonne + ' colonne per ' + scelte + ' selezionate');
-    var x = this.q('.cmpx');
-    if (x) {
-      x.click();
-      var dopo = this.qq('#rosaBody .pin[data-pick][aria-pressed="true"]').length;
-      if (dopo !== scelte - 1) p.push('togliere dal confronto: da ' + scelte + ' a ' + dopo);
-    }
-    var svuota = this.qq('button').filter(function (b) { return b.textContent.trim() === 'svuota'; })[0];
-    if (svuota) {
-      svuota.click();
-      if (this.qq('#rosaBody .pin[data-pick][aria-pressed="true"]').length) p.push('svuota non svuota');
-    }
-
-    /* archivio: bottone, titolo, e link dall'indice */
-    ['matrice', 'canali', 'diretto', 'scartati', 'airbnb', 'logistica', 'quando'].forEach(function (id) {
-      var s = self.doc.getElementById(id);
-      if (!s) { p.push('sezione assente: ' + id); return; }
-      var b = s.querySelector('.archbtn');
-      if (!b) { p.push('bottone archivio assente: ' + id); return; }
-      b.click();
-      if (!s.classList.contains('open')) p.push(id + ': il bottone non apre');
-      if (b.getAttribute('aria-expanded') !== 'true') p.push(id + ': aria-expanded non aggiornato');
-      b.click();
-      if (s.classList.contains('open')) p.push(id + ': il bottone non chiude');
-      s.querySelector('h2').click();
-      if (!s.classList.contains('open')) p.push(id + ': il titolo non apre');
-      s.querySelector('h2').click();
-      var link = self.q('nav.toc a[href="#' + id + '"]');
-      if (link) {
-        link.click();
-        if (!s.classList.contains('open')) p.push(id + ': il link dell\'indice non apre la sezione');
-      }
-    });
-
-    /* il tema non deve toccare la finestra: qui c'era il difetto peggiore */
-    var tema = this.qq('.switcher button').filter(function (b) { return /tema/i.test(b.textContent); })[0];
-    if (tema) {
-      for (var t = 0; t < 4; t++) {
-        var prima = this.doc.documentElement.getAttribute('data-win');
-        tema.click();
-        var poi = this.doc.documentElement.getAttribute('data-win');
-        if (prima !== poi) p.push('il tema ha cambiato la finestra: ' + prima + ' -> ' + poi);
-      }
-    }
-    var esporta = this.doc.getElementById('csvBtn');
-    if (esporta) {
-      var w0 = this.doc.documentElement.getAttribute('data-win');
-      /* l'export scarica davvero: neutralizzo il clic sull'ancora */
-      var vero = this.win.HTMLAnchorElement.prototype.click;
-      this.win.HTMLAnchorElement.prototype.click = function () {
-        if (this.hasAttribute('download')) return;
-        return vero.apply(this, arguments);
-      };
-      esporta.click();
-      this.win.HTMLAnchorElement.prototype.click = vero;
-      if (this.doc.documentElement.getAttribute('data-win') !== w0) p.push('l\'esportazione ha cambiato la finestra');
-    }
-
-    /* hash: validi, di sezione, e spazzatura */
-    ['#14-16', '#17-19', '#21-23', '#mappa', '#pippo', '#', '#21-23'].forEach(function (h) {
-      self.win.location.hash = h;
-      self.win.dispatchEvent(new self.win.HashChangeEvent('hashchange'));
-      var w = self.doc.documentElement.getAttribute('data-win');
-      if (!{ '1': 1, '2': 1, '3': 1 }[w]) p.push('hash ' + h + ' porta data-win a ' + w);
-      if (!self.qq('#rosaBody tr').length) p.push('hash ' + h + ' lascia la rosa vuota');
-    });
-
-    this.stati++;
-    this.segnala('sequenze', p);
-  };
+  /* ---------------------------------------------------- struttura */
 
   Banco.prototype.giroStruttura = function () {
-    var p = [];
-    var teste = this.qq('table thead').length, tabelle = this.qq('table').length;
-    if (teste < tabelle) p.push(tabelle - teste + ' tabelle su ' + tabelle + ' senza <thead>');
-    if (this.doc.body.innerHTML.indexOf('scope="col"ead') >= 0) p.push('tag <thead> corrotto nel sorgente');
-    if (this.qq('th tr').length) p.push('<tr> annidato dentro <th>');
+    var p = [], self = this;
+
+    if (!this.doc.documentElement.lang) p.push('manca la lingua del documento');
 
     var visti = {}, doppi = [];
     this.qq('[id]').forEach(function (e) {
@@ -362,126 +68,277 @@
     if (doppi.length) p.push('id duplicati: ' + doppi.slice(0, 4).join(', '));
 
     this.qq('a[target="_blank"]').forEach(function (a) {
-      if ((a.getAttribute('rel') || '').indexOf('noopener') < 0) p.push('link esterno senza rel=noopener');
-    });
-    this.qq('img').forEach(function (i) {
-      if (!i.hasAttribute('alt')) p.push('immagine senza alt');
-    });
-    var self = this;
-    this.qq('button').forEach(function (b) {
-      /* un bottone nascosto non e' esposto: il chip del comune nasce vuoto
-         e si riempie quando serve */
-      if (b.hidden || self.win.getComputedStyle(b).display === 'none') return;
-      if (!b.textContent.trim() && !b.getAttribute('aria-label')) {
-        p.push('bottone senza nome accessibile: ' + (b.id || b.className || '?'));
+      if ((a.getAttribute('rel') || '').indexOf('noopener') < 0) {
+        p.push('link esterno senza rel=noopener');
       }
     });
-    if (!this.doc.documentElement.lang) p.push('manca la lingua del documento');
-
-    /* nessuna struttura deve stare in un comune che non e' il suo */
-    var comuni = this.qq('.lakemap g[data-town]').map(function (g) { return g.getAttribute('data-town'); });
-    this.espandi('rosaMore');
-    this.qq('#rosaBody td.meta').forEach(function (td) {
-      var pre = td.textContent.trim().split(' · ')[0];
-      var ok = comuni.some(function (c) { return pre.indexOf(c) === 0; });
-      if (!ok) p.push('struttura fuori dai comuni della mappa: ' + pre.slice(0, 30));
+    this.qq('a[href]').forEach(function (a) {
+      var h = a.getAttribute('href');
+      if (h === '#' || h === '') p.push('collegamento che non porta da nessuna parte');
     });
-
+    this.qq('button').forEach(function (b) {
+      if (!self.visibile(b)) return;
+      if (!b.textContent.trim() && !b.getAttribute('aria-label')) {
+        p.push('comando senza nome leggibile: ' + (b.id || b.className || '?'));
+      }
+      var r = b.getBoundingClientRect();
+      if (r.height && r.height < 40) {
+        p.push('bersaglio troppo piccolo per un dito (' + Math.round(r.height) +
+               ' px): ' + (b.id || b.className));
+      }
+    });
+    if (this.doc.documentElement.scrollWidth > this.doc.documentElement.clientWidth + 1) {
+      p.push('la pagina scorre di lato');
+    }
     this.stati++;
     this.segnala('struttura', p);
   };
 
-  Banco.prototype.visibile = function (e) {
-    if (!e || e.hidden) return false;
-    var st = this.win.getComputedStyle(e);
-    return st.display !== 'none' && st.visibility !== 'hidden';
-  };
-
   /* Un pannello che nasconde contenuto senza un comando VISIBILE per
-     riportarlo indietro non e' compatto: e' contenuto sparito. E non si
-     scopre premendo, perche' element.click() riesce anche su un elemento
-     display:none - va guardato lo stile calcolato. E' successo davvero: la
-     regola che nasconde i pulsanti stava dopo la media query, stessa
-     specificita', quindi vinceva lei e sul telefono schede e note si
-     chiudevano per sempre.
-
-     La domanda e' "cosa e' sparito davvero", non "che classe ha": le stesse
-     classi restano anche su schermo grande, dove pero' il CSS non nasconde
-     niente e i comandi sono giustamente invisibili. */
+     riportarlo indietro non e' compatto: e' contenuto sparito. Non si scopre
+     premendo, perche' click() riesce anche sull'invisibile. */
   Banco.prototype.giroRichiudibili = function () {
     var p = [], self = this;
+    this.qq('.casa').forEach(function (c) {
+      var cap = c.querySelector('.cap'), det = c.querySelector('.dett');
+      if (!cap || !det) { p.push('scheda senza comando o senza dettaglio'); return; }
+      if (!self.visibile(cap)) { p.push('scheda con comando invisibile'); return; }
+      var prima = self.visibile(det);
+      cap.click();
+      if (self.visibile(det) === prima) p.push('aprire la scheda non mostra nulla di nuovo');
+      if ((cap.getAttribute('aria-expanded') === 'true') !== self.visibile(det)) {
+        p.push('aria-expanded non corrisponde a cio che si vede');
+      }
+      cap.click();
+      if (self.visibile(det) !== prima) p.push('la scheda non si richiude');
+      self.stati++;
+    });
+    this.segnala('richiudibili', p);
+  };
 
-    function comandoDiRiapertura(e) {
-      return e.querySelector('.apri, .notaApri, [aria-expanded]');
+  /* ---------------------------------------------------- zone */
+
+  Banco.prototype.giroZone = function () {
+    var p = [], self = this;
+    var zone = this.qq('.zona');
+    if (!zone.length) { p.push('nessuna zona mostrata'); this.segnala('zone', p); return; }
+
+    zone.forEach(function (z) {
+      var dichiarate = parseInt((z.textContent.match(/(\d+)\s+strutture/) || [])[1], 10);
+      var daPrezzo = self.euro((z.querySelector('.zp') || {}).textContent || '');
+      var nome = (z.querySelector('.zn') || {}).textContent || '';
+
+      z.click();
+      self.stati++;
+      var righe = self.righe();
+      if (isNaN(dichiarate)) {
+        p.push('zona senza conteggio dichiarato');
+      } else if (righe.length !== dichiarate) {
+        p.push('la zona dice ' + dichiarate + ' strutture ma ne mostra ' + righe.length);
+      }
+      if (!righe.length) p.push('zona selezionata che non mostra nulla');
+
+      var prezzi = righe.map(function (r) {
+        return self.euro((r.querySelector('.cp') || {}).textContent || '');
+      }).filter(function (x) { return x !== null; });
+      if (prezzi.length && daPrezzo !== null) {
+        var min = Math.min.apply(null, prezzi);
+        if (min !== daPrezzo) {
+          p.push('la zona promette da ' + daPrezzo + ' euro ma la piu economica costa ' + min);
+        }
+      }
+      var tit = (self.q('#titoloLista') || {}).textContent || '';
+      if (nome && tit.indexOf(nome) < 0) {
+        p.push('il titolo non nomina la zona scelta: ' + tit.slice(0, 40));
+      }
+      z.click();
+      self.stati++;
+    });
+
+    var tutte = this.righe().length, somma = 0;
+    zone.forEach(function (z) {
+      var n = parseInt((z.textContent.match(/(\d+)\s+strutture/) || [])[1], 10);
+      if (!isNaN(n)) somma += n;
+    });
+    if (somma > tutte) {
+      p.push('le zone sommano ' + somma + ' strutture ma in tutto sono ' + tutte +
+             ': qualcuna e contata due volte');
+    }
+    this.segnala('zone', p);
+  };
+
+  /* ---------------------------------------------------- ordini e filtri */
+
+  Banco.prototype.giroOrdini = function () {
+    var p = [], self = this;
+
+    this.qq('.ord[data-ord]').forEach(function (b) {
+      b.click();
+      self.stati++;
+      var acceso = self.qq('.ord[data-ord][aria-pressed="true"]');
+      if (acceso.length !== 1) {
+        p.push('ordini accesi contemporaneamente: ' + acceso.length);
+      }
+      if (b.getAttribute('data-ord') === 'prezzo') {
+        var v = self.righe().map(function (r) {
+          return self.euro((r.querySelector('.cp') || {}).textContent || '');
+        });
+        for (var i = 1; i < v.length; i++) {
+          if (v[i] < v[i - 1]) {
+            p.push('ordine per prezzo non crescente: ' + v[i - 1] + ' poi ' + v[i]);
+            break;
+          }
+        }
+      }
+    });
+
+    var sc = this.q('#soloCol');
+    if (!sc) {
+      p.push('manca il filtro della colazione');
+    } else {
+      var prima = this.righe().length;
+      sc.click();
+      this.stati++;
+      var dopo = this.righe();
+      if (dopo.length > prima) p.push('un filtro che aumenta i risultati');
+      if (!dopo.length) p.push('il filtro colazione non lascia nulla');
+      dopo.forEach(function (r) {
+        var t = (r.querySelector('.pill') || {}).textContent || '';
+        if (t.indexOf('inclusa') < 0) {
+          p.push('con il filtro attivo compare "' + t.slice(0, 30) + '"');
+        }
+      });
+      sc.click();
+      this.stati++;
+      if (this.righe().length !== prima) p.push('togliendo il filtro non si torna come prima');
+    }
+    this.segnala('ordini e filtri', p);
+  };
+
+  /* ---------------------------------------------------- base e dintorni */
+
+  Banco.prototype.giroIntorno = function () {
+    var p = [], self = this;
+
+    function distanze() {
+      return self.qq('#intorno .luogo').map(function (l) {
+        var m = (l.textContent || '').match(/([\d.]+)\s*km/);
+        return m ? parseFloat(m[1]) : null;
+      }).filter(function (x) { return x !== null; });
     }
 
-    this.qq('.chiusa').forEach(function (e) {
-      /* quanto contenuto e' effettivamente nascosto, escluso il comando stesso */
-      var nascosti = Array.prototype.filter.call(e.children, function (c) {
-        return !c.classList.contains('apri') && !c.classList.contains('notaApri') &&
-               !self.visibile(c);
+    var d0 = distanze();
+    if (!d0.length) p.push('la sezione dintorni nasce vuota');
+    for (var i = 1; i < d0.length; i++) {
+      if (d0[i] < d0[i - 1]) { p.push('i dintorni non sono in ordine di distanza'); break; }
+    }
+
+    /* i comandi "parti da qui" stanno dentro le schede: vanno aperte */
+    this.righe().slice(0, this.rapido ? 3 : 8).forEach(function (r) {
+      var cap = r.querySelector('.cap');
+      if (cap) cap.click();
+    });
+
+    var basi = this.qq('.base').filter(function (b) {
+      return self.visibile(b) && !b.disabled;
+    });
+    if (!basi.length) p.push('nessun comando visibile per scegliere la base');
+
+    basi.slice(0, this.rapido ? 2 : 5).forEach(function (b) {
+      var prima = distanze().join(',');
+      var etPrima = (self.q('#intornoBase') || {}).textContent || '';
+      b.click();
+      self.stati++;
+      var etDopo = (self.q('#intornoBase') || {}).textContent || '';
+      if (etDopo === etPrima) p.push('cambiando base l etichetta non cambia');
+      if (etDopo.indexOf('da ') !== 0) p.push('l etichetta della base non dice da dove');
+      var dopo = distanze();
+      if (dopo.join(',') === prima) p.push('cambiando base le distanze restano identiche');
+      for (var j = 1; j < dopo.length; j++) {
+        if (dopo[j] < dopo[j - 1]) { p.push('dopo il cambio base l ordine si rompe'); break; }
+      }
+    });
+
+    var chip = this.qq('#catChips .chip');
+    if (chip.length < 5) p.push('categorie mancanti: ' + chip.length);
+    chip.forEach(function (c) {
+      self.qq('#catChips .chip[aria-pressed="true"]').forEach(function (x) { x.click(); });
+      c.click();
+      self.stati++;
+      var n = self.qq('#intorno .luogo').length;
+      var t = (self.q('#intorno') || {}).textContent || '';
+      if (!n && t.indexOf('Niente') < 0 && t.indexOf('Nessuna') < 0) {
+        p.push('categoria senza risultati e senza spiegazione: ' + c.textContent);
+      }
+    });
+
+    self.qq('#catChips .chip[aria-pressed="true"]').forEach(function (x) { x.click(); });
+    self.stati++;
+    if (((this.q('#intorno') || {}).textContent || '').indexOf('Nessuna categoria') < 0) {
+      p.push('senza categorie la sezione resta muta invece di spiegarlo');
+    }
+    if (chip[0]) chip[0].click();
+
+    this.qq('#ragChips .chip').forEach(function (r) {
+      r.click();
+      self.stati++;
+      var lim = parseFloat(r.getAttribute('data-r')) || 0;
+      if (!lim) return;
+      distanze().forEach(function (km) {
+        if (km > lim + 0.05) {
+          p.push('con raggio ' + lim + ' km compare qualcosa a ' + km + ' km');
+        }
       });
-      if (!nascosti.length) return;          /* non e' sparito niente: la classe non conta qui */
-
-      var dentro = Array.prototype.filter.call(e.querySelectorAll('button'), function (b) {
-        return self.visibile(b);
-      });
-      var fuori = e.id
-        ? self.qq('[aria-controls="' + e.id + '"]').filter(function (b) { return self.visibile(b); })
-        : [];
-      if (!dentro.length && !fuori.length) {
-        p.push('nasconde ' + nascosti.length + ' element' + (nascosti.length === 1 ? 'o' : 'i') +
-               ' senza comando visibile per riaprirlo: ' +
-               (e.id || e.className || e.tagName).toString().slice(0, 40));
-      }
-      if (!comandoDiRiapertura(e) && !fuori.length) {
-        p.push('pannello chiuso senza alcun comando di riapertura: ' + (e.id || e.className));
-      }
     });
+    this.segnala('base e dintorni', p);
+  };
 
-    /* ogni comando che dichiara di aprire qualcosa deve davvero aprirlo */
-    this.qq('[aria-expanded]').forEach(function (b) {
-      if (!self.visibile(b)) return;
-      var id = b.getAttribute('aria-controls'), bersaglio = id && self.doc.getElementById(id);
-      if (id && !bersaglio) { p.push('aria-controls punta a un id che non esiste: ' + id); return; }
-      var prima = b.getAttribute('aria-expanded');
-      b.click();
-      if (b.getAttribute('aria-expanded') === prima) {
-        p.push('comando che non cambia stato: ' + (b.id || b.className));
+  /* ---------------------------------------------------- dati */
+
+  /* Un riassunto non deve contraddire il dato specifico, e un numero mostrato
+     dev'essere plausibile. E' il difetto che sul tag della colazione e' gia'
+     passato inosservato una volta. */
+  Banco.prototype.giroDati = function () {
+    var p = [], self = this;
+
+    this.righe().forEach(function (r) {
+      var nome = (r.querySelector('.cn') || {}).textContent || '?';
+      var prezzo = self.euro((r.querySelector('.cp') || {}).textContent || '');
+      if (prezzo === null) p.push('struttura senza prezzo: ' + nome);
+      else if (prezzo < 80 || prezzo > 2000) p.push('prezzo implausibile per ' + nome + ': ' + prezzo);
+
+      var pill = (r.querySelector('.pill') || {}).textContent || '';
+      if (!pill) p.push('struttura senza stato della colazione: ' + nome);
+
+      var cap = r.querySelector('.cap');
+      if (cap) cap.click();
+      var det = (r.querySelector('.dett') || {}).textContent || '';
+      if (/colazione non inclusa|senza colazione/i.test(det) && pill.indexOf('inclusa') >= 0) {
+        p.push('dice colazione inclusa ma la nota la smentisce: ' + nome);
       }
-      if (bersaglio && self.visibile(bersaglio) !== (b.getAttribute('aria-expanded') === 'true')) {
-        p.push('aria-expanded non corrisponde a cio che si vede: ' + (b.id || b.className));
+      if (/colazione\s*\d+\s*€/i.test(det) && pill.indexOf('inclusa') >= 0) {
+        p.push('colazione a pagamento nella nota ma inclusa nella pastiglia: ' + nome);
       }
-      b.click();
-      if (b.getAttribute('aria-expanded') !== prima) {
-        p.push('comando che non torna com era: ' + (b.id || b.className));
+      var tutte = det.match(/(\d+)\s*min da Toscolano/g) || [];
+      if (tutte.length > 1 && tutte[0] !== tutte[1]) {
+        p.push('due distanze diverse nella stessa scheda: ' + nome);
       }
+      var m = det.match(/(\d+)\s*min da Toscolano/);
+      if (m && parseInt(m[1], 10) > 90) p.push('distanza implausibile per ' + nome);
+      if (cap) cap.click();
+      self.stati++;
     });
-
-    /* dove il comando SI VEDE, premerlo deve cambiare cio' che si vede */
-    this.qq('#verdetto .apri').forEach(function (b) {
-      if (!self.visibile(b)) return;
-      var scheda = b.parentElement, elenco = scheda.querySelector('ul');
-      if (!elenco) return;
-      var prima = self.visibile(elenco);
-      b.click();
-      if (self.visibile(elenco) === prima) p.push('"apri" non mostra il contenuto della scheda');
-      b.click();
-      if (self.visibile(elenco) !== prima) p.push('"apri" non richiude la scheda');
-    });
-
-    this.stati++;
-    this.segnala('richiudibili', p);
+    this.segnala('dati', p);
   };
 
   Banco.prototype.esegui = function () {
     var avvio = Date.now();
     this.giroStruttura();
     this.giroRichiudibili();
-    this.giroFiltri();
-    this.giroPaesi();
-    this.giroDintorni();
-    this.giroSequenze();
+    this.giroZone();
+    this.giroOrdini();
+    this.giroIntorno();
+    this.giroDati();
     return {
       stati: this.stati,
       problemi: this.problemi,

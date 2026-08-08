@@ -391,9 +391,76 @@
     this.segnala('struttura', p);
   };
 
+  Banco.prototype.visibile = function (e) {
+    if (!e || e.hidden) return false;
+    var st = this.win.getComputedStyle(e);
+    return st.display !== 'none' && st.visibility !== 'hidden';
+  };
+
+  /* Un pannello che si chiude senza un comando VISIBILE per riaprirlo non e'
+     compatto: e' contenuto sparito. E non si scopre premendo, perche'
+     element.click() riesce anche su un elemento display:none - va guardato
+     lo stile calcolato. E' successo davvero: la regola che nasconde i
+     pulsanti stava dopo la media query, stessa specificita', quindi vinceva
+     lei e sul telefono schede e note si chiudevano per sempre. */
+  Banco.prototype.giroRichiudibili = function () {
+    var p = [], self = this;
+
+    this.qq('.chiusa').forEach(function (e) {
+      var dentro = Array.prototype.filter.call(e.querySelectorAll('button'), function (b) {
+        return self.visibile(b);
+      });
+      var fuori = e.id
+        ? self.qq('[aria-controls="' + e.id + '"]').filter(function (b) { return self.visibile(b); })
+        : [];
+      if (!dentro.length && !fuori.length) {
+        p.push('chiuso senza comando visibile per riaprirlo: ' +
+               (e.id || e.className || e.tagName).toString().slice(0, 40));
+      }
+    });
+
+    /* ogni comando che dichiara di aprire qualcosa deve davvero aprirlo */
+    this.qq('[aria-expanded]').forEach(function (b) {
+      if (!self.visibile(b)) return;
+      var id = b.getAttribute('aria-controls'), bersaglio = id && self.doc.getElementById(id);
+      if (id && !bersaglio) { p.push('aria-controls punta a un id che non esiste: ' + id); return; }
+      var prima = b.getAttribute('aria-expanded');
+      b.click();
+      if (b.getAttribute('aria-expanded') === prima) {
+        p.push('comando che non cambia stato: ' + (b.id || b.className));
+      }
+      if (bersaglio && self.visibile(bersaglio) !== (b.getAttribute('aria-expanded') === 'true')) {
+        p.push('aria-expanded non corrisponde a cio che si vede: ' + (b.id || b.className));
+      }
+      b.click();
+      if (b.getAttribute('aria-expanded') !== prima) {
+        p.push('comando che non torna com era: ' + (b.id || b.className));
+      }
+    });
+
+    /* i comandi del verdetto: premere deve cambiare cio che si VEDE */
+    this.qq('#verdetto .apri').forEach(function (b) {
+      if (!self.visibile(b)) { p.push('comando "apri" presente ma invisibile'); return; }
+      var scheda = b.parentElement, elenco = scheda.querySelector('ul');
+      if (!elenco) return;
+      var prima = self.visibile(elenco);
+      b.click();
+      if (self.visibile(elenco) === prima) p.push('"apri" non mostra il contenuto della scheda');
+      b.click();
+      if (self.visibile(elenco) !== prima) p.push('"apri" non richiude la scheda');
+    });
+    this.qq('#verdetto .notaApri').forEach(function (b) {
+      if (!self.visibile(b)) p.push('titolo di nota presente ma invisibile');
+    });
+
+    this.stati++;
+    this.segnala('richiudibili', p);
+  };
+
   Banco.prototype.esegui = function () {
     var avvio = Date.now();
     this.giroStruttura();
+    this.giroRichiudibili();
     this.giroFiltri();
     this.giroPaesi();
     this.giroDintorni();

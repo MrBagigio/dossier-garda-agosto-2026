@@ -315,6 +315,24 @@ button{font:inherit}
   .freshToggle{display:none}
   @media (max-width:760px){ .freshToggle{display:block} }
 
+  /* ---- verdetto compatto sul telefono ---- */
+  @media (max-width:760px){
+    #verdetto .pick.chiusa ul,
+    #verdetto .pick.chiusa .cta{display:none}
+    #verdetto .pick.chiusa{padding-bottom:14px}
+    #verdetto .pick .apri{
+      display:block;width:100%;margin-top:10px;padding:9px;min-height:42px;
+      border:1px dashed var(--rule);border-radius:9px;background:transparent;
+      color:var(--accent);cursor:pointer;
+      font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+    #verdetto .note.chiusa > *:not(.notaApri){display:none}
+    #verdetto .note .notaApri{
+      display:block;width:100%;padding:10px 2px;min-height:44px;border:0;background:transparent;
+      color:var(--ink);cursor:pointer;text-align:left;font:inherit;font-size:14.5px}
+    #verdetto .note .notaApri b{color:var(--accent)}
+  }
+  #verdetto .pick .apri, #verdetto .note .notaApri{display:none}
+
   /* ---- filtri richiudibili sul telefono ---- */
   .filtriToggle{display:none}
   @media (max-width:760px){
@@ -2246,6 +2264,48 @@ button{font:inherit}
     window.addEventListener('online',segna);
     window.addEventListener('offline',segna);
     segna();
+  })();
+
+
+  /* ============ VERDETTO COMPATTO SUL TELEFONO ============
+     Sei schermate di verdetto prima di poter toccare qualcosa: su un
+     telefono e' troppo. Qui la prima scheda resta aperta perche' e' la
+     raccomandazione, il resto si apre al tocco. Su schermo grande questo
+     codice non fa nulla, perche' li' lo spazio c'e'. */
+  (function(){
+    if(!window.matchMedia || !window.matchMedia('(max-width:760px)').matches) return;
+    function compatta(){
+      Array.prototype.forEach.call(document.querySelectorAll('#verdetto .vset.on .pick'),function(a,i){
+        if(a.querySelector('.apri')) return;
+        if(i===0) return;                      /* la prima scelta resta aperta */
+        a.classList.add('chiusa');
+        var b=document.createElement('button');
+        b.type='button'; b.className='apri'; b.textContent='perché — apri';
+        b.addEventListener('click',function(){
+          var ap=!a.classList.toggle('chiusa');
+          b.textContent=ap?'chiudi':'perché — apri';
+        });
+        a.appendChild(b);
+      });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#verdetto .note'),function(n){
+      var st=n.querySelector('strong');
+      if(!st) return;
+      var b=document.createElement('button');
+      b.type='button'; b.className='notaApri';
+      b.innerHTML='<b>+</b> '+st.textContent.replace(/[.:]$/,'');
+      b.addEventListener('click',function(){
+        var ap=!n.classList.toggle('chiusa');
+        b.innerHTML=(ap?'<b>−</b> ':'<b>+</b> ')+st.textContent.replace(/[.:]$/,'');
+      });
+      n.classList.add('chiusa');
+      n.insertBefore(b, n.firstChild);
+    });
+    compatta();
+    /* le schede cambiano quando si cambia finestra */
+    Array.prototype.forEach.call(document.querySelectorAll('.switcher button[data-win]'),function(x){
+      x.addEventListener('click',function(){ setTimeout(compatta,0); });
+    });
   })();
 
   /* ============ ARCHIVIO RICHIUDIBILE ============ */

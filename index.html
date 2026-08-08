@@ -936,7 +936,14 @@ Toccane una per vedere solo le sue strutture.</p>
           '<span class="r2">'+
             '<span>'+(c.paese ? c.paese[1] : '—')+'</span>'+
             (c.voto ? '<span>'+virgola(c.voto)+(c.rec ? ' · '+c.rec+' rec' : '')+'</span>' : '')+
-            '<span class="pill'+(c.col==='si'?' si':'')+'">'+COLLBL[c.col]+'</span>'+
+            /* l'etichetta descrive la tariffa MOSTRATA, non un'altra */
+            (function(){
+              var incl = (pm.q.indexOf('colazione')>=0) || c.col==='si';
+              var e = incl ? 'colazione inclusa' : COLLBL[c.col];
+              var h = '<span class="pill'+(incl?' si':'')+'">'+e+'</span>';
+              if(pm.sca) h += '<span class="pill si">disdetta entro il '+pm.sca+'</span>';
+              return h;
+            })()+
           '</span>'+
         '</button>'+
         '<div class="dett" hidden>'+

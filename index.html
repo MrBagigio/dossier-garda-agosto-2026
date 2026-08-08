@@ -2270,10 +2270,13 @@ button{font:inherit}
   /* ============ VERDETTO COMPATTO SUL TELEFONO ============
      Sei schermate di verdetto prima di poter toccare qualcosa: su un
      telefono e' troppo. Qui la prima scheda resta aperta perche' e' la
-     raccomandazione, il resto si apre al tocco. Su schermo grande questo
-     codice non fa nulla, perche' li' lo spazio c'e'. */
+     raccomandazione, il resto si apre al tocco. Su schermo grande le stesse
+     classi ci sono ma non chiudono niente: lo decide il CSS. */
   (function(){
-    if(!window.matchMedia || !window.matchMedia('(max-width:760px)').matches) return;
+    /* Nessun controllo sulla larghezza qui: i comandi si montano sempre e le
+       classi si mettono sempre, ma valgono solo dentro la media query del
+       CSS. Cosi' la domanda "e' un telefono" ha una risposta sola, e chi
+       ruota o allarga la finestra vede l'impaginazione giusta subito. */
     function compatta(){
       Array.prototype.forEach.call(document.querySelectorAll('#verdetto .vset'),function(gruppo){
         Array.prototype.forEach.call(gruppo.querySelectorAll('.pick'),function(a,i){

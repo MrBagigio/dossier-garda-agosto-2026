@@ -289,6 +289,8 @@ button{font:inherit}
 
 
 
+  .fchip.tipo.on{background:var(--accent);border-color:var(--accent);color:var(--paper);font-weight:600}
+  #tipoChips{margin-right:6px}
   /* ---- barra "sei senza campo" ---- */
   .offline{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;
     padding:10px 14px;background:var(--ink);color:var(--paper);
@@ -942,6 +944,8 @@ button{font:inherit}
     </div>
 
     <div class="filters" role="group" aria-label="Filtra e ordina la rosa">
+      <span class="flbl">Che tipo</span>
+      <div class="chips" id="tipoChips"><button type="button" class="fchip tipo" data-t="h" aria-pressed="false">hotel</button><button type="button" class="fchip tipo" data-t="b" aria-pressed="false">B&B e camere</button><button type="button" class="fchip tipo" data-t="a" aria-pressed="false">appartamento</button><button type="button" class="fchip tipo" data-t="g" aria-pressed="false">agriturismo</button><button type="button" class="fchip tipo" data-t="o" aria-pressed="false">ostello</button><button type="button" class="fchip tipo" data-t="c" aria-pressed="false">campeggio</button></div>
       <span class="flbl">Mostra solo</span>
       <div class="chips">
         <button type="button" class="fchip" data-f="w" aria-pressed="false">piscina o spa</button>
@@ -1730,22 +1734,101 @@ button{font:inherit}
    'B&B Renzano bedrooms':'b', 'Il Giardino di Sara':'b', 'B&B GARDA IN':'b',
    "B&B Solstizio d'estate":'b', 'Villa Mayoti B&B':'b', 'Vesta':'b', 'Foresteria Vistalago':'b',
    'Agriturismo Scuderia Castello':'b', 'Cascina Monte Tivino':'b', 'Aromi Piccolo Hotel':'b',
-   'Reflection Boutique Hotels':'b', 'HOTEL LORENA':'b'
+   'Reflection Boutique Hotels':'b', 'HOTEL LORENA':'b',
+   /* verificate sulla scheda Booking il 6 agosto */
+   'Garnì Marika':'b',            /* colazione inclusa nella tariffa */
+   'Albergo Ristorante Le Fontane':'b',  /* colazione inclusa */
+   'Ostello delle cartiere':'a'  /* parcheggio privato gratuito; la colazione costa 5 €, quindi niente tag */
   };
   var TAGLABEL={w:'piscina o spa',l:'sul lago',p:'centro a piedi',k:'cucina',b:'colazione',a:'posto auto'};
   function tagsOf(n){ return TAGS[n]||''; }
 
+  /* Tipo di struttura, dedotto da nome e descrizione: h hotel, b B&B e
+     camere, a appartamento, g agriturismo, o ostello, c campeggio.
+     Il nome ha la precedenza sulla descrizione, altrimenti
+     "Hotel Eden · camera 18 m²" finiva fra le camere in affitto. */
+  var TIPI={
+    '2bebike':'b',
+    'Affitta camere La Fenice':'b',
+    'Agriturismo Scuderia Castello':'g',
+    'Al Mulino':'a',
+    'Albergo Ristorante Le Fontane':'h',
+    'All Inclusive Piccolo Paradiso':'h',
+    'Appartamento a Cecina':'a',
+    'Aromi Piccolo Hotel':'h',
+    'Asso Bed & Breakfast':'b',
+    'B&B Casa Olivia':'b',
+    'B&B Dolce Risveglio':'b',
+    'B&B GARDA IN':'b',
+    'B&B Giardini di Corte':'b',
+    'B&B Renzano bedrooms':'b',
+    'B&B Solstizio d\'estate':'b',
+    'BiancoGelso b&b Vegan':'b',
+    'Ca\' due Olivi':'a',
+    'Camping Toscolano':'c',
+    'Casa Dealbata':'a',
+    'Casa Johanna':'a',
+    'Casa Sol':'a',
+    'Casa della musica':'a',
+    'Cascina Monte Tivino':'g',
+    'Colibrì':'a',
+    'Cozy Castello':'a',
+    'Ennesima Osteria — Bike Hotel':'h',
+    'Foresteria Vistalago':'b',
+    'Garda Friends Apartments':'a',
+    'Garda Sol SPA Hotel':'h',
+    'Garnì Marika':'h',
+    'Guest House Villa de Ros':'b',
+    'HOTEL LORENA':'h',
+    'Holiday House Le Coccinelle':'a',
+    'Hotel & Restaurant San Marco AB':'h',
+    'Hotel Adria & Resort':'h',
+    'Hotel Antico Monastero':'h',
+    'Hotel Central Giacomini':'h',
+    'Hotel Colomber':'h',
+    'Hotel Eden':'h',
+    'Hotel Gallo':'h',
+    'Hotel La Romantica':'h',
+    'Hotel Locanda del Benaco':'h',
+    'Hotel Maderno':'h',
+    'Hotel Panoramica':'h',
+    'Hotel Sorriso':'h',
+    'Hotel Splendid':'h',
+    'Hotel Villa Europa':'h',
+    'Il Giardino di Sara':'b',
+    'La Casa Di Campagna Sul Garda':'a',
+    'La Casa Incartata':'a',
+    'La corte dell\'Elmo':'b',
+    'Lake Blue Nido Elegante':'a',
+    'Locanda San Felice':'b',
+    'Monolocale Castello':'a',
+    'Oro Bianco 1630':'b',
+    'Ostello delle cartiere':'o',
+    'Pizzocolo Resort Fasano':'h',
+    'Reflection Boutique Hotels':'h',
+    'Regina del Garda Suite':'h',
+    'Relais Villa Alba':'a',
+    'Riva chiara':'a',
+    'Vesta':'b',
+    'Villa Cappellina':'a',
+    'Villa Giulia Rooms & Bike':'b',
+    'Villa Mayoti B&B':'b',
+    'Villaggio Turistico Maderno':'c'
+  };
+  var TIPOLBL={h:'hotel',b:'B&B e camere',a:'appartamento',g:'agriturismo',o:'ostello',c:'campeggio'};
+  function tipoOf(nome){ return TIPI[nome]||null; }
   var DOTAZIONI=['w','l','p','k','b','a'];
-  var FILTERS={w:0,l:0,p:0,k:0,b:0,a:0,hi:0,town:0};
+  var FILTERS={w:0,l:0,p:0,k:0,b:0,a:0,hi:0,town:0,tipo:0};
   var SORT='price';
 
   function passes(d){
     var t=tagsOf(d[0]);
     for(var k in FILTERS){
-      if(k==='hi'||k==='town'||!FILTERS[k]) continue;
+      if(k==='hi'||k==='town'||k==='tipo'||!FILTERS[k]) continue;
       if(DOTAZIONI.indexOf(k)<0) continue;   /* chiave ignota: ignorala, non azzerare la rosa */
       if(t.indexOf(k)<0) return false;
     }
+    if(FILTERS.tipo && tipoOf(d[0])!==FILTERS.tipo) return false;
     if(FILTERS.town && townOf(d[1])!==FILTERS.town) return false;
     if(FILTERS.hi){
       var v=parseFloat(String(d[2]).replace(',','.'));
@@ -1817,6 +1900,10 @@ button{font:inherit}
       body.innerHTML='<tr><td colspan="7" class="empty">Nessuna struttura ha tutte le caratteristiche richieste il '+w.lab+'. Togli un filtro, oppure prova una finestra di date diversa.</td></tr>';
     }
     var attivi=Object.keys(FILTERS).filter(function(k){return FILTERS[k];}).length;
+    Array.prototype.forEach.call(document.querySelectorAll('.fchip[data-t]'),function(o){
+      var on=(FILTERS.tipo===o.getAttribute('data-t'));
+      o.classList.toggle('on',on); o.setAttribute('aria-pressed',on?'true':'false');
+    });
     var tc=document.getElementById('townChip');
     if(tc){
       tc.hidden = !FILTERS.town;
@@ -2483,6 +2570,19 @@ button{font:inherit}
         if(!(k in FILTERS)) return;
         FILTERS[k]=FILTERS[k]?0:1;
         b.setAttribute('aria-pressed',FILTERS[k]?'true':'false');
+        render(document.documentElement.getAttribute('data-win')||'3');
+      });
+    });
+    /* Selezione singola: "mi interessa piu' l'ostello" e' una domanda sola.
+       Ricliccando lo stesso chip si torna a vedere tutto. */
+    Array.prototype.forEach.call(document.querySelectorAll('.fchip[data-t]'),function(b){
+      b.addEventListener('click',function(){
+        var t=b.getAttribute('data-t');
+        FILTERS.tipo = (FILTERS.tipo===t) ? 0 : t;
+        Array.prototype.forEach.call(document.querySelectorAll('.fchip[data-t]'),function(o){
+          var on=(FILTERS.tipo===o.getAttribute('data-t'));
+          o.classList.toggle('on',on); o.setAttribute('aria-pressed',on?'true':'false');
+        });
         render(document.documentElement.getAttribute('data-win')||'3');
       });
     });

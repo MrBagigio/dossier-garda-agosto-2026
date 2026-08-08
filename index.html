@@ -316,6 +316,11 @@ button{font:inherit}
   @media (max-width:760px){ .freshToggle{display:block} }
 
   /* ---- verdetto compatto sul telefono ---- */
+  /* Questa riga sta PRIMA della media query di proposito: ha la stessa
+     specificita' delle regole che la seguono, e a parita' vince l'ultima.
+     Scritta dopo, teneva i comandi nascosti anche sul telefono e le schede
+     si chiudevano senza un modo visibile di riaprirle. */
+  #verdetto .pick .apri, #verdetto .note .notaApri{display:none}
   @media (max-width:760px){
     #verdetto .pick.chiusa ul,
     #verdetto .pick.chiusa .cta{display:none}
@@ -331,8 +336,6 @@ button{font:inherit}
       color:var(--ink);cursor:pointer;text-align:left;font:inherit;font-size:14.5px}
     #verdetto .note .notaApri b{color:var(--accent)}
   }
-  #verdetto .pick .apri, #verdetto .note .notaApri{display:none}
-
   /* ---- filtri richiudibili sul telefono ---- */
   .filtriToggle{display:none}
   @media (max-width:760px){

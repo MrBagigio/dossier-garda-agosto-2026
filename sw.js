@@ -12,10 +12,11 @@
  * La cache porta la data della revisione nel nome: pubblicare una versione
  * nuova butta via la precedente invece di stratificarla.
  */
-const CACHE = 'garda-2026-v4';
+const CACHE = 'garda-2026-v5';
 const ESSENZIALI = [
   './',
   './index.html',
+  './archivio.html',
   './manifest.webmanifest',
   './icona-192.png',
   './icona-512.png',
